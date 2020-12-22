@@ -1,8 +1,6 @@
 import Vue from 'vue';
 import VueClipboard from 'vue-clipboard2';
 import 'lib-flexible';
-// import VConsole from 'vconsole';
-import { fixedFocus } from '@/utils/fixedH5Bug';
 import global from '@/utils/global';
 
 import router from './routers/';
@@ -14,14 +12,9 @@ import * as filters from './filters/';
 import App from './App.vue';
 import './styles/main.less';
 
-import '../node_modules/chimee-mobile-player/lib/chimee-mobile-player.browser.css'
 // import '../node_modules/chimee-mobile-player/lib/chimee-mobile-player.min.css'
-fixedFocus(); // 全局注册
 Vue.use(VueClipboard);
 Vue.use(global);
-// if (process.env.NODE_ENV === 'development') {
-// new VConsole();
-// }
 
 // import FastClick from 'fastclick';
 

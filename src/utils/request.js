@@ -2,7 +2,7 @@ import axios from 'axios';
 import qs from 'qs';
 import store from '@/stores';
 import router from '@/routers/';
-import { Toast } from 'vant';
+import { Message } from 'element-ui';
 // 消息提示 显示时间
 const duration = 5 * 1000;
 // create an axios instance
@@ -47,25 +47,28 @@ service.interceptors.response.use(
     let result = response.data;
     // 请求不成功处理
     if (response.status !== 200) {
-      Toast({
+      Message({
         message: result.msg,
-        duration
+        duration,
+        type: 'error'
       });
       return Promise.reject('error');
     } else {
       if (result.code === 200) {
         return Promise.resolve(result);
       } else if (result.code === 401) {
-        Toast({
+        Message({
           message: '请登录后再操作',
-          duration
+          duration,
+          type: 'error'
         });
-        router.push('/login')
+        router.push('/login');
         return Promise.reject(result);
       } else {
-        Toast({
+        Message({
           message: result && result.msg ? result.msg : '无效的返回数据',
-          duration
+          duration,
+          type: 'error'
         });
         return Promise.reject(result);
       }
@@ -78,14 +81,15 @@ service.interceptors.response.use(
     const info = response.data; // 自定义封装data
 
     if (response === undefined) {
-      Toast({
+      Message({
         message: '服务请求超时！',
-        duration
+        duration,
+        type: 'error'
       });
       return Promise.reject(error);
     }
     if (response.code === 500 || response.code === 504) {
-      Toast({
+      Message({
         message: info.message || '后端服务异常，请联系管理员！',
         duration
       });
@@ -93,30 +97,33 @@ service.interceptors.response.use(
     }
     if (response.code === 401) {
       if (info.error_description === 'Bad credentials') {
-        Toast({
+        Message({
           message: '用户名或密码错误！',
-          duration
+          duration,
+          type: 'error'
         });
       } else {
-        Toast({
+        Message({
           message: '请求数据格式错误！',
-          duration
+          duration,
+          type: 'error'
         });
       }
       return Promise.reject(error);
     }
 
     if (response.code === 404) {
-      Toast({
+      Message({
         message: '未找到指定资源！',
-        duration
+        duration,
+        type: 'error'
       });
       return Promise.reject(error);
     }
-
-    Toast({
+    Message({
       message: info.message,
-      duration
+      duration,
+      type: 'error'
     });
     return Promise.reject(error);
   }

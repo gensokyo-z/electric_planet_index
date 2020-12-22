@@ -54,18 +54,13 @@
         <span @click="showVanShare = true">分享链接</span>
       </a>
     </div>
-    <van-share-sheet v-model="showVanShare"
-                     title="立即分享给好友"
-                     :options="options"
-                     @select="onSelect" />
+
   </section>
 </template>
 <script>
 import Vue from 'vue';
 import QRCode from 'QRCode';
 import html2canvas from 'html2canvas';
-import { ShareSheet } from 'vant';
-Vue.use(ShareSheet);
 export default {
   props: {
     content: {

@@ -34,8 +34,6 @@
       </div>
     </div>
     <div class="footer"></div>
-    <InputItem ref="inputItem"
-               :content="content" />
   </section>
 </template>
 <script>
@@ -43,7 +41,6 @@ import TalkApprovalShare from '@/components/TalkApprovalShare'
 export default {
   name: 'TalkCard',
   components: {
-    InputItem: () => import('@/components/InputItem'),
     TalkApprovalShare
   },
   props: {

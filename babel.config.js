@@ -9,13 +9,11 @@ module.exports = {
   ],
   plugins: [
     [
-      'import',
+      'component',
       {
-        libraryName: 'vant',
-        libraryDirectory: 'es',
-        style: true
-      },
-      'vant'
+        libraryName: 'element-ui',
+        styleLibraryName: 'theme-chalk'
+      }
     ]
   ]
 };

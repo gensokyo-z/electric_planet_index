@@ -25,12 +25,12 @@ const cdn = {
 console.log(`NODE_ENV:${process.env.NODE_ENV},npm_config_report: ${process.env.npm_config_report}`);
 module.exports = {
   // publicPath: !isProduction ? './' : '//e.kuaidi100.com/h5/', // 打包后引用的资源路径
-  publicPath: !isProduction ? './' : '//ddxq.tech/h5', // 打包后引用的资源路径
-  outputDir: 'h5', // 打包目录
+  publicPath: !isProduction ? './' : '//ddxq.tech/', // 打包后引用的资源路径
+  outputDir: 'dist', // 打包目录
   productionSourceMap: !isProduction || process.env.VUE_APP_CONFIG === 'test', // 生产打包的map文件是否生成
   devServer: {
-    open: false, // 是否自动打开浏览器页面
-    host: 'h5.tech', // 指定使用一个 host，默认是 localhost
+    open: true, // 是否自动打开浏览器页面
+    host: 'index.tech', // 指定使用一个 host，默认是 localhost
     port: 80, // 端口地址
     proxy: {
       [process.env.VUE_APP_BASE_API]: {

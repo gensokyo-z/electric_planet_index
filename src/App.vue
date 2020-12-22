@@ -10,12 +10,12 @@
                    class="page"></router-view>
     </keep-alive>
     <!-- </transition> -->
-    <layout v-if="!isLogin"></layout>
   </div>
 </template>
 
 <script>
 // import wx from 'wx'
+import Vue from 'vue'
 export default {
   name: 'App',
   data () {
@@ -69,7 +69,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   color: @colorFont;
   font-size: @fontSizeH3;
-
   .fade-enter-active,
   .fade-leave-active {
     transition: all 0.01s ease;
@@ -83,6 +82,7 @@ export default {
   .page {
     transition: all 0.8s ease-in-out;
   }
+
   .page-go-enter-active {
     transform: translate3d(100%, 0, 0);
     // transition: all 0.8s ease-in-out;

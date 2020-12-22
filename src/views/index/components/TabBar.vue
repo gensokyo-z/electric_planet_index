@@ -4,10 +4,10 @@
       <div :class="['tab',{active:active===1}]"
            @click="bindTab('new')">最新</div>
       <div :class="['tab',{active:active===2}]"
-           @click="bindTab('hot')"><svg class="icon"
+           @click="bindTab('hot')">热门<svg class="icon"
              aria-hidden="true">
           <use xlink:href="#iconshouye-remen"></use>
-        </svg>热门</div>
+        </svg></div>
     </div>
   </section>
 </template>
@@ -29,44 +29,44 @@ export default {
 </script>
 <style lang="less" scoped>
 .tab-box {
-  margin: 40px 0 0 32px;
   display: flex;
+  margin-bottom: 20px;
   .tab {
     position: relative;
-    padding-bottom: 8px;
-    display: flex;
-    align-items: center;
-    font-size: 28px;
-    color: rgba(0, 0, 0, 0.45);
-    &:nth-of-type(2) {
-      margin-left: 80px;
-    }
+    margin-right: 30px;
+    font-size: 20px;
+    line-height: 40px;
+    background-color: transparent;
+    text-align: center;
+    z-index: 1;
+    cursor: pointer;
     .icon {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      left: -30px;
-      width: 24px;
-      height: 28px;
+      right: -22px;
+      width: 20px;
+      height: 20px;
     }
     &.active {
-      font-size: 32px;
+      // font-size: 20px;
       color: rgba(0, 0, 0, 0.9);
+      font-weight: 700;
       .icon {
-        width: 28px;
-        height: 32px;
+        width: 20px;
+        height: 20px;
         color: #f1d305;
       }
-      &::after {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        bottom: -5px;
-        width: 48px;
-        height: 4px;
-        border-radius: 2px;
-        background-color: #f1d305;
+      &::before {
         content: '';
+        position: absolute;
+        bottom: 10px;
+        z-index: -1;
+        width: 100%;
+        display: block;
+        height: 5px;
+        background-color: #ffe000;
+        border-radius: 5px;
       }
     }
   }

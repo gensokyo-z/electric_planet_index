@@ -1,43 +1,48 @@
 <template>
   <section class="index">
-    <Search @getSerch="getSerch" />
-    <TabBar @bindTab="bindTab" />
-    <van-pull-refresh v-model="isLoading"
-                      @refresh="onRefresh"
-                      :disabled="disabledPull">
-      <van-list v-model="loading"
-                :finished="finished"
-                finished-text="到底了"
-                offset="500"
-                @load="onLoad">
-        <van-skeleton title
-                      :row="5"
-                      :loading="skeletonLoading">
-          <NewCard :type.sync="type"
-                   v-for="(item, index) in cardList"
-                   :key="index"
-                   :content="item" />
-        </van-skeleton>
-      </van-list>
-    </van-pull-refresh>
-    <div class="footer-pad"></div>
+    <div class="layout">
+      <Header />
+      <div class="layout-main">
+        <div class="community-container">
+          <div class="community-main">
+            <div class="card-list">
+              <TabBar @bindTab="bindTab" />
+              <div class="infinite-scroll"
+                   style="overflow-y: auto">
+                <ul class="infinite-list"
+                    v-infinite-scroll="onLoad"
+                    :infinite-scroll-disabled="disabled"
+                    :infinite-scroll-distance="10">
+                  <li v-for="(item, index) in cardList"
+                      :key="index">
+                    <NewCard :type.sync="type"
+                             :content="item" />
+                  </li>
+                </ul>
+                <p v-if="loading">加载中...</p>
+                <p v-if="finished">没有更多了</p>
+              </div>
+            </div>
+          </div>
+          <div class="community-aside"></div>
+        </div>
+      </div>
+    </div>
   </section>
 </template>
 
 <script>
 import Vue from 'vue';
-import { PullRefresh, List, Skeleton } from 'vant';
 import NewCard from '@/components/NewCard';
 import { getNewest, getHotest } from '@/api/index';
 import util from '@/utils/util'
-Vue.use(PullRefresh);
-Vue.use(List);
-Vue.use(Skeleton);
+import { InfiniteScroll } from 'element-ui';
+Vue.use(InfiniteScroll);
 export default {
   name: 'index',
   data () {
     return {
-      isLoading: false,
+      ajax: false,
       type: 'new',
       page: 1,
       per_page: 10,
@@ -45,15 +50,9 @@ export default {
       keyWord: '',
       loading: false,
       finished: false,
-      disabledPull: true,
-      skeletonLoading: true
     };
   },
   mounted () {
-    // 保证在DOM渲染完毕后初始化, 20秒是经验值
-    setTimeout(() => {
-      this.listenerAction();
-    }, 20);
     // this.$refs.video.content.video = true
     // this.$refs.video.initVideo()
     // this.getData('new');
@@ -61,14 +60,21 @@ export default {
   },
   methods: {
     onLoad (flag) {
-      // setTimeout(async () => {
       if (flag) {
         this.cardList = [];
       }
-      this.getData(this.type)
-      // }, 100);
+      this.loading = true;
+      setTimeout(() => {
+        this.getData(this.type)
+      }, 300);
+
     },
     getData (type) {
+      if (this.ajax) {
+        return
+      }
+      this.ajax = true
+      // this.finished = true
       if (type === 'new') {
         getNewest({ page: this.page, per_page: this.per_page, keyword: this.keyWord }).then(res => {
           if (res.code === 200 && res.data) {
@@ -87,7 +93,9 @@ export default {
           } else {
             this.finished = true
           }
-          this.skeletonLoading = false
+          this.ajax = false
+        }).catch(() => {
+          this.ajax = false
         });
       } else {
         getHotest({ page: this.page, per_page: this.per_page, keyword: this.keyWord }).then(res => {
@@ -102,12 +110,17 @@ export default {
             this.cardList = this.cardList.concat(res.data);
             if (res.last_page === res.current_page) {
               this.finished = true
+            } else {
+              this.loading = false;
+              this.page++
             }
           } else {
             this.finished = true
           }
-          this.skeletonLoading = false
-        });
+          this.ajax = false
+        }).catch(() => {
+          this.ajax = false
+        });;
       }
     },
     getClear () {
@@ -123,36 +136,19 @@ export default {
       this.finished = false
       this.type = type;
       this.getClear()
-    },
-    async onRefresh () {
-      // 清空列表数据
-      this.finished = false;
-      // 重新加载数据
-      // 将 loading 设置为 true，表示处于加载状态
-      this.page = 1
-      this.loading = true;
-      this.isLoading = false;
-      await this.onLoad();
-      // this.$toast('刷新成功');
-    },
-    listenerAction () {
-      window.addEventListener('scroll', this.scrollhandle);
-      document.documentElement.scrollTop = 0;
-    },
-    scrollhandle (event) {
-      let scrolled = document.documentElement.scrollTop || document.body.scrollTop;
-      this.disabledPull = scrolled !== 0
-    },
-
+    }
+  },
+  computed: {
+    disabled () {
+      this.loading = false
+      return this.finished
+    }
   },
   beforeDestroy () {
-    // 在组件生命周期结束的时候销毁。
-    window.removeEventListener('scroll', this.scrollhandle);
-    document.documentElement.scrollTop = 0;
   },
   components: {
     TabBar: () => import('./components/TabBar'),
-    Search: () => import('@/components/Search/index.vue'),
+    // Search: () => import('@/components/Search/index.vue'),
     NewCard
   }
 };

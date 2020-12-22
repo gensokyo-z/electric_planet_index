@@ -127,8 +127,10 @@ let $http = {
   },
   axios: Axios
 };
-function install(Vue) {
-  $http.$toast = Vue.prototype.$toast;
-  Vue.prototype.$http = $http;
-}
-export default { $http, install };
+// function install(Vue) {
+//   $http.$toast = Vue.prototype.$toast;
+//   Vue.prototype.$http = $http;
+// }
+export default { $http
+  // , install
+ };

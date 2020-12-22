@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { Toast } from 'vant';
+import { Toast } from 'element-ui';
 import {
   login,
   sendSms,

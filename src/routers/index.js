@@ -4,11 +4,12 @@ Vue.use(Router);
 const routes = [
   {
     path: '/',
+    component: () => import(/* webpackChunkName: "index" */ '@/views/index/index.vue'),
     name: 'index',
-    component: () => import(/* webpackChunkName: "index" */ '@/views/index'),
     meta: {
       title: '电动星球',
-      keepAlive: false
+      keepAlive: false,
+      header: true
     }
   },
   {
@@ -17,82 +18,17 @@ const routes = [
     component: () => import(/* webpackChunkName: "index" */ '@/views/index'),
     meta: {
       title: '电动星球',
-      keepAlive: false
+      keepAlive: false,
+      header: true
     }
   },
   {
-    path: '/planet',
-    name: 'planet',
-    component: () => import(/* webpackChunkName: "planet" */ '@/views/planet/index.vue'),
-    meta: {
-      title: '星球',
-      keepAlive: false
-    }
-  },
-  {
-    path: '/message',
-    name: 'message',
-    component: () => import(/* webpackChunkName: "message" */ '@/views/message/index.vue'),
-    meta: {
-      title: '消息',
-      keepAlive: false
-    }
-  },
-  {
-    path: '/mine',
-    name: 'mine',
-    component: () => import(/* webpackChunkName: "mine" */ '@/views/mine/index.vue'),
-    meta: {
-      title: '我的',
-      keepAlive: false
-    }
-  },
-  {
-    path: '/creatdoc',
-    name: 'creatdoc',
-    component: () => import(/* webpackChunkName: "creatdoc" */ '@/views/creatdoc/index.vue'),
-    meta: {
-      title: '发布文章',
-      isFooter: false
-    }
-  },
-  {
-    path: '/docdetail',
-    name: 'docdetail',
+    path: '/postdetail',
+    name: 'postDetail',
     component: () => import(/* webpackChunkName: "docdetail" */ '@/views/index/detail.vue'),
     meta: {
       title: '文章详情',
-      keepAlive: false,
-      isFooter: false
-    }
-  },
-  {
-    path: '/planetdetail',
-    name: 'planetdetail',
-    component: () => import(/* webpackChunkName: "planetdetail" */ '@/views/planet/detail.vue'),
-    meta: {
-      title: '星球详情',
-      keepAlive: false,
-      isFooter: false
-    }
-  },
-  {
-    path: '/profile',
-    name: 'profile',
-    component: () => import(/* webpackChunkName: "profile" */ '@/views/mine/profile.vue'),
-    meta: {
-      title: '个人资料',
-      keepAlive: false,
-      isFooter: false
-    }
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: () => import(/* webpackChunkName: "login" */ '@/views/login/index.vue'),
-    meta: {
-      title: '登录',
-      isFooter: false
+      keepAlive: false
     }
   },
   {
@@ -101,8 +37,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "error" */ '@/views/error'),
     meta: {
       title: '404页',
-      keepAlive: false,
-      isFooter: false
+      keepAlive: false
     }
   },
   {

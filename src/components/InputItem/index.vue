@@ -5,27 +5,17 @@
       <div class="wrapper"
            :style="$route.name==='docdetail'?'bottom:0':'bottom:1.28rem'"
            @click.stop>
-        <van-field v-model="message"
-                   rows="1"
-                   autosize
-                   autofocus
-                   type="textarea"
-                   placeholder="请输入评论"
-                   ref="inputItem">
-          <template #button>
-            <button @click="sendMessage">发布</button>
-          </template>
-        </van-field>
+
+        <template >
+          <button @click="sendMessage">发布</button>
+        </template>
       </div>
     </van-overlay>
   </section>
 </template>
 <script>
 import Vue from 'vue';
-import { Overlay, Field } from 'vant';
 import { postsComments, comments } from '@/api/post';
-Vue.use(Field);
-Vue.use(Overlay);
 export default {
   name: 'inputItem',
   props: {
