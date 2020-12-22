@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,  user-scalable=no, viewport-fit=cover" />
+  <meta name="x5-fullscreen" content="true" />
+  <meta name="full-screen" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-touch-fullscreen" content="yes" />
+  <meta name="full-screen" content="true" />
+  <meta name="360-fullscreen" content="true" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta content="telephone=no,email=no" name="format-detection" />
+  <meta name="referrer" content="no-referrer"/>
+  <title>电动星球</title>
+  <!-- <link rel="icon" type="image/gif" href="//cdn.kuaidi100.com/favicon.ico" /> -->
+  <% for (var i in htmlWebpackPlugin.options.cdn && htmlWebpackPlugin.options.cdn.css) { %>
+  <link href="<%= htmlWebpackPlugin.options.cdn.css[i] %>" rel="stylesheet" />
+  <% } %>
+  <style>
+    .icon {
+      width: 1em;
+      height: 1em;
+      vertical-align: -0.15em;
+      fill: currentColor;
+      overflow: hidden;
+    }
+  </style>
+  <script src="//at.alicdn.com/t/font_1983148_e4y26x3gear.js"></script>
+  <script>
+
+    window.οnlοad = function () {
+      if (document.documentElement.scrollHeight <= document.documentElement.clientHeight) {
+        bodyTag = document.getElementsByTagName('body')[0];
+        bodyTag.style.height = document.documentElement.clientWidth / screen.width * screen.height + 'px';
+      }
+      setTimeout(function () {
+        window.scrollTo(0, 1)
+      }, 0);
+    };
+  </script>
+</head>
+
+<body>
+  <noscript>
+    <strong>电动星球</strong>
+  </noscript>
+  <div id="app"></div>
+  <% for (var i in htmlWebpackPlugin.options.cdn && htmlWebpackPlugin.options.cdn.js) { %>
+  <script src="<%= htmlWebpackPlugin.options.cdn.js[i] %>"></script>
+  <% } %>
+  <!-- <script src="https://webapi.amap.com/maps?v=1.3&key=5fd41a7a2652ae3b64c5faf81f0abf3e"></script> -->
+</body>
+
+</html>

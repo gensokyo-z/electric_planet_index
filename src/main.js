@@ -1,0 +1,50 @@
+import Vue from 'vue';
+import VueClipboard from 'vue-clipboard2';
+import 'lib-flexible';
+// import VConsole from 'vconsole';
+import { fixedFocus } from '@/utils/fixedH5Bug';
+import global from '@/utils/global';
+
+import router from './routers/';
+import './routers/intercept';
+
+import store from './stores';
+import * as filters from './filters/';
+
+import App from './App.vue';
+import './styles/main.less';
+
+import '../node_modules/chimee-mobile-player/lib/chimee-mobile-player.browser.css'
+// import '../node_modules/chimee-mobile-player/lib/chimee-mobile-player.min.css'
+fixedFocus(); // 全局注册
+Vue.use(VueClipboard);
+Vue.use(global);
+// if (process.env.NODE_ENV === 'development') {
+// new VConsole();
+// }
+
+// import FastClick from 'fastclick';
+
+// FastClick.attach(document.body);
+
+// FastClick.prototype.focus = (ele) => { 'use strict'; ele.focus(); }; //修改focus()方法
+
+Vue.config.errorHandler = (err, vm, info) => {
+  console.error(err);
+};
+
+Vue.config.devtools = process.env.NODE_ENV === 'development';
+Vue.config.productionTip = process.env.NODE_ENV === 'production';
+
+window.EventBus = new Vue();
+
+// 注册过滤器
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key]);
+});
+
+window.electricPlanetApp = new Vue({
+  router,
+  store,
+  render: h => h(App)
+}).$mount('#app');

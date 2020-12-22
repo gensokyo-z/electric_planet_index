@@ -1,0 +1,107 @@
+.planet-detail {
+  background-color: #fff;
+  &.planet-nav {
+  }
+  // padding-top: 308px;
+  /deep/ .van-nav-bar {
+    background-color: transparent;
+    .van-nav-bar__left {
+      .van-icon {
+        color: #fff;
+      }
+    }
+    &.van-hairline--bottom::after {
+      border-bottom-width: 0;
+    }
+    .jiantou {
+      color: #fff;
+    }
+  }
+  .header-bg {
+    &.van-h {
+      padding-top: 46px;
+      // transform: translateY(-46px);
+      margin-top: -46px;
+    }
+    padding-left: 30px;
+    padding-right: 35px;
+    width: 750px;
+    height: 350px;
+    background: url(~@/assets/images/bg_login.png) no-repeat center;
+    background-size: 750px 350px;
+    .planet-name {
+      margin-top: 32px;
+      font-size: 40px;
+      color: #333;
+    }
+    .header-btn {
+      margin-top: 32px;
+      padding: 16px 20px;
+      background: #ffdd27;
+      border-radius: 28px;
+      font-size: 24px;
+      line-height: 24px;
+      color: rgba(0, 0, 0, 0.9);
+      &.joined {
+        background-color: #fff;
+      }
+    }
+    .desc {
+      margin-top: 28px;
+      font-size: 24px;
+      color: #333;
+      line-height: 36px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+    }
+  }
+  .doc {
+    .new-card {
+      background-color: #fff;
+    }
+  }
+  .about {
+    background-color: #fff;
+    padding: 32px;
+    .title {
+      margin-bottom: 23px;
+      font-size: 28px;
+      color: rgba(0, 0, 0, 0.9);
+    }
+    .role-box {
+      border-bottom: 1px solid #efefef;
+      .role {
+        margin-bottom: 23px;
+        font-size: 28px;
+        color: rgba(0, 0, 0, 0.45);
+      }
+    }
+    .wx {
+      .title {
+        margin: 32px 0;
+        font-size: 28px;
+        color: rgba(0, 0, 0, 0.9);
+      }
+      .wx-master {
+        margin-bottom: 10px;
+        font-size: 28px;
+        color: rgba(0, 0, 0, 0.45);
+      }
+      .qr-code {
+        margin-top: 70px;
+        .code {
+          margin-bottom: 8px;
+          width: 156px;
+          height: 156px;
+        }
+        p {
+          font-size: 24px;
+          color: rgba(0, 0, 0, 0.9);
+        }
+      }
+    }
+  }
+}

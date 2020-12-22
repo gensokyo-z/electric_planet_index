@@ -1,0 +1,172 @@
+.login {
+  background: url('~@/assets/images/bg_login.png') no-repeat;
+  background-size: 125%;
+  .page-back {
+    width: 100%;
+    height: 200px;
+    .iconnav-dark {
+      padding: 24px 30px;
+      font-size: 30px;
+      color: #fff;
+    }
+  }
+  .logo {
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 50px;
+    background: url('~@/assets/images/logo.png') center center no-repeat;
+    background-size: contain;
+  }
+  .login-msg {
+    font-size: 40px;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+  }
+  .btn-box {
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .wx-box {
+      position: relative;
+      .wx {
+        padding-left: 100px;
+        width: 540px;
+        height: 88px;
+        background: #40bb39;
+        border-radius: 50px;
+        font-size: 32px;
+        color: #fff;
+        line-height: 44px;
+      }
+      .icondenglu-weixin {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 20px 0 0 98px;
+        font-size: 48px;
+        color: #fff;
+      }
+    }
+
+    .change-mobile {
+      margin-top: 48px;
+      width: 540px;
+      height: 88px;
+      border-radius: 50px;
+      border: 2px solid #fff;
+      background-color: transparent;
+      font-size: 28px;
+      color: #fff;
+    }
+  }
+  .form {
+    margin-top: 130px;
+    padding: 64px 64px 0 64px;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    .form-item {
+      height: 68px;
+      display: flex;
+      align-items: center;
+      margin: 0 auto;
+      padding-bottom: 12px;
+      line-height: 40px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+      &:first-child {
+        margin-bottom: 70px;
+      }
+      .iconfont {
+        margin-left: 5px;
+        font-size: 38px;
+        color: #000;
+      }
+      input {
+        padding-left: 24px;
+        flex: 1;
+        line-height: 38px;
+        font-size: 32px;
+        background: #fff;
+        outline: none;
+        border: none;
+      }
+      ::-webkit-input-placeholder {
+        color: #bebebe;
+      }
+      :-moz-placeholder {
+        /* Firefox 18- */
+        color: #bebebe;
+      }
+      ::-moz-placeholder {
+        /* Firefox 19+ */
+        color: #bebebe;
+      }
+      :-ms-input-placeholder {
+        color: #bebebe;
+      }
+
+      .down-code {
+        font-size: 28px;
+        color: #317ee7;
+        color: rgba(0, 0, 0, 0.9);
+      }
+      img {
+        height: 60px;
+        margin: 20px 0;
+      }
+    }
+    .validcode {
+      margin-top: 20px;
+    }
+  }
+  .login-btn {
+    margin: 72px auto 32px;
+    text-align: center;
+    width: 540px;
+    height: 88px;
+    background: rgba(255, 221, 39, 1);
+    border-radius: 44px;
+    font-size: 32px;
+    color: rgba(0, 0, 0, 0.9);
+    line-height: 88px;
+    font-weight: 600;
+  }
+  .tips {
+    text-align: center;
+    font-size: 28px;
+    color: rgba(0, 0, 0, 0.45);
+    line-height: 36px;
+  }
+  .msg {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 24px;
+    color: #bebebe;
+  }
+}
+.footer-tips {
+  position: fixed;
+  bottom: 48px;
+  width: 100%;
+  text-align: center;
+  a {
+    color: #0091ff;
+  }
+  &.white {
+    color: #fff;
+    a {
+      color: #fff;
+      position: relative;
+      &::after {
+        position: absolute;
+        left: 12%;
+        bottom: -5px;
+        content: '';
+        width: 76%;
+        border-bottom: 1px solid #c7c7c7;
+      }
+    }
+  }
+}
