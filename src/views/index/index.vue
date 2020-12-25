@@ -14,13 +14,15 @@
                     :infinite-scroll-disabled="disabled"
                     :infinite-scroll-distance="10">
                   <li v-for="(item, index) in cardList"
-                      :key="index">
+                      :key="index"
+                      @click="gotoDetail(item)">
                     <NewCard :type.sync="type"
                              :content="item" />
                   </li>
                 </ul>
-                <p v-if="loading">加载中...</p>
-                <p v-if="finished">没有更多了</p>
+                <p v-show="loading">加载中...</p>
+                <p v-show="finished"
+                   id="footer">没有更多了</p>
               </div>
             </div>
           </div>
@@ -46,17 +48,18 @@ export default {
       type: 'new',
       page: 1,
       per_page: 10,
+      last_page: 0,
       cardList: [],
       keyWord: '',
       loading: false,
-      finished: false,
+      finished: false
     };
   },
   mounted () {
-    // this.$refs.video.content.video = true
-    // this.$refs.video.initVideo()
-    // this.getData('new');
-    // this.getClear()
+    // 保证在DOM渲染完毕后初始化, 20秒是经验值
+    setTimeout(() => {
+      this.listenerAction();
+    }, 20);
   },
   methods: {
     onLoad (flag) {
@@ -74,10 +77,11 @@ export default {
         return
       }
       this.ajax = true
-      // this.finished = true
+      this.finished = true
       if (type === 'new') {
         getNewest({ page: this.page, per_page: this.per_page, keyword: this.keyWord }).then(res => {
           if (res.code === 200 && res.data) {
+            this.last_page = res.last_page
             res.data.forEach(e => {
               e.user.avatar = util.defaultAvatar(e.user.avatar);
               if (!e.thumb_pic) { e.thumb_pic = util.getFirstImg(e.content) }
@@ -100,6 +104,7 @@ export default {
       } else {
         getHotest({ page: this.page, per_page: this.per_page, keyword: this.keyWord }).then(res => {
           if (res.code === 200 && res.data) {
+            this.last_page = res.last_page
             res.data.forEach(e => {
               e.user.avatar = util.defaultAvatar(e.user.avatar);
               if (!e.thumb_pic) {
@@ -136,7 +141,25 @@ export default {
       this.finished = false
       this.type = type;
       this.getClear()
-    }
+    },
+    gotoDetail (item) {
+      this.$router.push(`/postdetail?id=${item.id}`)
+    },
+    listenerAction () {
+      window.addEventListener('scroll', this.scrollhandle);
+      document.documentElement.scrollTop = 0;
+    },
+    scrollhandle (event) {
+      if (this.page === this.last_page) {
+        return
+      }
+      const elOffsetTop = document.getElementById('footer').offsetTop
+      const docScrollTop = document.documentElement.scrollTop
+      if (elOffsetTop >= docScrollTop && elOffsetTop < (docScrollTop + window.innerHeight) && !this.loading) {
+        this.finished = false
+        this.getData(this.type)
+      }
+    },
   },
   computed: {
     disabled () {
@@ -145,6 +168,7 @@ export default {
     }
   },
   beforeDestroy () {
+    window.removeEventListener('scroll', this.scrollhandle, false)
   },
   components: {
     TabBar: () => import('./components/TabBar'),

@@ -1,7 +1,7 @@
 import router from './index';
 import util from '@/utils/util';
 import store from '@/stores/index.js';
-const whiteList = ['/', '/index', '/planet', '/docdetail', '/planetdetail', '/login', '/error'];
+const whiteList = ['/', '/index', '/planet', '/postdetail', '/planetdetail', '/login', '/error'];
 // 路由导航守卫
 router.beforeEach(async (to, from, next) => {
   // 登录权限

@@ -1,15 +1,27 @@
 <template>
   <section class="index-detail">
+    <div class="layout">
+      <Header />
+      <div class="layout-main">
+        <div class="tweet-container">
+          <div class="tweet-main">
+            <article class="tweet-article">
+              <h1 class="article-title">{{content.title}}</h1>
+            </article>
+            <div class="laohu8-bottom-bar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 </template>
 <script>
-import Vue from 'vue';
 import { getPostsDetail, getPostsComments } from '@/api/post';
 import util from '@/utils/util';
 export default {
   components: {
   },
-  data() {
+  data () {
     return {
       flash: true,
       loading: true,
@@ -24,7 +36,7 @@ export default {
       commentList: []
     };
   },
-  mounted() {
+  mounted () {
     this.$bus.$on('snedComment', () => {
       this.getDetail(true);
     });
@@ -34,13 +46,13 @@ export default {
     // })
   },
   methods: {
-    conutDown(time = 700) {
+    conutDown (time = 700) {
       setTimeout(() => {
         this.flash = false;
         this.loading = false;
       }, time);
     },
-    getDetail(flag) {
+    getDetail (flag) {
       getPostsDetail(this.id).then(res => {
         if (res.code === 200) {
           let time = 700;
@@ -78,10 +90,10 @@ export default {
         }
       });
     },
-    goBack() {
+    goBack () {
       this.$router.back();
     },
-    addPlanet() {
+    addPlanet () {
       this.$dialog
         .confirm({
           title: '提示',
@@ -94,13 +106,10 @@ export default {
           // on cancel
         });
     },
-    sendComment() {},
-    previewImg(img) {
-      ImagePreview([img]);
-    }
+    sendComment () { },
   },
   computed: {
-    btnName() {
+    btnName () {
       return '加入';
     }
   }
