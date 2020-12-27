@@ -6,7 +6,11 @@
         <img src="@/assets/images/logo.png"
              alt="logo"><span>电动星球</span>
       </a>
-      <div class="header-nav"></div>
+      <div class="header-nav">
+        <div>星球</div>
+        <div>消息</div>
+        <div>发布</div>
+      </div>
       <Search @getSerch="getSerch" />
       <div class="down"></div>
       <div class="header-login">
