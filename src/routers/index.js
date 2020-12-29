@@ -5,11 +5,10 @@ const routes = [
   {
     path: '/',
     component: () => import(/* webpackChunkName: "index" */ '@/views/index/index.vue'),
-    name: 'index',
+    name: 'home',
     meta: {
       title: '电动星球',
       keepAlive: false,
-      header: true
     }
   },
   {
@@ -19,7 +18,15 @@ const routes = [
     meta: {
       title: '电动星球',
       keepAlive: false,
-      header: true
+    }
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import(/* webpackChunkName: "login" */ '@/views/login'),
+    meta: {
+      title: '登录',
+      keepAlive: false,
     }
   },
   {

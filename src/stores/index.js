@@ -2,6 +2,8 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import util from '@/utils/util';
 import axios from 'axios';
+import router from '@/routers/';
+import { MessageBox } from 'element-ui';
 import { getOssToken } from '@/api/oss';
 import { getJoinedPlanetList } from '@/api/planet';
 import { getUserInfo } from '@/api/user';
@@ -41,6 +43,22 @@ export default new Vuex.Store({
             reject(error);
           });
       });
+    },
+    needAuth({ commit }, cb) {
+      this._actions.getInfo[0]()
+        .then(res => {
+          typeof cb === 'function' && cb();
+        })
+        .catch(() => {
+          MessageBox.confirm('', '请先登录后操作', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            showClose: false,
+            center: true
+          }).then(() => {
+            router.push('/login?redirect=' + encodeURIComponent(location.href));
+          });
+        });
     },
     getUserPlanetList({ commit }) {
       return new Promise((resolve, reject) => {

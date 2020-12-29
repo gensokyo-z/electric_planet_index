@@ -2,20 +2,22 @@
 <template>
   <header class="component-header is-fixed">
     <div class="component-header-content">
-      <a class="header-logo">
+      <a class="header-logo"
+         @click="goUrl('/')">
         <img src="@/assets/images/logo.png"
              alt="logo"><span>电动星球</span>
       </a>
       <div class="header-nav">
-        <div>星球</div>
-        <div>消息</div>
-        <div>发布</div>
+        <div class="nav-item selected">资讯</div>
+        <div class="nav-item">星球</div>
+        <div class="nav-item ">消息</div>
+        <div class="nav-item">发布</div>
       </div>
       <Search @getSerch="getSerch" />
       <div class="down"></div>
       <div class="header-login">
-        <a class="login-item">注册</a>
-        <a class="login-item">登录</a>
+        <a class="login-item"
+           @click="goUrl('/login')">注册/登录</a>
       </div>
     </div>
   </header>
@@ -32,6 +34,12 @@ export default {
   methods: {
     getSerch (kw) {
       console.log(kw);
+    },
+    goUrl (url) {
+      if (url === '/login') {
+        url += '?redirect=' + encodeURIComponent(location.href)
+      }
+      this.$router.push(url)
     }
   },
   components: {
@@ -60,8 +68,9 @@ export default {
   padding: 0 50px;
   width: 1300px;
   display: flex;
+  cursor: pointer;
   .header-logo {
-    margin: 10px 229px 10px 0;
+    margin: 10px 80px 10px 0;
     width: 120px;
     height: 30px;
     display: flex;
@@ -75,7 +84,30 @@ export default {
     }
   }
   .header-nav {
-    width: 226px;
+    // width: 226px;
+    display: flex;
+    margin-right: auto;
+    .nav-item {
+      position: relative;
+      display: block;
+      margin: 0 15px;
+      height: 50px;
+      line-height: 50px;
+      cursor: pointer;
+      &.selected {
+        font-weight: 700;
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          display: block;
+          width: 100%;
+          height: 3px;
+          background-color: #ffe000;
+          border-radius: 5px;
+        }
+      }
+    }
   }
   .down {
     width: 178px;
@@ -84,9 +116,12 @@ export default {
     display: flex;
     align-items: center;
     .login-item {
-      padding: 0 10px;
-      line-height: 50px;
+      padding: 0 20px;
+      line-height: 24px;
       color: #2c2e3b;
+      display: block;
+      border-radius: 15px;
+      border: 1px solid #afb3ba;
       cursor: pointer;
     }
   }

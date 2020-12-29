@@ -23,6 +23,51 @@
         margin: 0 0 15px;
         font-size: 30px;
       }
+      .article-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 40px;
+        font-size: 14px;
+        .article-avatar {
+          margin-right: 10px;
+          width: 30px;
+          height: 30px;
+          img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+          }
+        }
+        .article-author {
+          color: #2c2e3b;
+        }
+        .article-date {
+          margin-left: 5px;
+          color: #afb3ba;
+        }
+      }
+      .article-content {
+        font-size: 16px;
+        color: #2c2e3b;
+        word-break: break-word;
+        line-height: 30px;
+        /deep/ p {
+          margin-top: 0;
+          margin-bottom: 30px;
+        }
+        /deep/ img {
+          display: block;
+          margin: 0 auto;
+        }
+        /deep/ .img_wrapper {
+          text-align: center;
+          margin-bottom: 30px;
+          .img_descr{
+            font-size: 14px;
+            color: #999;
+          }
+        }
+      }
     }
     .laohu8-bottom-bar {
       position: fixed;

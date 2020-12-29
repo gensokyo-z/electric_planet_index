@@ -15,11 +15,11 @@ const cdn = {
     wx: 'wx'
   },
   // cdn的css链接
-  // css: ['//at.alicdn.com/t/font_1983148_8lqd6i80wl8.css'],
+  css: ['//at.alicdn.com/t/font_1983148_pcnxxzmyuf8.css'],
   // cdn的js链接
   js: [
     '//res2.wx.qq.com/open/js/jweixin-1.6.0.js',
-    '//ddxq.tech/h5/qrcode/qrcode.js'
+    '//ddxq.tech/h5/qrcode/qrcode.js',
   ]
 };
 console.log(`NODE_ENV:${process.env.NODE_ENV},npm_config_report: ${process.env.npm_config_report}`);

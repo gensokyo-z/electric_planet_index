@@ -62,7 +62,7 @@ service.interceptors.response.use(
           duration,
           type: 'error'
         });
-        router.push('/login');
+        // router.push('/login');
         return Promise.reject(result);
       } else {
         Message({

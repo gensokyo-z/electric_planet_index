@@ -7,8 +7,29 @@
           <div class="tweet-main">
             <article class="tweet-article">
               <h1 class="article-title">{{content.title}}</h1>
+              <div class="article-info">
+                <div class="article-avatar"
+                     v-show="content.source === 'user'">
+                  <img :src="content.user.avatar">
+                </div>
+                <div class="article-author"
+                     v-show="content.source === 'user'"> {{content.user.username}}· </div>
+                <div class="article-date">{{content.create_time}}</div>
+              </div>
+              <div class="article-content"
+                   v-html="content.content"></div>
+              <section class="comments-section"
+                       id="comments-section"
+                       ref="commentsSection">
+                <h2 class="section-title">全部评论</h2>
+                <div class="comment-container">
+                  <ul class="comments-list">
+                    <li class="comment-item"></li>
+                  </ul>
+                </div>
+              </section>
             </article>
-            <div class="laohu8-bottom-bar"></div>
+            <Footer :content="content" />
           </div>
         </div>
       </div>
@@ -19,8 +40,6 @@
 import { getPostsDetail, getPostsComments } from '@/api/post';
 import util from '@/utils/util';
 export default {
-  components: {
-  },
   data () {
     return {
       flash: true,
@@ -78,10 +97,10 @@ export default {
               });
               this.commentList = res.data;
               if (flag) {
-                const talkArea = this.$refs.talkArea;
-                if (talkArea) {
+                const commentsSection = this.$refs.commentsSection;
+                if (commentsSection) {
                   setTimeout(() => {
-                    talkArea.scrollIntoView(true);
+                    commentsSection.scrollIntoView(true);
                   }, 100);
                 }
               }
