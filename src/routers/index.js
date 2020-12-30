@@ -59,7 +59,7 @@ const routes = [
 // };
 const router = new Router({
   mode: 'history',
-  base: process.env.NODE_ENV === 'development' ? '' : '/h5/',
+  base: process.env.NODE_ENV === 'development' ? '' : '/community/',
   routes
 });
 

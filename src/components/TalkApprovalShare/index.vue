@@ -3,21 +3,15 @@
     <div class="tool-bar">
       <div class="talk"
            @click="bindTalk">
-        <svg class="icon jiantou"
-             aria-hidden="true">
-          <use xlink:href="#iconxinxi-pinglun"></use>
-        </svg><span>{{content.comments_count===0?'回复':content.comments_count}}</span>
+        <i class="iconfont iconpinglun"></i>
+        <span>{{content.comments_count===0?'回复':content.comments_count}}</span>
       </div>
       <div class="approval"
            @click="bindApproval">
-        <svg class="icon jiantou"
-             aria-hidden="true"
-             v-if="!hasLiked">
-          <use xlink:href="#iconzan"></use>
-        </svg>
-        <img v-else
+        <i class="iconfont iconzan"></i>
+        <!-- <img v-else
              class="icon"
-             src="@/assets/images/zan.png">
+             src="@/assets/images/zan.png"> -->
         <span>{{userLikedCount}}</span>
       </div>
       <!-- <div class="share"
@@ -144,11 +138,12 @@ export default {
     display: flex;
     align-items: center;
     font-size: 14px;
+    line-height: 18px;
   }
   .share {
     margin-right: 0;
   }
-  .icon {
+  .iconfont {
     color: #c9cacf;
     margin-right: 12px;
     width: 16px;

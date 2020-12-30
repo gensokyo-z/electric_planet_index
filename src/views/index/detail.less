@@ -62,23 +62,81 @@
         /deep/ .img_wrapper {
           text-align: center;
           margin-bottom: 30px;
-          .img_descr{
+          .img_descr {
             font-size: 14px;
             color: #999;
           }
         }
       }
-    }
-    .laohu8-bottom-bar {
-      position: fixed;
-      bottom: 0;
-      z-index: 500;
-      display: flex;
-      padding: 12px 0;
-      width: 900px;
-      height: 50px;
-      border-top: 2px solid #ffe000;
-      background-color: #fff;
+      .comments-section {
+        .section-title {
+          margin: 0 0 30px;
+          font-size: 22px;
+        }
+        .comment-container {
+          margin: 20px 0 40px 0;
+        }
+        .comments-list {
+          margin: 0;
+          padding: 0;
+          list-style: none;
+          .comment-item {
+            margin-bottom: 0;
+
+            .author-avatar {
+              float: left;
+              width: 30px;
+              height: 30px;
+              border-radius: 15px;
+              img {
+                width: 30px;
+                height: 30px;
+                border-radius: 15px;
+              }
+            }
+            .comment-main {
+              margin-left: 40px;
+              padding-bottom: 30px;
+              border-bottom: 1px solid #f2f2f2;
+            }
+            &:last-of-type .comment-main {
+              border: none;
+            }
+            .comment-header {
+              line-height: 30px;
+              color: #2c2e3b;
+              .comment-time {
+                color: #afb3ba;
+              }
+            }
+            .comment-content {
+              margin: 10px 0 15px;
+              word-break: break-word;
+            }
+            .comment-footer {
+              display: flex;
+              color: #afb3ba;
+              .footer-button {
+                margin-right: 40px;
+                cursor: pointer;
+              }
+
+              .like-simple {
+                display: inline-block;
+                cursor: pointer;
+              }
+              .iconfont {
+                margin-right: 5px;
+              }
+            }
+            .reply-container {
+              margin-top: 30px;
+              padding-left: 18px;
+              border-left: 3px solid #f2f2f2;
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -25,7 +25,7 @@ const cdn = {
 console.log(`NODE_ENV:${process.env.NODE_ENV},npm_config_report: ${process.env.npm_config_report}`);
 module.exports = {
   // publicPath: !isProduction ? './' : '//e.kuaidi100.com/h5/', // 打包后引用的资源路径
-  publicPath: !isProduction ? './' : '//ddxq.tech/', // 打包后引用的资源路径
+  publicPath: !isProduction ? './' : '//ddxq.tech/community', // 打包后引用的资源路径
   outputDir: 'dist', // 打包目录
   productionSourceMap: !isProduction || process.env.VUE_APP_CONFIG === 'test', // 生产打包的map文件是否生成
   devServer: {

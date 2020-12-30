@@ -1,12 +1,13 @@
 <template>
   <section class="login">
-    <div class="page-back">
+    <!-- <div class="page-back">
       <i class="iconfont iconnav-dark"></i>
-    </div>
+    </div> -->
     <div class="logo"
-         v-show="!showFrom"></div>
-    <div class="login-msg">欢迎来到电动星球</div>
-    <div class="btn-box"
+         @click="$router.push('/')"></div>
+    <!-- <div class="
+         login-msg">欢迎来到电动星球</div> -->
+    <!-- <div class="btn-box"
          v-show="!showFrom">
       <div class="wx-box">
         <button class="wx"
@@ -15,9 +16,8 @@
       </div>
       <button class="change-mobile"
               @click="showFrom = true">输入手机号登陆/注册</button>
-    </div>
-    <div class="form"
-         v-show="showFrom">
+    </div> -->
+    <div class="form">
       <div class="form-item">
         <i class="iconfont icondenglu-dianhua"></i>
         <input type="tel"
@@ -35,7 +35,7 @@
               @click="sendCode">{{second === 60 ? '输入验证码': `重新发送${second}s`}}</span>
       </div>
       <div class="login-btn"
-           @click="handleLogin">登&ensp;录</div>
+           @click="handleLogin">登&ensp;录&ensp;/&ensp;注&ensp;册</div>
       <div class="tips">未注册用户登陆默认为新注册用户</div>
     </div>
     <!-- <div class="footer-tips"
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import {  } from 'element-ui';
+import { } from 'element-ui';
 import {
   login,
   sendSms,
@@ -84,7 +84,7 @@ export default {
     sendCode () {
       if (this.second !== 60) return;
       if (!this.mobileReg.test(this.form.phone)) {
-        Toast('请输入正确的手机号码');
+        this.$message('请输入正确的手机号码');
         return false;
       }
       const obj = {
@@ -93,10 +93,10 @@ export default {
       sendSms(obj)
         .then(res => {
           if (res.code === 200) {
-            Toast('验证码已经发送到您的手机');
+            this.$message('验证码已经发送到您的手机');
             this.calcTime();
           } else {
-            Toast(res.msg);
+            this.$message(res.msg);
           }
         })
         .catch(err => {
@@ -105,16 +105,16 @@ export default {
     },
     validcode () {
       if (!this.mobileReg.test(this.form.phone)) {
-        Toast('请输入正确的手机号码');
+        this.$message('请输入正确的手机号码');
         return false;
       }
       if (this.isPhone) {
         if (!this.form.code) {
-          Toast('请输入短信验证码');
+          this.$message('请输入短信验证码');
           return false;
         }
         if (this.form.code.length < 6) {
-          Toast('请输入6位短信验证码');
+          this.$message('请输入6位短信验证码');
           return false;
         }
       }
@@ -129,7 +129,7 @@ export default {
       });
     },
     handleLogin () {
-      if (this.validcode) {
+      if (this.validcode()) {
         let obj = {
           phone: this.form.phone,
           captcha: this.form.code
@@ -146,11 +146,11 @@ export default {
 
               }
             } else {
-              Toast(res.msg);
+              this.$message(res.msg);
             }
           })
           .catch(err => {
-            Toast(err.msg);
+            this.$message(err.msg);
           });
       }
     },

@@ -24,7 +24,67 @@
                 <h2 class="section-title">全部评论</h2>
                 <div class="comment-container">
                   <ul class="comments-list">
-                    <li class="comment-item"></li>
+                    <li class="comment-item"
+                        v-for="(item,index) in commentList"
+                        :key="index">
+                      <div class="author-avatar">
+                        <img :src="item.user.avatar">
+                      </div>
+                      <div class="comment-main">
+                        <div class="comment-header">
+                          <span class="author-name">{{item.user.username}}</span> ·
+                          <span class="comment-time">{{item.created_at}}</span>
+                        </div>
+                        <div class="comment-content">
+                          {{item.content}}
+                        </div>
+                        <div class="comment-footer">
+                          <div class="footer-button">
+                            <div class="like-simple">
+                              <i class="iconfont iconzan"></i>
+                              <span class="data-number">点赞</span>
+                            </div>
+                          </div>
+                          <div class="footer-button">
+                            <i class="iconfont iconpinglun"></i>
+                            <span class="data-number">回复</span>
+                          </div>
+                        </div>
+                        <ul class="reply-container">
+                          <li class="comment-item"
+                              v-for="(item1,index) in item.second_comments"
+                              :key="index">
+                            <div class="author-avatar">
+                              <img :src="item1.user.avatar">
+                            </div>
+                            <div class="comment-main">
+                              <div class="comment-header">
+                                <span class="author-name">{{item1.user.username}}</span> ·
+                                <span class="comment-time">{{item1.created_at}}</span>
+                              </div>
+                              <div class="comment-content">
+                                {{item1.content}}
+                              </div>
+                              <div class="comment-footer">
+                                <div class="footer-button">
+                                  <div class="like-simple">
+                                    <i class="iconfont iconzan"></i>
+                                    <span class="data-number">点赞</span>
+                                  </div>
+                                </div>
+                                <div class="footer-button">
+                                  <i class="iconfont iconpinglun"></i>
+                                  <span class="data-number">回复</span>
+                                </div>
+                              </div>
+                              <ul class="reply-container">
+                                <li></li>
+                              </ul>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </li>
                   </ul>
                 </div>
               </section>
