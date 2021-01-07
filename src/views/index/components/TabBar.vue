@@ -3,11 +3,11 @@
     <div class="tab-box">
       <div :class="['tab',{active:active===1}]"
            @click="bindTab('new')">最新</div>
-      <div :class="['tab',{active:active===2}]"
+      <!-- <div :class="['tab',{active:active===2}]"
            @click="bindTab('hot')">热门<svg class="icon"
              aria-hidden="true">
           <use xlink:href="#iconshouye-remen"></use>
-        </svg></div>
+        </svg></div> -->
     </div>
   </section>
 </template>

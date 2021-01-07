@@ -39,15 +39,17 @@
                           {{item.content}}
                         </div>
                         <div class="comment-footer">
-                          <div class="footer-button">
+                          <div class="footer-button"
+                               @click="checkAuth(bindApproval(item))">
                             <div class="like-simple">
                               <i class="iconfont iconzan"></i>
-                              <span class="data-number">点赞</span>
+                              <span class="data-number">{{item.user_liked_count>0?item.user_liked_count:'点赞'}}</span>
                             </div>
                           </div>
-                          <div class="footer-button">
+                          <div class="footer-button"
+                               @click="checkAuth(handlerInputDialog(item))">
                             <i class="iconfont iconpinglun"></i>
-                            <span class="data-number">回复</span>
+                            <span class="data-number">{{item.second_comments_count>0?item.second_comments_count:'回复'}}</span>
                           </div>
                         </div>
                         <ul class="reply-container">
@@ -66,13 +68,15 @@
                                 {{item1.content}}
                               </div>
                               <div class="comment-footer">
-                                <div class="footer-button">
+                                <div class="footer-button"
+                                     @click="checkAuth(bindApproval(item1))">
                                   <div class="like-simple">
                                     <i class="iconfont iconzan"></i>
                                     <span class="data-number">点赞</span>
                                   </div>
                                 </div>
-                                <div class="footer-button">
+                                <div class="footer-button"
+                                     @click="checkAuth(handlerInputDialog(item1))">
                                   <i class="iconfont iconpinglun"></i>
                                   <span class="data-number">回复</span>
                                 </div>
@@ -94,11 +98,39 @@
         </div>
       </div>
     </div>
+    <el-dialog title="发表评论"
+               top="30vh"
+               width="630px"
+               :visible.sync="showInput"
+               custom-class="input-item"
+               append-to-body>
+      <div class="comment-editor">
+        <div class="editor">
+          <el-input type="textarea"
+                    :rows="4"
+                    placeholder="请输入评论内容"
+                    maxlength="140"
+                    show-word-limit
+                    v-model="message">
+          </el-input>
+        </div>
+        <div class="editor-function">
+          <el-button :class="{'empty':message.length === 0}"
+                     :disabled="message.length === 0"
+                     @click="sendMessage">回复</el-button>
+        </div>
+      </div>
+    </el-dialog>
   </section>
 </template>
 <script>
-import { getPostsDetail, getPostsComments } from '@/api/post';
+import Vue from 'vue';
+import { Dialog, Input, Button } from 'element-ui';
+import { getPostsDetail, getPostsComments, comments, commentsLikes, commentsUnlikes } from '@/api/post';
 import util from '@/utils/util';
+Vue.use(Dialog);
+Vue.use(Input);
+Vue.use(Button);
 export default {
   data () {
     return {
@@ -106,13 +138,15 @@ export default {
       loading: true,
       id: this.$route.query.id || '',
       hiddenMeun: true,
-      comment: '',
       content: {
         planet: {},
         tags: [],
         user: {}
       },
-      commentList: []
+      commentList: [],
+      showInput: false,
+      comment: {},
+      message: ''
     };
   },
   mounted () {
@@ -125,6 +159,9 @@ export default {
     // })
   },
   methods: {
+    checkAuth (cb) {
+      this.$store.dispatch('needAuth', cb)
+    },
     conutDown (time = 700) {
       setTimeout(() => {
         this.flash = false;
@@ -132,6 +169,14 @@ export default {
       }, time);
     },
     getDetail (flag) {
+      if (flag) {
+        const commentsSection = this.$refs.commentsSection;
+        if (commentsSection) {
+          setTimeout(() => {
+            commentsSection.scrollIntoView(true);
+          }, 100);
+        }
+      }
       getPostsDetail(this.id).then(res => {
         if (res.code === 200) {
           let time = 700;
@@ -153,19 +198,56 @@ export default {
             if (res.code === 200) {
               res.data.forEach(e => {
                 e.comments_count = e.second_comments_count;
-                e.user.avatar = e.user.avatar ? e.user.avatar : require('@/assets/images/def_avatar.png');
+                e.user.avatar = util.defaultAvatar(e.user.avatar)
+                e.second_comments.forEach(v => {
+                  v.user.avatar = util.defaultAvatar(v.user.avatar)
+                })
               });
               this.commentList = res.data;
-              if (flag) {
-                const commentsSection = this.$refs.commentsSection;
-                if (commentsSection) {
-                  setTimeout(() => {
-                    commentsSection.scrollIntoView(true);
-                  }, 100);
-                }
-              }
             }
           });
+        }
+      });
+    },
+    bindApproval (item) {
+      if (item.has_liked) {
+        commentsUnlikes(item.id).then(res => {
+          if (res.code === 200) {
+            // this.hasLiked = !this.hasLiked;
+            // this.userLikedCount--;
+            this.$message('取消评论点赞成功！');
+          }
+        });
+      } else {
+        commentsLikes(item.id).then(res => {
+          if (res.code === 200) {
+            // this.hasLiked = !this.hasLiked;
+            this.$message.success('点赞评论成功！');
+            this.userLikedCount++;
+          }
+        });
+      }
+    },
+    handlerInputDialog (item) {
+      this.comment = item
+      this.showInput = true
+    },
+    sendMessage () {
+      let content = this.message;
+      if (content.length > 140) {
+        return this.$message('请限制评论在140个字以内');
+      }
+      comments({
+        content,
+        id: this.comment.id
+      }).then(res => {
+        if (res.code === 200) {
+          this.message = '';
+          this.showInput = false;
+          this.$bus.$emit('snedComment');
+          this.$message.success('评论成功！');
+        } else {
+          this.$message(res.msg);
         }
       });
     },

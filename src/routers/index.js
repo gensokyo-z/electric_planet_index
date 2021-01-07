@@ -32,7 +32,7 @@ const routes = [
   {
     path: '/postdetail',
     name: 'postDetail',
-    component: () => import(/* webpackChunkName: "docdetail" */ '@/views/index/detail.vue'),
+    component: () => import(/* webpackChunkName: "postdetail" */ '@/views/index/detail.vue'),
     meta: {
       title: '文章详情',
       keepAlive: false

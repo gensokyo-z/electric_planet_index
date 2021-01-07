@@ -8,16 +8,17 @@
              alt="">
         <span>来自</span><span class="planet">{{content.planet.name}}</span>
       </div>
-      <div :class="['right',{'joined':joined}]"
+      <!-- <div :class="['right',{'joined':joined}]"
            @click.stop="addPlanet(content)">
         <button class="add"
                 v-if="!joined">{{`+ 加入`}}</button>
         <button class="enter"
                 v-else>{{`进入`}}</button>
-      </div>
+      </div> -->
     </div>
-    <div @click="goUrl(`/docdetail?id=${content.id}`)">
-      <div class="user-info">
+    <div>
+      <div class="user-info"
+           @click="goUrl(`/postdetail?id=${content.id}`)">
         <img class="avatar"
              v-if="content.source==='user'"
              :src="content.user.avatar"
@@ -27,7 +28,8 @@
         <span class="time">{{content.created_at}}</span>
       </div>
       <!-- 文章内容 -->
-      <div class="content">
+      <div class="content"
+           @click="goUrl(`/postdetail?id=${content.id}`)">
         <div class="title"
              v-if="content.source !== '微博'">{{content.title}}</div>
         <!-- 文章预览 -->
@@ -44,7 +46,7 @@
         <!-- 文章图片 -->
         <div class="photo-box">
           <div v-if="content.thumb_pic"
-               class="photo"              >
+               class="photo">
             <img :src="content.thumb_pic">
           </div>
         </div>
@@ -97,7 +99,7 @@
   </section>
 </template>
 <script>
-import Vue from 'vue';
+// import Vue from 'vue';
 import { joinPlanet } from '@/api/planet';
 import util from '@/utils/util';
 import TalkApprovalShare from '@/components/TalkApprovalShare';
@@ -148,9 +150,9 @@ export default {
     goUrl (url) {
       this.$router.push(url);
     },
-    previewImg (img) {
-      ImagePreview([img]);
-    },
+    // previewImg (img) {
+    //   ImagePreview([img]);
+    // },
     bindTalk () {
       this.$refs.inputItem.showInput = true;
     },
@@ -241,7 +243,7 @@ export default {
     .right {
       .add,
       .enter {
-        padding: 5px 10px ;
+        padding: 5px 10px;
         border-radius: 28px;
         font-size: 18px;
         color: rgba(0, 0, 0, 0.9);

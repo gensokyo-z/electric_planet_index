@@ -8,7 +8,7 @@
       </div>
       <div class="approval"
            @click="bindApproval">
-        <i class="iconfont iconzan"></i>
+        <i class="iconfont iconzan" :class="{active:hasLiked}"></i>
         <!-- <img v-else
              class="icon"
              src="@/assets/images/zan.png"> -->
@@ -68,38 +68,30 @@ export default {
   },
   methods: {
     bindTalk () {
-      if (this.$route.path.includes('docdetail')) {
+      if (this.$route.path.includes('postdetail')) {
         this.$refs.inputItem.showInput = true;
       } else {
-        this.$router.push(`/docdetail?id=${this.content.id}`);
+        this.$router.push(`/postdetail?id=${this.content.id}`);
       }
     },
-    async bindApproval () {
-      let needAuth = false;
+    bindApproval () {
       if (!util.getcookie('TOKEN')) {
-        await this.$store
-          .dispatch('getInfo')
-          .then(res => { })
-          .catch(err => {
-            needAuth = true;
-            return console.log(err);
-          });
+        this.$store.dispatch('needAuth')
       }
-      if (needAuth) return;
       if (this.type === 'post') {
         if (this.hasLiked) {
           postUnlike(this.content.id).then(res => {
             if (res.code === 200) {
               this.hasLiked = !this.hasLiked;
               this.userLikedCount--;
-              this.$toast('取消点赞文章成功！');
+              this.$message('取消点赞文章成功！');
             }
           });
         } else {
           postLike(this.content.id).then(res => {
             if (res.code === 200) {
               this.hasLiked = !this.hasLiked;
-              this.$toast('点赞文章成功！');
+              this.$message('点赞文章成功！');
               this.userLikedCount++;
             }
           });
@@ -110,14 +102,14 @@ export default {
             if (res.code === 200) {
               this.hasLiked = !this.hasLiked;
               this.userLikedCount--;
-              this.$toast('取消评论点赞成功！');
+              this.$message('取消评论点赞成功！');
             }
           });
         } else {
           commentsLikes(this.content.id).then(res => {
             if (res.code === 200) {
               this.hasLiked = !this.hasLiked;
-              this.$toast('点赞评论成功！');
+              this.$message('点赞评论成功！');
               this.userLikedCount++;
             }
           });

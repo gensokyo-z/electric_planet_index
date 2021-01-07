@@ -91,21 +91,21 @@ export default {
       this.showVanShare = false;
       switch (option.name) {
         case '微信':
-          this.$toast('分享到微信')
+          this.$message('分享到微信')
           break;
         case '微博':
-          this.$toast('分享到微博')
+          this.$message('分享到微博')
           break;
         case 'QQ':
-          this.$toast('分享到QQ')
+          this.$message('分享到QQ')
           break;
         default:
-          this.$copyText('http://ddxq.tech/h5/docdetail?share=1&id=' + this.content.id).then(
+          this.$copyText('http://ddxq.tech/h5/postdetail?share=1&id=' + this.content.id).then(
             () => {
-              this.$toast('复制成功!内容已经拷贝至剪贴板.');
+              this.$message('复制成功!内容已经拷贝至剪贴板.');
             },
             () => {
-              this.$toast('复制失败');
+              this.$message('复制失败');
             }
           );
           break;

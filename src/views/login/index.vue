@@ -143,7 +143,6 @@ export default {
                 location.href = (decodeURIComponent(this.redirect));
               } else {
                 this.$router.replace('/index');
-
               }
             } else {
               this.$message(res.msg);

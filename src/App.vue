@@ -15,7 +15,7 @@
 
 <script>
 // import wx from 'wx'
-import Vue from 'vue';
+// import Vue from 'vue';
 export default {
   name: 'App',
   data() {

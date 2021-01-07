@@ -85,7 +85,7 @@ let $http = {
           return Promise.reject(res);
         } else {
           if (data.handleFail !== false) {
-            $http.$toast(res.message);
+            $http.$message(res.message);
           }
           return Promise.reject(res);
         }
@@ -128,7 +128,7 @@ let $http = {
   axios: Axios
 };
 // function install(Vue) {
-//   $http.$toast = Vue.prototype.$toast;
+//   $http.$message = Vue.prototype.$message;
 //   Vue.prototype.$http = $http;
 // }
 export default { $http

@@ -14,15 +14,14 @@
                     :infinite-scroll-disabled="disabled"
                     :infinite-scroll-distance="10">
                   <li v-for="(item, index) in cardList"
-                      :key="index"
-                      @click="gotoDetail(item)">
+                      :key="index">
                     <NewCard :type.sync="type"
                              :content="item" />
                   </li>
                 </ul>
                 <p v-show="loading">加载中...</p>
                 <p v-show="finished"
-                   id="footer">没有更多了</p>
+                   id="footer">{{page===last_page?'没有更多了':''}}</p>
               </div>
             </div>
           </div>
@@ -70,7 +69,6 @@ export default {
       setTimeout(() => {
         this.getData(this.type)
       }, 300);
-
     },
     getData (type) {
       if (this.ajax) {
@@ -125,7 +123,7 @@ export default {
           this.ajax = false
         }).catch(() => {
           this.ajax = false
-        });;
+        })
       }
     },
     getClear () {
@@ -163,7 +161,8 @@ export default {
   },
   computed: {
     disabled () {
-      this.loading = false
+      // eslint-disable-next-line
+      this.loading = false;
       return this.finished
     }
   },

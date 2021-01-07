@@ -16,20 +16,34 @@
       <Search @getSerch="getSerch" />
       <div class="down"></div>
       <div class="header-login">
-        <a class="login-item"
-           @click="goUrl('/login')">注册/登录</a>
+        <div v-if="$state.token" class="user-info">
+          <span>{{$state.userInfo.username}}</span>
+          <img :src="avatar">
       </div>
+      <a class="login-item"
+         v-else
+         @click="goUrl('/login')">注册/登录</a>
+
+    </div>
     </div>
   </header>
 </template>
 
 <script type="text/babel">
+import util from '@/utils/util'
 export default {
   name: 'BaseHeader',
   data () {
     return {};
   },
   computed: {
+    avatar () {
+      if (this.$state.userInfo && this.$state.userInfo.avatar) {
+        return this.$state.userInfo.avatar
+      } else {
+        return util.defaultAvatar('')
+      }
+    }
   },
   methods: {
     getSerch (kw) {
@@ -123,6 +137,22 @@ export default {
       border-radius: 15px;
       border: 1px solid #afb3ba;
       cursor: pointer;
+    }
+    .user-info{
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+       color: #2c2e3b;
+    }
+    img {
+      margin: 10px 0 10px 20px;
+      width: 30px;
+      height: 30px;
+      background-size: cover;
+      background-position: 50%;
+      border-radius: 15px;
+      cursor: pointer;
+      overflow: hidden;
     }
   }
 }

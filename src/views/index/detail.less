@@ -140,3 +140,58 @@
     }
   }
 }
+
+/deep/ .input-item {
+  .el-dialog__header {
+    padding: 10px;
+    border-bottom: 1px solid #ebecf1;
+    .el-dialog__headerbtn {
+      top: 15px;
+      .el-dialog__close {
+        font-size: 20px;
+      }
+    }
+  }
+  .comment-editor {
+    .editor {
+      position: relative;
+      padding: 10px;
+      margin-bottom: 15px;
+      background-color: #fff;
+      border: 1px solid #ebecf1;
+      border-radius: 6px;
+      .el-textarea {
+        min-height: 100px;
+        max-height: 160px;
+        line-height: 20px;
+        textarea {
+          outline: none;
+          overflow-y: auto;
+          border: none;
+          resize: none;
+        }
+      }
+    }
+    .editor-function {
+      display: flex;
+      justify-content: flex-end;
+      .el-button {
+        padding: 0;
+        width: 100px;
+        height: 30px;
+        font-size: 14px;
+        line-height: 30px;
+        border-radius: 4px;
+        background-color: #ffe000;
+        color: #2c2e3b;
+        border: none;
+        &.empty {
+          opacity: 0.5;
+        }
+        &:hover:not(.empty) {
+          background-color: #f7b705;
+        }
+      }
+    }
+  }
+}
