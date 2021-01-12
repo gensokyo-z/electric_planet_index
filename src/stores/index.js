@@ -4,7 +4,7 @@ import util from '@/utils/util';
 import axios from 'axios';
 import router from '@/routers/';
 import { getOssToken } from '@/api/oss';
-import { getJoinedPlanetList } from '@/api/planet';
+import { getJoinedPlanetList, getPlanetList } from '@/api/planet';
 import { getUserInfo } from '@/api/user';
 Vue.use(Vuex);
 
@@ -13,6 +13,7 @@ export default new Vuex.Store({
     token: util.getcookie('TOKEN'),
     userInfo: {},
     userPlanet: [],
+    allPlanet: [],
     endPoint: '//planetoss.oss-cn-hangzhou.aliyuncs.com'
   },
   mutations: {
@@ -21,6 +22,9 @@ export default new Vuex.Store({
     },
     setUserPlanet(state, userPlanet) {
       state.userPlanet = userPlanet;
+    },
+    setAllPlanet: (state, allPlanet) => {
+      state.allPlanet = allPlanet;
     },
     setUserInfo: (state, userInfo) => {
       state.userInfo = userInfo;
@@ -51,6 +55,29 @@ export default new Vuex.Store({
         .catch(() => {
           router.push('/login?redirect=' + encodeURIComponent(location.href));
         });
+    },
+    getAllPlanetList({ commit }) {
+      return new Promise((resolve, reject) => {
+        if (this.state.allPlanet.length > 0) {
+          resolve(this.state.allPlanet);
+        } else {
+          getPlanetList()
+            .then(response => {
+              if (response.code === 200) {
+                response.data.forEach(e => {
+                  e.avatar = e.avatar.includes('//') ? e.avatar : require('@/assets/images/timg.jpg');
+                });
+                commit('setAllPlanet', response.data);
+                resolve(response);
+              } else {
+                reject();
+              }
+            })
+            .catch(error => {
+              reject(error);
+            });
+        }
+      });
     },
     getUserPlanetList({ commit }) {
       return new Promise((resolve, reject) => {

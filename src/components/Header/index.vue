@@ -8,23 +8,25 @@
              alt="logo"><span>电动星球</span>
       </a>
       <div class="header-nav">
-        <div class="nav-item selected">资讯</div>
-        <div class="nav-item">星球</div>
-        <div class="nav-item ">消息</div>
-        <div class="nav-item">发布</div>
+        <div :class="['nav-item', {'selected':item.checked}]"
+             v-for="(item, index) in navList"
+             :key="index"
+             @click="handlerNav(item)">{{item.name}}</div>
       </div>
-      <Search @getSerch="getSerch" />
+      <Search @getSerch="
+             getSerch" />
       <div class="down"></div>
       <div class="header-login">
-        <div v-if="$state.token" class="user-info">
+        <div v-if="$state.token"
+             class="user-info">
           <span>{{$state.userInfo.username}}</span>
           <img :src="avatar">
-      </div>
-      <a class="login-item"
-         v-else
-         @click="goUrl('/login')">注册/登录</a>
+        </div>
+        <a class="login-item"
+           v-else
+           @click="goUrl('/login')">注册/登录</a>
 
-    </div>
+      </div>
     </div>
   </header>
 </template>
@@ -34,7 +36,27 @@ import util from '@/utils/util'
 export default {
   name: 'BaseHeader',
   data () {
-    return {};
+    return {
+      navList: [
+        {
+          name: '资讯',
+          path: '/',
+          checked: false
+        }, {
+          name: '星球',
+          path: '/planet',
+          checked: false
+        }, {
+          name: '消息',
+          path: '/message',
+          checked: false
+        }, {
+          name: '发布',
+          path: '/post',
+          checked: false
+        }
+      ]
+    };
   },
   computed: {
     avatar () {
@@ -54,7 +76,17 @@ export default {
         url += '?redirect=' + encodeURIComponent(location.href)
       }
       this.$router.push(url)
+    },
+    handlerNav (item) {
+      this.$router.push(item.path)
     }
+  },
+  mounted () {
+    this.navList.forEach(e => {
+      if (e.path === this.$route.path) {
+        e.checked = true
+      }
+    })
   },
   components: {
     Search: () => import('../Search')
@@ -138,11 +170,11 @@ export default {
       border: 1px solid #afb3ba;
       cursor: pointer;
     }
-    .user-info{
+    .user-info {
       display: flex;
       align-items: center;
       font-size: 16px;
-       color: #2c2e3b;
+      color: #2c2e3b;
     }
     img {
       margin: 10px 0 10px 20px;

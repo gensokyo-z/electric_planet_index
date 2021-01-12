@@ -18,11 +18,11 @@
       <span class="data-number">{{content}}</span>
     </div> -->
     <div class="bottom-right">
-      <div class="bottom-button">
+      <!-- <div class="bottom-button">
         <i class="iconfont iconwenzhang-shoucang"></i>
         <span class="data-number"
               @click="checkAuth(goComment)">收藏</span>
-      </div>
+      </div> -->
       <div class="popover share-popover">
         <div class="popover-eleplanet">
           <div class="share-button">

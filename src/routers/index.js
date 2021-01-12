@@ -8,7 +8,7 @@ const routes = [
     name: 'home',
     meta: {
       title: '电动星球',
-      keepAlive: false,
+      keepAlive: false
     }
   },
   {
@@ -17,7 +17,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "index" */ '@/views/index'),
     meta: {
       title: '电动星球',
-      keepAlive: false,
+      keepAlive: false
     }
   },
   {
@@ -26,7 +26,25 @@ const routes = [
     component: () => import(/* webpackChunkName: "login" */ '@/views/login'),
     meta: {
       title: '登录',
-      keepAlive: false,
+      keepAlive: false
+    }
+  },
+  {
+    path: '/planet',
+    name: 'planet',
+    component: () => import(/* webpackChunkName: "planet" */ '@/views/planet'),
+    meta: {
+      title: '星球',
+      keepAlive: false
+    }
+  },
+  {
+    path: '/planetdetail',
+    name: 'planetdetail',
+    component: () => import(/* webpackChunkName: "planetdetail" */ '@/views/planet/detail'),
+    meta: {
+      title: '星球详情',
+      keepAlive: false
     }
   },
   {
