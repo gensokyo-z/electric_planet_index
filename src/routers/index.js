@@ -57,6 +57,24 @@ const routes = [
     }
   },
   {
+    path: '/post',
+    name: 'post',
+    component: () => import(/* webpackChunkName: "post" */ '@/views/post/index.vue'),
+    meta: {
+      title: '发布文章',
+      keepAlive: false
+    }
+  },
+  {
+    path: '/postedit',
+    name: 'postedit',
+    component: () => import(/* webpackChunkName: "postedit" */ '@/views/post/edit.vue'),
+    meta: {
+      title: '编辑文章',
+      keepAlive: false
+    }
+  },
+  {
     path: '/error',
     name: 'error',
     component: () => import(/* webpackChunkName: "error" */ '@/views/error'),

@@ -21,7 +21,8 @@
                      target="_blank">查看原文</a></div>
               </div>
               <div class="article-planet"
-                   v-show="content.source !== 'user'">&nbsp;{{content.planet.name}} </div>
+                   v-show="content.source !== 'user'">&nbsp;{{content.planet.name}}
+                    <a  v-for="(tag,idx) in content.tags" :key="idx">#{{tag.name}}</a> </div>
               <div class="article-content"
                    v-html="content.content"></div>
               <section class="comments-section"

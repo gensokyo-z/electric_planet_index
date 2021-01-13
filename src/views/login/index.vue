@@ -44,7 +44,6 @@
 </template>
 
 <script>
-import { } from 'element-ui';
 import {
   login,
   sendSms,

@@ -641,10 +641,25 @@
     core-js "^2.6.5"
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime-corejs3@^7.11.2":
+  version "7.12.5"
+  resolved "https://registry.npm.taobao.org/@babel/runtime-corejs3/download/@babel/runtime-corejs3-7.12.5.tgz?cache=0&sync_timestamp=1604441241021&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40babel%2Fruntime-corejs3%2Fdownload%2F%40babel%2Fruntime-corejs3-7.12.5.tgz#ffee91da0eb4c6dae080774e94ba606368e414f4"
+  integrity sha1-/+6R2g60xtrggHdOlLpgY2jkFPQ=
+  dependencies:
+    core-js-pure "^3.0.0"
+    regenerator-runtime "^0.13.4"
+
 "@babel/runtime@^7.0.0", "@babel/runtime@^7.8.4":
   version "7.10.5"
   resolved "https://registry.npm.taobao.org/@babel/runtime/download/@babel/runtime-7.10.5.tgz?cache=0&sync_timestamp=1594749041890&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40babel%2Fruntime%2Fdownload%2F%40babel%2Fruntime-7.10.5.tgz#303d8bd440ecd5a491eae6117fd3367698674c5c"
   integrity sha1-MD2L1EDs1aSR6uYRf9M2dphnTFw=
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
+"@babel/runtime@^7.11.2":
+  version "7.12.5"
+  resolved "https://registry.npm.taobao.org/@babel/runtime/download/@babel/runtime-7.12.5.tgz?cache=0&sync_timestamp=1604441104026&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40babel%2Fruntime%2Fdownload%2F%40babel%2Fruntime-7.12.5.tgz#410e7e487441e1b360c29be715d870d9b985882e"
+  integrity sha1-QQ5+SHRB4bNgwpvnFdhw2bmFiC4=
   dependencies:
     regenerator-runtime "^0.13.4"
 
@@ -2504,6 +2519,11 @@ copy-webpack-plugin@^4.6.0:
     minimatch "^3.0.4"
     p-limit "^1.0.0"
     serialize-javascript "^1.4.0"
+
+core-js-pure@^3.0.0:
+  version "3.8.2"
+  resolved "https://registry.npm.taobao.org/core-js-pure/download/core-js-pure-3.8.2.tgz#286f885c0dac1cdcd6d78397392abc25ddeca225"
+  integrity sha1-KG+IXA2sHNzW14OXOSq8Jd3soiU=
 
 core-js@^2.4.0:
   version "2.6.12"
@@ -8546,6 +8566,14 @@ vuex@^3.0.1:
   version "3.5.1"
   resolved "https://registry.npm.taobao.org/vuex/download/vuex-3.5.1.tgz#f1b8dcea649bc25254cf4f4358081dbf5da18b3d"
   integrity sha1-8bjc6mSbwlJUz09DWAgdv12hiz0=
+
+wangeditor@^4.5.2:
+  version "4.6.2"
+  resolved "https://registry.npm.taobao.org/wangeditor/download/wangeditor-4.6.2.tgz#35f39ed795c2fcff2e7c6be08cd64707be9abe8a"
+  integrity sha1-NfOe15XC/P8ufGvgjNZHB76avoo=
+  dependencies:
+    "@babel/runtime" "^7.11.2"
+    "@babel/runtime-corejs3" "^7.11.2"
 
 watchpack-chokidar2@^2.0.0:
   version "2.0.0"
