@@ -5,11 +5,16 @@
              :model="postForm"
              :rules="rules"
              class="form-container">
-
       <div class="createPost-main-container">
+        <div class="bg">
+          <el-button size="mini">发布文章</el-button>
+        </div>
         <div class="layout-content">
-
           <div class="editer-box">
+            <div id="meun"></div>
+            <SingleImage class="single-image"
+                         :value.sync="postForm.thumb_pic"
+                         @input="upLoadThumbPic" />
             <el-row style="width: 750px;margin: 0 100px;">
               <el-col :span="24">
                 <el-form-item style="margin-bottom: 20px;"
@@ -26,18 +31,8 @@
             </el-row>
             <el-form-item prop="content"
                           style="margin: 0 100px;">
-              <!-- <VueUeditorWrap v-model="postForm.content"
-                              :config="editorConfig"
-                              @beforeInit="addCustomButtom"
-                              @ready="ready" /> -->
+
               <div id="editor"></div>
-              <!-- <input id="uploadFileImage"
-                     ref="uploadFileImage"
-                     type="file"
-                     accept="image/*"
-                     name="file"
-                     style="opacity: 0; width: 0; height: 0;cursor: pointer"
-                     @change="changeImage" /> -->
               <input id="uploadFileVideo"
                      ref="uploadFileVideo"
                      type="file"
@@ -47,39 +42,35 @@
                      @change="changeVideo" />
             </el-form-item>
           </div>
-          <SingleImage class="single-image"
-                       :value.sync="postForm.thumb_pic"
-                       @input="upLoadThumbPic" />
+          <div class="planet-tag">
+            <el-form-item prop="planet_id"
+                          class="bind-planet">
+              <p>发布到星球</p>
+              <el-radio-group v-model="postForm.planet_id">
+                <el-radio v-for="(item, index) in planetList"
+                          :key="index"
+                          :label="item.id">{{ item.name }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item prop="tag_id"
+                          class="bind-tag">
+              <p>添加标签</p>
+              <el-checkbox-group v-model="postForm.tag_id">
+                <el-checkbox v-for="(item, index) in tagList"
+                             v-show="postForm.planet_id === item.planet_id"
+                             :key="index"
+                             :label="item.id">{{ item.name }}</el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+          </div>
         </div>
-        <div class="planet-tag">
-          <el-form-item prop="planet_id"
-                        class="bind-planet">
-            <p>发布到星球</p>
-            <el-radio-group v-model="postForm.planet_id">
-              <el-radio v-for="(item, index) in planetList"
-                        :key="index"
-                        :label="item.id">{{ item.name }}</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item prop="tag_id"
-                        class="bind-tag">
-            <p>添加标签</p>
-            <el-checkbox-group v-model="postForm.tag_id">
-              <el-checkbox v-for="(item, index) in tagList"
-                           v-show="postForm.planet_id === item.planet_id"
-                           :key="index"
-                           :label="item.id">{{ item.name }}</el-checkbox>
-            </el-checkbox-group>
-          </el-form-item>
-        </div>
+
       </div>
     </el-form>
   </div>
 </template>
 
 <script>
-import Vue from 'vue';
-import { From, FormItem, Row, Col } from 'element-ui'
 import wangeditor from 'wangeditor';
 import { getPlanetList } from '@/api/planet';
 import { getTagList } from '@/api/tag';
@@ -87,10 +78,6 @@ import MDinput from '@/components/MDinput';
 import SingleImage from '@/components/Upload/SingleImage2';
 import { addPosts, editPosts, getPostsDetail } from '@/api/post';
 import util from '@/utils/util';
-Vue.use(From);
-Vue.use(FormItem);
-Vue.use(Row);
-Vue.use(Col);
 const defaultForm = {
   title: '', // 文章题目
   content: '', // 文章内容
@@ -121,37 +108,6 @@ export default {
   },
 
   data () {
-    // const validateRequire = (rule, value, callback) => {
-    //   // if (rule.field === 'tag_id') {
-    //   //   if (value.length === 0) {
-    //   //     callback(new Error(`标签为必选项`));
-    //   //   } else {
-    //   //     callback();
-    //   //   }
-    //   // } else {
-    //   if (value === '') {
-    //     let content = '';
-    //     switch (rule.field) {
-    //       case 'title':
-    //         content = '标题为必填项';
-    //         break;
-    //       case 'content':
-    //         content = '正文内容为必填项';
-    //         break;
-    //       // case 'tag_id':
-    //       //   content = '标签为必选项';
-    //       //   break;
-    //       default:
-    //         content = '星球为必选项';
-    //         break;
-    //     }
-    //     callback(new Error(content));
-    //   } else {
-    //     callback();
-    //   }
-    //   // }
-    // };
-
     return {
       status: 'draft',
       postForm: Object.assign({}, defaultForm),
@@ -159,12 +115,6 @@ export default {
       loading: false,
       userListOptions: [],
       rules: {},
-      // rules: {
-      //   title: [{ validator: validateRequire }],
-      //   content: [{ validator: validateRequire }],
-      //   planet_id: [{ validator: validateRequire }],
-      //   tag_id: [{ validator: validateRequire }]
-      // },
       tempRoute: {},
       planetList: [],
       tagList: [],
@@ -184,18 +134,18 @@ export default {
   },
   created () {
     // eslint-disable-next-line
-    if ((this.isEdit && this.$route.params && this.$route.params.id) || this.$route.query.spider) {
-      let id = null;
-      let type = '';
-      if (this.$route.params && this.$route.params.id !== '0') {
-        id = this.$route.params.id;
-        type = 'params';
-      } else if (this.$route.query.spider) {
-        id = this.$route.query.spider;
-        type = 'spider';
-      }
-      this.fetchData(id, type);
-    }
+    // if ((this.isEdit && this.$route.params && this.$route.params.id) || this.$route.query.spider) {
+    //   let id = null;
+    //   let type = '';
+    //   if (this.$route.params && this.$route.params.id !== '0') {
+    //     id = this.$route.params.id;
+    //     type = 'params';
+    //   } else if (this.$route.query.spider) {
+    //     id = this.$route.query.spider;
+    //     type = 'spider';
+    //   }
+    //   this.fetchData(id, type);
+    // }
     this.tempRoute = Object.assign({}, this.$route);
     if (JSON.stringify(this.oss) === '{}') {
       this.$store.dispatch('oss/getOssToken');
@@ -431,55 +381,95 @@ export default {
 
 <style lang="less" scoped>
 .createPost-container {
+  margin-top: 100px;
   position: relative;
   .createPost-main-container {
-    padding: 10px 45px 20px 50px;
+    position: relative;
+    margin: 0 auto;
+    width: 1200px;
     display: flex;
     justify-content: space-around;
+    .bg {
+      width: 100%;
+      height: 40px;
+      top: 0;
+      position: absolute;
+      background-color: #d0d0d0;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      .el-button {
+        margin-right: 20px;
+        padding: 10px 10px;
+        height: 30px;
+
+        background-color: #13ce66;
+        border-color: #13ce66;
+        color: #fff;
+        font-size: 14px;
+        line-height: 10px;
+        border-radius: 4px;
+        &:hover {
+          background: #42d885;
+          border-color: #42d885;
+        }
+      }
+    }
   }
 }
 .layout-content {
-  // display: flex;
-  // align-items: center;
-  // justify-content: space-evenly;
-}
-.planet-tag {
-  width: 280px;
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  border-top: 1px solid #e0e0e0;
-  .el-radio {
-    margin-bottom: 20px;
-  }
-  .bind-planet {
-    padding: 0 20px 20px 20px;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  .bind-tag {
-    padding: 0 20px 20px 20px;
+  margin-top: 100px;
+  position: relative;
+  .planet-tag {
+    position: absolute;
+    top: 100px;
+    right: -200px;
+    width: 280px;
     display: flex;
-    height: 270px;
-    overflow: auto;
+    flex-wrap: wrap;
+    flex-direction: column;
+    border-top: 1px solid #e0e0e0;
+    .el-radio {
+      margin-bottom: 20px;
+    }
+    .bind-planet {
+      padding: 0 20px 20px 20px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .bind-tag {
+      padding: 0 20px 20px 20px;
+      display: flex;
+      height: 270px;
+      overflow: auto;
+    }
   }
 }
-</style>
-<style lang="less" scoped>
+
 .app-wrapper {
   overflow: hidden !important;
 }
 .single-image {
   width: 750px;
   margin: 0 auto;
+  /deep/ .image-uploader {
+    width: 100%;
+    .el-upload {
+      width: 100%;
+      .el-upload-dragger {
+        width: 100%;
+      }
+    }
+  }
 }
 #editor {
   min-height: 500px;
   max-width: 750px;
+  border: 1px solid #ccc;
 }
 .w-e-toolbar {
-  position: absolute;
-  top: 6px;
-  left: 9%;
+  position: fixed;
+  top: 100px;
+  // left: 9%;
   background-color: #d0d0d0;
 }
 </style>

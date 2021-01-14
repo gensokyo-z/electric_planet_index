@@ -13,8 +13,8 @@
              :key="index"
              @click="handlerNav(item)">{{item.name}}</div>
       </div>
-      <Search @getSerch="
-             getSerch" />
+      <Search @getSerch="getSerch"
+              v-show="$route.path ==='/'" />
       <div class="down"></div>
       <div class="header-login">
         <div v-if="$state.token"
@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     getSerch (kw) {
-      console.log(kw);
+      this.$emit('getSerch', kw)
     },
     goUrl (url) {
       if (url === '/login') {

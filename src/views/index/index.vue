@@ -1,7 +1,7 @@
 <template>
   <section class="index">
     <div class="layout">
-      <Header />
+      <Header @getSerch="getSerch" />
       <div class="layout-main">
         <div class="community-container">
           <div class="community-main">
@@ -69,6 +69,12 @@ export default {
       setTimeout(() => {
         this.getData(this.type)
       }, 300);
+    },
+    getSerch (kw) {
+      this.page = 1
+      this.cardList = []
+      this.keyWord = kw
+      this.getData(this.type)
     },
     getData (type) {
       if (this.ajax) {

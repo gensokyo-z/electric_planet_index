@@ -1,14 +1,21 @@
 import request from '@/utils/request';
 
 // 新增文章
-export function creatPost(data) {
+export function addPosts(data) {
   return request({
     url: `/api/admin/posts`,
     method: 'post',
     data: data
   });
 }
-
+// 修改文章
+export function editPosts(id, data) {
+  return request({
+    url: `/api/admin/posts/${id}`,
+    method: 'put',
+    data: data
+  });
+}
 // 点赞文章
 export function postLike(id) {
   return request({
