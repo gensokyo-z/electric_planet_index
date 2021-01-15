@@ -1,5 +1,4 @@
 // import * as dictionary from './dictionary'
-import Vue from 'vue';
 import { Message, MessageBox, Loading } from 'element-ui';
 import Bus from './bus'; // 事件总线
 // import Confirm from '@/components/Confirm'; // 确认

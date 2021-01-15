@@ -2,9 +2,9 @@
   <div class="createPost-container">
     <Header />
     <el-form ref="postForm"
-             :model="postForm"
-             :rules="rules"
-             class="form-container">
+      :model="postForm"
+      :rules="rules"
+      class="form-container">
       <div class="createPost-main-container">
         <div class="bg">
           <el-button size="mini">发布文章</el-button>
@@ -13,53 +13,53 @@
           <div class="editer-box">
             <div id="meun"></div>
             <SingleImage class="single-image"
-                         :value.sync="postForm.thumb_pic"
-                         @input="upLoadThumbPic" />
+              :value.sync="postForm.thumb_pic"
+              @input="upLoadThumbPic" />
             <el-row style="width: 750px;margin: 0 100px;">
               <el-col :span="24">
                 <el-form-item style="margin-bottom: 20px;"
-                              prop="title">
+                  prop="title">
                   <MDinput v-if="postForm.source!=='微博'"
-                           v-model="postForm.title"
-                           :maxlength="100"
-                           name="name"
-                           required>
+                    v-model="postForm.title"
+                    :maxlength="100"
+                    name="name"
+                    required>
                     请在这里输入标题
                   </MDinput>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-form-item prop="content"
-                          style="margin: 0 100px;">
+              style="margin: 0 100px;">
 
               <div id="editor"></div>
               <input id="uploadFileVideo"
-                     ref="uploadFileVideo"
-                     type="file"
-                     accept="video/*"
-                     name="file"
-                     style="opacity: 0; width: 0; height: 0;cursor: pointer"
-                     @change="changeVideo" />
+                ref="uploadFileVideo"
+                type="file"
+                accept="video/*"
+                name="file"
+                style="opacity: 0; width: 0; height: 0;cursor: pointer"
+                @change="changeVideo" />
             </el-form-item>
           </div>
           <div class="planet-tag">
             <el-form-item prop="planet_id"
-                          class="bind-planet">
+              class="bind-planet">
               <p>发布到星球</p>
               <el-radio-group v-model="postForm.planet_id">
                 <el-radio v-for="(item, index) in planetList"
-                          :key="index"
-                          :label="item.id">{{ item.name }}</el-radio>
+                  :key="index"
+                  :label="item.id">{{ item.name }}</el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item prop="tag_id"
-                          class="bind-tag">
+              class="bind-tag">
               <p>添加标签</p>
               <el-checkbox-group v-model="postForm.tag_id">
                 <el-checkbox v-for="(item, index) in tagList"
-                             v-show="postForm.planet_id === item.planet_id"
-                             :key="index"
-                             :label="item.id">{{ item.name }}</el-checkbox>
+                  v-show="postForm.planet_id === item.planet_id"
+                  :key="index"
+                  :label="item.id">{{ item.name }}</el-checkbox>
               </el-checkbox-group>
             </el-form-item>
           </div>
@@ -107,32 +107,24 @@ export default {
     }
   },
 
-  data () {
+  data() {
     return {
-      status: 'draft',
       postForm: Object.assign({}, defaultForm),
       html: '',
       loading: false,
-      userListOptions: [],
       rules: {},
-      tempRoute: {},
+      // tempRoute: {},
       planetList: [],
       tagList: [],
       editor: null
     };
   },
   computed: {
-    contentShortLength () {
-      return this.postForm.content_short.length;
-    },
-    lang () {
-      return this.$store.getters.language;
-    },
-    oss () {
-      return this.$store.getters.oss;
-    }
+    // oss () {
+    //   return this.$store.getters.oss;
+    // }
   },
-  created () {
+  created() {
     // eslint-disable-next-line
     // if ((this.isEdit && this.$route.params && this.$route.params.id) || this.$route.query.spider) {
     //   let id = null;
@@ -146,24 +138,24 @@ export default {
     //   }
     //   this.fetchData(id, type);
     // }
-    this.tempRoute = Object.assign({}, this.$route);
-    if (JSON.stringify(this.oss) === '{}') {
-      this.$store.dispatch('oss/getOssToken');
-    }
+    // this.tempRoute = Object.assign({}, this.$route);
+    // if (JSON.stringify(this.oss) === '{}') {
+    //   this.$store.dispatch('getOssToken');
+    // }
     this.$nextTick(() => {
       this.createEditor();
     });
   },
-  mounted () {
+  mounted() {
     this.init();
   },
-  beforeDestroy () {
+  beforeDestroy() {
     // 销毁编辑器
     this.editor.destroy();
     this.editor = null;
   },
   methods: {
-    createEditor () {
+    createEditor() {
       // 创建编辑器
       // eslint-disable-next-line new-cap
       this.editor = new wangeditor('#meun', '#editor');
@@ -171,7 +163,8 @@ export default {
       this.editor.create(); // 生成编辑器
       this.editor.txt.html(''); // 初始化内容
     },
-    initEditorConfig () {
+    initEditorConfig() {
+      console.log(this.editor.config);
       // 初始化编辑器配置
       // this.editor.config.onblur = () => {}
       // this.editor.config.onfocus = () => {}
@@ -198,7 +191,7 @@ export default {
         this.seteditor();
       }, 100);
     },
-    seteditor () {
+    seteditor() {
       // 给菜单栏中的视频icon绑定相应的点击事件
       this.editor.$toolbarElem.elems[0].childNodes[17].onclick = e => {
         e.stopPropagation();
@@ -207,7 +200,7 @@ export default {
         this.$refs.uploadFileVideo.click(); // 触发input的上传
       };
     },
-    init () {
+    init() {
       getTagList({ page: 1, per_page: 200 })
         .then(response => {
           if (response.code === 200) {
@@ -227,35 +220,35 @@ export default {
           console.log(error);
         });
     },
-    upLoadThumbPic (path) {
+    upLoadThumbPic(path) {
       this.postForm.thumb_pic = path;
     },
-    async uploadOSS (content) {
+    async uploadOSS(content) {
       // eslint-disable-next-line
-      const params = await this.$store.dispatch('oss/getOssToken').then(res => {
+      const params = await this.$store.dispatch('getOssToken').then(res => {
         return res.data;
       });
       params.file = content;
-      params.dir = 'posts/';
+      params.dir = 'posts/community';
       // eslint-disable-next-line
-      let data = await this.$store.dispatch('oss/setParams', params);
+      let data = await this.$store.dispatch('setParams', params);
       // eslint-disable-next-line
-      let url = this.$store.state.oss.endPoint;
+      let url = this.$store.state.endPoint;
       // eslint-disable-next-line
       let imgPath = url + '/' + data.get('key');
-      return this.$store.dispatch('oss/upload', { url, data }).then(res => {
+      return this.$store.dispatch('upload', { url, data }).then(res => {
         return imgPath;
       });
     },
-    upload (content) {
+    upload(content) {
       this.uploadOSS(content).then(path => {
         this.editor.cmd.do('insertHTML', `<img src="${path}" width="100%"/>`);
       });
     },
-    clearImg (str) {
+    clearImg(str) {
       return str.replace(/<img.+?src=/g, '<img src=');
     },
-    fetchData (id, type) {
+    fetchData(id, type) {
       if (type === 'params') {
         getPostsDetail(id).then(res => {
           if (res.code === 200) {
@@ -273,7 +266,7 @@ export default {
         });
       }
     },
-    submitForm () {
+    submitForm() {
       if (this.postForm.source !== '微博' && this.postForm.title.length === 0) {
         this.$message({
           message: '请填写标题',
@@ -369,7 +362,7 @@ export default {
       // }
       // });
     },
-    async changeVideo () {
+    async changeVideo() {
       const videoFile = { file: this.$refs.uploadFileVideo.files[0] };
       await this.uploadOSS(videoFile.file).then(path => {
         this.editor.execCommand('insertHTML', `<video src="https:${path}"  controls="controls"></video>`); // 插入视频
@@ -381,7 +374,7 @@ export default {
 
 <style lang="less" scoped>
 .createPost-container {
-  margin-top: 100px;
+  margin-top: 50px;
   position: relative;
   .createPost-main-container {
     position: relative;
@@ -390,10 +383,10 @@ export default {
     display: flex;
     justify-content: space-around;
     .bg {
-      width: 100%;
+      width: 1200px;
       height: 40px;
-      top: 0;
-      position: absolute;
+      top: 50px;
+      position: fixed;
       background-color: #d0d0d0;
       display: flex;
       justify-content: flex-end;
@@ -418,7 +411,7 @@ export default {
   }
 }
 .layout-content {
-  margin-top: 100px;
+  margin-top: 50px;
   position: relative;
   .planet-tag {
     position: absolute;
@@ -450,13 +443,17 @@ export default {
 }
 .single-image {
   width: 750px;
+  height: 200px;
   margin: 0 auto;
   /deep/ .image-uploader {
     width: 100%;
+    height: 100%;
     .el-upload {
       width: 100%;
+      height: 100%;
       .el-upload-dragger {
         width: 100%;
+        height: 100%;
       }
     }
   }
@@ -468,8 +465,11 @@ export default {
 }
 .w-e-toolbar {
   position: fixed;
-  top: 100px;
+  top: 50px;
   // left: 9%;
   background-color: #d0d0d0;
+  /ddep/ .w-e-menu-tooltip.w-e-menu-tooltip-up {
+    display: none !important;
+  }
 }
 </style>

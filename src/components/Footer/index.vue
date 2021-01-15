@@ -66,12 +66,7 @@
   </section>
 </template>
 <script>
-import Vue from 'vue';
-import { Dialog, Input, Button } from 'element-ui';
 import { postsComments, postLike, postUnlike } from '@/api/post';
-Vue.use(Dialog);
-Vue.use(Input);
-Vue.use(Button);
 export default {
   name: 'Footer',
   props: {

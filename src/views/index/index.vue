@@ -33,12 +33,9 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import NewCard from '@/components/NewCard';
 import { getNewest, getHotest } from '@/api/index';
 import util from '@/utils/util'
-import { InfiniteScroll } from 'element-ui';
-Vue.use(InfiniteScroll);
 export default {
   name: 'index',
   data () {

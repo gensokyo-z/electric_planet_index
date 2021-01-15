@@ -131,13 +131,8 @@
   </section>
 </template>
 <script>
-import Vue from 'vue';
-import { Dialog, Input, Button } from 'element-ui';
 import { getPostsDetail, getPostsComments, comments, commentsLikes, commentsUnlikes } from '@/api/post';
 import util from '@/utils/util';
-Vue.use(Dialog);
-Vue.use(Input);
-Vue.use(Button);
 export default {
   data () {
     return {

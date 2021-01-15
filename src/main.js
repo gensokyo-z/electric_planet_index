@@ -7,13 +7,11 @@ import './routers/intercept';
 
 import store from './stores';
 import * as filters from './filters/';
-// import 'element-ui/lib/theme-chalk/index.css';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import App from './App.vue';
 import './styles/main.less';
 Vue.use(ElementUI);
-// import '../node_modules/chimee-mobile-player/lib/chimee-mobile-player.min.css'
 Vue.use(VueClipboard);
 Vue.use(global);
 

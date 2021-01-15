@@ -1,25 +1,25 @@
 <template>
   <div class="singleImageUpload2 upload-container">
     <el-upload :multiple="false"
-               :show-file-list="false"
-               :on-success="handleImageSuccess"
-               class="image-uploader"
-               drag
-               action=""
-               :http-request="upload">
+      :show-file-list="false"
+      :on-success="handleImageSuccess"
+      class="image-uploader"
+      drag
+      action=""
+      :http-request="upload">
       <i class="el-icon-upload" />
       <div class="el-upload__text">
         拖拽<em>点击上传</em>题图
       </div>
     </el-upload>
     <div v-show="imageUrl.length>0"
-         class="image-preview">
+      class="image-preview">
       <div v-show="imageUrl.length>1"
-           class="image-preview-wrapper">
+        class="image-preview-wrapper">
         <img :src="imageUrl">
         <div class="image-preview-action">
           <i class="el-icon-delete"
-             @click="rmImage" />
+            @click="rmImage" />
         </div>
       </div>
     </div>
@@ -27,9 +27,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
-import { Upload } from 'element-ui'
-Vue.use(Upload);
 export default {
   name: 'SingleImageUpload2',
   props: {
@@ -38,49 +35,49 @@ export default {
       default: ''
     }
   },
-  data () {
+  data() {
     return {
       tempUrl: ''
-    }
+    };
   },
   computed: {
-    imageUrl () {
-      return this.value
+    imageUrl() {
+      return this.value;
     }
   },
   methods: {
-    rmImage () {
-      this.emitInput('')
+    rmImage() {
+      this.emitInput('');
     },
-    emitInput (val) {
-      this.$emit('input', val)
+    emitInput(val) {
+      this.$emit('input', val);
     },
-    handleImageSuccess () {
-      this.emitInput(this.tempUrl)
+    handleImageSuccess() {
+      this.emitInput(this.tempUrl);
     },
-    async uploadOSS (content) {
+    async uploadOSS(content) {
       // eslint-disable-next-line
-      const params = await this.$store.dispatch('oss/getOssToken').then(res => {
+      const params = await this.$store.dispatch('getOssToken').then(res => {
         return res.data;
       });
       params.file = content.file;
-      params.dir = 'posts/';
+      params.dir = 'posts/community';
       // eslint-disable-next-line
-      let data = await this.$store.dispatch('oss/setParams', params);
+      let data = await this.$store.dispatch('setParams', params);
       // eslint-disable-next-line
-      let url = this.$store.state.oss.endPoint;
+      let url = this.$store.state.endPoint;
       // eslint-disable-next-line
       let imgPath = url + '/' + data.get('key');
-      return this.$store.dispatch('oss/upload', { url, data }).then(res => {
+      return this.$store.dispatch('upload', { url, data }).then(res => {
         return imgPath;
       });
     },
-    upload (content) {
+    upload(content) {
       this.uploadOSS(content).then(path => {
         this.tempUrl = path;
-        this.value = path;
-        this.handleImageSuccess()
-      })
+        this.emitInput(path);
+        this.handleImageSuccess();
+      });
     }
     // beforeUpload () {
     //   const _self = this
@@ -98,7 +95,7 @@ export default {
     //   })
     // }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -123,6 +120,7 @@ export default {
       img {
         width: 750px;
         height: 200px;
+        border-radius: 8px;
         // width: 100%;
         // height: 100%;
       }
