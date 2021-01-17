@@ -2,19 +2,21 @@
   <section class="new-card">
     <div class="header-title"
          v-if="type === 'new'">
-      <div class="left">
+      <div class="left"
+           @click="$router.push(`/planetdetail?id=${content.planet.id}`);"
+           v-if="$route.path !=='/planetdetail'">
         <img class="icon"
              src="../../assets/images/timg.jpg"
              alt="">
         <span>来自</span><span class="planet">{{content.planet.name}}</span>
       </div>
-      <!-- <div :class="['right',{'joined':joined}]"
+      <div :class="['right',{'joined':joined}]"
            @click.stop="addPlanet(content)">
         <button class="add"
                 v-if="!joined">{{`+ 加入`}}</button>
         <button class="enter"
                 v-else>{{`进入`}}</button>
-      </div> -->
+      </div>
     </div>
     <div>
       <div class="user-info"
@@ -28,10 +30,10 @@
         <span class="time">{{content.created_at}}</span>
       </div>
       <!-- 文章内容 -->
-      <div class="content"
-           @click="goUrl(`/postdetail?id=${content.id}`)">
+      <div class="content">
         <div class="title"
-             v-if="content.source !== '微博'">{{content.title}}</div>
+             v-if="content.source !== '微博'"
+             @click="goUrl(`/postdetail?id=${content.id}`)">{{content.title}}</div>
         <!-- 文章预览 -->
         <div class="desc"
              v-if="!content.thumb_video">
@@ -47,7 +49,11 @@
         <div class="photo-box">
           <div v-if="content.thumb_pic"
                class="photo">
-            <img :src="content.thumb_pic">
+            <!-- <img :src="content.thumb_pic"> -->
+            <el-image style="width: 100px; height: 100px"
+                      :src="content.thumb_pic"
+                      :preview-src-list="srcList">
+            </el-image>
           </div>
         </div>
         <div class="video-box"
@@ -125,9 +131,18 @@ export default {
       showPreview: true,
       videoPlayed: false,
       videoPreviwe: '',
+      srcList: []
     };
   },
   watch: {
+    'content.thumb_pic': {
+      handler (val) {
+        if (val) {
+          this.srcList.push(val)
+        }
+      },
+      immediate: true
+    },
     'content.thumb_video': {
       handler (val) {
         if (val) {
@@ -157,25 +172,13 @@ export default {
       this.$refs.inputItem.showInput = true;
     },
     async addPlanet (content) {
-      let needAuth = false;
       if (!util.getcookie('TOKEN')) {
-        await this.$store
-          .dispatch('getInfo')
-          .then(res => { })
-          .catch(err => {
-            needAuth = true;
-            return console.log(err);
-          });
+        this.$store.dispatch('needAuth')
       }
-      if (needAuth) return;
       if (this.joined) {
-        this.$router.push(`/planetdetail?id=${content.planet_id}`);
+        this.goUrl(`/planetdetail?id=${content.planet_id}`);
       } else {
-        this.$dialog
-          .confirm({
-            title: '提示',
-            message: '是否加入该星球'
-          })
+        this.$confirm('是否加入该星球', '提示')
           .then(() => {
             joinPlanet(content.planet_id).then(res => {
               if (res.code === 200) {
@@ -225,6 +228,7 @@ export default {
     .left {
       display: flex;
       align-items: center;
+      cursor: pointer;
       .icon {
         margin-right: 16px;
         width: 30px;
@@ -243,10 +247,11 @@ export default {
     .right {
       .add,
       .enter {
-        padding: 5px 10px;
+        padding: 5px 30px;
         border-radius: 28px;
         font-size: 18px;
         color: rgba(0, 0, 0, 0.9);
+        cursor: pointer;
       }
       .add {
         background: #ffdd27;
@@ -262,8 +267,9 @@ export default {
           width: 15px;
           height: 15px;
           content: '';
-          border-right: 2px solid #979797;
-          border-bottom: 2px solid #979797;
+          border-right: 1px solid #979797;
+          border-bottom: 1px solid #979797;
+          z-index: 1;
         }
       }
     }
@@ -271,6 +277,7 @@ export default {
   .user-info {
     display: flex;
     align-items: center;
+    cursor: pointer;
     .avatar {
       margin-right: 18px;
       width: 30px;
@@ -305,6 +312,7 @@ export default {
       font-size: 18px;
       color: rgba(0, 0, 0, 0.9);
       line-height: 25px;
+      cursor: pointer;
     }
     .desc {
       display: flex;

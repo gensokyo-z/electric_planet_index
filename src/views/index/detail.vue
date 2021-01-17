@@ -22,12 +22,15 @@
               </div>
               <div class="article-planet"
                    v-show="content.source !== 'user'">&nbsp;{{content.planet.name}}
-                    <a  v-for="(tag,idx) in content.tags" :key="idx">#{{tag.name}}</a> </div>
+                <a v-for="(tag,idx) in content.tags"
+                   :key="idx">#{{tag.name}}</a>
+              </div>
               <div class="article-content"
                    v-html="content.content"></div>
               <section class="comments-section"
                        id="comments-section"
-                       ref="commentsSection">
+                       ref="commentsSection"
+                       v-show="commentList">
                 <h2 class="section-title">全部评论</h2>
                 <div class="comment-container">
                   <ul class="comments-list">
@@ -145,7 +148,7 @@ export default {
         tags: [],
         user: {}
       },
-      commentList: [],
+      commentList: null,
       showInput: false,
       comment: {},
       message: ''

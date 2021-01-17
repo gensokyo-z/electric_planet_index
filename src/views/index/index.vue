@@ -134,10 +134,6 @@ export default {
       this.cardList = [];
       this.getData(this.type)
     },
-    getSerch (keyWord) {
-      this.keyWord = keyWord
-      this.getClear()
-    },
     bindTab (type) {
       this.finished = false
       this.type = type;

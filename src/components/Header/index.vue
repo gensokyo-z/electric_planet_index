@@ -12,6 +12,7 @@
              v-for="(item, index) in navList"
              :key="index"
              @click="handlerNav(item)">{{item.name}}</div>
+
       </div>
       <Search @getSerch="getSerch"
               v-show="$route.path ==='/'" />
@@ -21,6 +22,14 @@
              class="user-info">
           <span>{{$state.userInfo.username}}</span>
           <img :src="avatar">
+          <div class="logout hide">
+            <div class="user-panel">
+              <ul class="user-menu">
+                <li class="user-menu-item"
+                    @click="logout">退出</li>
+              </ul>
+            </div>
+          </div>
         </div>
         <a class="login-item"
            v-else
@@ -33,6 +42,7 @@
 
 <script type="text/babel">
 import util from '@/utils/util'
+import { logout } from '@/api/auth'
 export default {
   name: 'BaseHeader',
   data () {
@@ -79,6 +89,11 @@ export default {
     },
     handlerNav (item) {
       this.$router.push(item.path)
+    },
+    logout () {
+      logout().then(() => {
+        this.$router.push('/login')
+      })
     }
   },
   mounted () {
@@ -171,10 +186,52 @@ export default {
       cursor: pointer;
     }
     .user-info {
+      position: relative;
       display: flex;
       align-items: center;
       font-size: 16px;
       color: #2c2e3b;
+      .hide {
+        display: none;
+      }
+      .logout {
+        padding-top: 50px;
+        transform: translate(10px, 40px);
+        position: absolute;
+        z-index: 100;
+        .user-panel {
+          position: relative;
+          width: 150px;
+          background-color: #fff;
+          box-shadow: 0 0 4px 0 rgba(8, 15, 19, 0.06);
+          border-radius: 4px;
+          &::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            right: 18px;
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 6px solid #fff;
+          }
+          .user-menu-item {
+            border-bottom: 1px solid #f2f2f2;
+            display: block;
+            padding: 15px 20px;
+            font-size: 14px;
+            line-height: 20px;
+            &:hover{
+              background-color: #f5f5f5;
+              color: #8a8a8a;
+            }
+          }
+        }
+      }
+      &:hover .logout {
+        display: block;
+      }
     }
     img {
       margin: 10px 0 10px 20px;

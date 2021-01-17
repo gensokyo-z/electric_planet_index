@@ -1,25 +1,25 @@
 <template>
   <div class="singleImageUpload2 upload-container">
     <el-upload :multiple="false"
-      :show-file-list="false"
-      :on-success="handleImageSuccess"
-      class="image-uploader"
-      drag
-      action=""
-      :http-request="upload">
+               :show-file-list="false"
+               :on-success="handleImageSuccess"
+               class="image-uploader"
+               drag
+               action=""
+               :http-request="upload">
       <i class="el-icon-upload" />
       <div class="el-upload__text">
         拖拽<em>点击上传</em>题图
       </div>
     </el-upload>
     <div v-show="imageUrl.length>0"
-      class="image-preview">
+         class="image-preview">
       <div v-show="imageUrl.length>1"
-        class="image-preview-wrapper">
+           class="image-preview-wrapper">
         <img :src="imageUrl">
         <div class="image-preview-action">
           <i class="el-icon-delete"
-            @click="rmImage" />
+             @click="rmImage" />
         </div>
       </div>
     </div>
@@ -35,27 +35,27 @@ export default {
       default: ''
     }
   },
-  data() {
+  data () {
     return {
       tempUrl: ''
     };
   },
   computed: {
-    imageUrl() {
+    imageUrl () {
       return this.value;
     }
   },
   methods: {
-    rmImage() {
+    rmImage () {
       this.emitInput('');
     },
-    emitInput(val) {
+    emitInput (val) {
       this.$emit('input', val);
     },
-    handleImageSuccess() {
+    handleImageSuccess () {
       this.emitInput(this.tempUrl);
     },
-    async uploadOSS(content) {
+    async uploadOSS (content) {
       // eslint-disable-next-line
       const params = await this.$store.dispatch('getOssToken').then(res => {
         return res.data;
@@ -72,7 +72,7 @@ export default {
         return imgPath;
       });
     },
-    upload(content) {
+    upload (content) {
       this.uploadOSS(content).then(path => {
         this.tempUrl = path;
         this.emitInput(path);
@@ -103,6 +103,7 @@ export default {
   width: 100%;
   height: 100%;
   position: relative;
+  border-radius: 8px;
   .image-uploader {
     height: 100%;
   }
@@ -113,13 +114,15 @@ export default {
     left: 0px;
     top: 0px;
     border: 1px dashed #d9d9d9;
+    border-radius: 8px;
+
     .image-preview-wrapper {
       position: relative;
       width: 100%;
       height: 100%;
       img {
         width: 750px;
-        height: 200px;
+        height: 350px;
         border-radius: 8px;
         // width: 100%;
         // height: 100%;
@@ -140,7 +143,7 @@ export default {
       transition: opacity 0.3s;
       cursor: pointer;
       text-align: center;
-      line-height: 200px;
+      line-height: 340px;
       .el-icon-delete {
         font-size: 36px;
       }
@@ -151,5 +154,8 @@ export default {
       }
     }
   }
+}
+.el-upload-dragger .el-icon-upload {
+  margin: 130px 0 16px;
 }
 </style>
