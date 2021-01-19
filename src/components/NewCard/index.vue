@@ -8,10 +8,11 @@
         <img class="icon"
              src="../../assets/images/timg.jpg"
              alt="">
-        <span>来自</span><span class="planet">{{content.planet.name}}</span>
+        <span>来自</span><span class="planet">{{content.planet.name}}</span><span class="time">{{content.created_at}}</span>
       </div>
       <div :class="['right',{'joined':joined}]"
-           @click.stop="addPlanet(content)">
+           @click.stop="addPlanet(content)"
+           v-if="$route.path !=='/planetdetail'">
         <button class="add"
                 v-if="!joined">{{`+ 加入`}}</button>
         <button class="enter"
@@ -26,8 +27,7 @@
              :src="content.user.avatar"
              alt="头像">
         <span class="name"
-              v-if="content.source==='user'">{{content.planet.name}}</span>
-        <span class="time">{{content.created_at}}</span>
+              v-if="content.source==='user'">{{content.user.username}}</span>
       </div>
       <!-- 文章内容 -->
       <div class="content">
@@ -46,12 +46,11 @@
 
         </div>
         <!-- 文章图片 -->
-        <div class="photo-box">
-          <div v-if="content.thumb_pic"
-               class="photo">
+        <div class="photo-box"
+             v-if="content.thumb_pic">
+          <div class="photo">
             <!-- <img :src="content.thumb_pic"> -->
-            <el-image style="width: 100px; height: 100px"
-                      :src="content.thumb_pic"
+            <el-image :src="content.thumb_pic"
                       :preview-src-list="srcList">
             </el-image>
           </div>
@@ -213,7 +212,7 @@ export default {
 .new-card {
   // padding: 32px;
   // border-bottom: 20px solid rgba(0, 0, 0, 0.04);
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   padding-bottom: 30px;
   border-bottom: 1px solid #ebecf1;
   .header-title {
@@ -240,8 +239,24 @@ export default {
         color: rgba(0, 0, 0, 0.45);
       }
       .planet {
+        position: relative;
+        padding-right: 26px;
         font-size: 18px;
         color: rgba(0, 0, 0, 0.9);
+        &::after {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          right: 10px;
+          width: 4px;
+          height: 4px;
+          background: rgba(0, 0, 0, 0.15);
+          content: '';
+        }
+      }
+      .time {
+        font-size: 14px;
+        color: rgba(0, 0, 0, 0.25);
       }
     }
     .right {
@@ -286,23 +301,8 @@ export default {
     }
 
     .name {
-      position: relative;
-      padding-right: 26px;
       font-size: 14 px;
       color: rgba(0, 0, 0, 0.45);
-      &::after {
-        position: absolute;
-        top: 50%;
-        right: 10px;
-        width: 4px;
-        height: 4px;
-        background: rgba(0, 0, 0, 0.15);
-        content: '';
-      }
-    }
-    .time {
-      font-size: 14px;
-      color: rgba(0, 0, 0, 0.25);
     }
   }
   .content {
@@ -332,15 +332,7 @@ export default {
         -webkit-box-orient: vertical;
       }
     }
-    .photo {
-      // max-width: 158px;
-      // height: 108px;
-      margin-bottom: 20px;
-      img {
-        // width: 158px;
-        max-height: 200px;
-      }
-    }
+
     .tag-box {
       display: flex;
       flex-wrap: wrap;
@@ -373,6 +365,21 @@ export default {
         //   height: 11px;
         //   color: #fff;
         // }
+      }
+    }
+    .photo-box {
+      // width: 158px;
+      // height: 108px;
+      min-height: 200px;
+      margin-bottom: 20px;
+      .photo {
+        /deep/ .el-image {
+          img {
+            width: unset;
+            max-width: 860px;
+            min-height: 200px;
+          }
+        }
       }
     }
     .video-box {

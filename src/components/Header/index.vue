@@ -16,7 +16,9 @@
       </div>
       <Search @getSerch="getSerch"
               v-show="$route.path ==='/'" />
-      <div class="down"></div>
+      <div class="header-write"
+           v-if="$state.token"
+           @click="goUrl('/post')"><i class="iconfont iconbiji"></i> 写文章</div>
       <div class="header-login">
         <div v-if="$state.token"
              class="user-info">
@@ -59,10 +61,6 @@ export default {
         }, {
           name: '消息',
           path: '/message',
-          checked: false
-        }, {
-          name: '发布',
-          path: '/post',
           checked: false
         }
       ]
@@ -170,8 +168,13 @@ export default {
       }
     }
   }
-  .down {
-    width: 178px;
+  .header-write {
+    display: block;
+    margin: 12px 20px;
+    padding: 0 15px;
+    line-height: 26px;
+    background-color: #ffe000;
+    border-radius: 15px;
   }
   .header-login {
     display: flex;
@@ -222,7 +225,7 @@ export default {
             padding: 15px 20px;
             font-size: 14px;
             line-height: 20px;
-            &:hover{
+            &:hover {
               background-color: #f5f5f5;
               color: #8a8a8a;
             }

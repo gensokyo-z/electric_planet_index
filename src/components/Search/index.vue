@@ -1,13 +1,15 @@
 <template>
   <section class="search">
-    <svg class="icon keyWord"
+    <!-- <svg class="icon keyWord"
          aria-hidden="true">
       <use xlink:href="#iconshouue-sousuo"></use>
-    </svg>
+    </svg> -->
     <input type="text"
            placeholder="Tesal"
            v-model="keyWord"
            @keyup.enter="getSerch">
+    <i class="iconfont iconshouue-sousuo"
+       @click="getSerch"></i>
   </section>
 </template>
 <script>
@@ -40,7 +42,7 @@ export default {
   margin: 12px 30px 12px 0;
   // width: 686px;
   // height: 30px;
-  .icon {
+  .iconfont {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);

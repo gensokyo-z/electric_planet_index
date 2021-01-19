@@ -20,7 +20,7 @@
                       <div class="desc">已有{{item.users_count}}人加入</div>
                     </div>
                     <div :class="['btn',{'joined':!item.joined}]"
-                         @click.stop="addPlanet(content)">
+                         @click.stop="addPlanet(item)">
                       {{item.joined?'已加入':'加入'}}
                     </div>
                   </div>
@@ -62,6 +62,9 @@ export default {
       if (!util.getcookie('TOKEN')) {
         this.$store.dispatch('needAuth')
       }
+      if (content.joined) {
+        return this.$router.push(`/planetdetail?id=${content.id}`);
+      };
       this.$confirm('是否加入该星球', '提示')
         .then(() => {
           joinPlanet(content.id).then(async res => {

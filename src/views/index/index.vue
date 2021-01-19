@@ -25,7 +25,6 @@
               </div>
             </div>
           </div>
-          <div class="community-aside"></div>
         </div>
       </div>
     </div>
@@ -87,6 +86,10 @@ export default {
               e.user.avatar = util.defaultAvatar(e.user.avatar);
               if (!e.thumb_pic) { e.thumb_pic = util.getFirstImg(e.content) }
               e.content = util.changeHtml2Crad(e.content)
+              let year = new Date().getFullYear()
+              if (e.created_at.includes(year)) {
+                e.created_at = e.created_at.substr(5, e.created_at.length - 1)
+              }
             })
             this.cardList = this.cardList.concat(res.data);
             if (res.last_page === res.current_page) {

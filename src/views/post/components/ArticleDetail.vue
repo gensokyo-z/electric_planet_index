@@ -331,7 +331,7 @@ export default {
         });
       } else {
         if (!this.postForm.desc_content) {
-          this.postForm.desc_content = this.postForm.content;
+          this.postForm.desc_content = this.postForm.content.substr(0, 140);
         }
         this.postForm.content += `<p style="padding:0.4rem;border:1px solid #ccc;line-height:1.2em;color:#999">信息来源于网络，本平台予以链接仅为传递信息之目的，不代表本平台立场。本平台不对文章信息准确性、完整性和及时性做任何保证，亦不对因信赖文章信息引发的任何损失承担任何责任。<p>`;
         if (!this.postForm.thumb_pic) {
@@ -342,15 +342,10 @@ export default {
         }
         addPosts(this.postForm).then(res => {
           if (res.code === 200) {
-            this.$notify({
-              title: '成功',
-              message: '发布文章成功',
-              type: 'success',
-              duration: 2000
-            });
-            this.$store.dispatch('user/setCacha', []);
+            this.$message.success('发布文章成功');
+            // this.$store.dispatch('user/setCacha', []);
             this.loading = false;
-            this.$router.push('/docmanage/index');
+            this.$router.push('/');
           } else {
             this.loading = false;
           }

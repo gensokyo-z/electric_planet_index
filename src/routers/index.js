@@ -75,6 +75,24 @@ const routes = [
     }
   },
   {
+    path: '/message',
+    name: 'message',
+    component: () => import(/* webpackChunkName: "message" */ '@/views/message/index.vue'),
+    meta: {
+      title: '我的消息',
+      keepAlive: false
+    }
+  },
+  {
+    path: '/mine',
+    name: 'mine',
+    component: () => import(/* webpackChunkName: "mine" */ '@/views/mine/index.vue'),
+    meta: {
+      title: '个人中心',
+      keepAlive: false
+    }
+  },
+  {
     path: '/error',
     name: 'error',
     component: () => import(/* webpackChunkName: "error" */ '@/views/error'),
