@@ -15,7 +15,8 @@
 
       </div>
       <Search @getSerch="getSerch"
-              v-show="$route.path ==='/'" />
+              v-show="$route.path ==='/'"
+              ref="search" />
       <div class="header-write"
            v-if="$state.token"
            @click="goUrl('/post')"><i class="iconfont iconbiji"></i> 写文章</div>
@@ -92,6 +93,9 @@ export default {
       logout().then(() => {
         this.$router.push('/login')
       })
+    },
+    setSearch (kw) {
+      this.$refs.search.keyWord = kw
     }
   },
   mounted () {

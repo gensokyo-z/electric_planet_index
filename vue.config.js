@@ -15,7 +15,7 @@ const cdn = {
     wx: 'wx'
   },
   // cdn的css链接
-  css: ['//at.alicdn.com/t/font_1983148_9lmg21zhua.css'],
+  css: ['//at.alicdn.com/t/font_1983148_odm3rw4ju0p.css'],
   // cdn的js链接
   js: [
     '//res2.wx.qq.com/open/js/jweixin-1.6.0.js',

@@ -1,7 +1,8 @@
 <template>
   <section class="index">
     <div class="layout">
-      <Header @getSerch="getSerch" />
+      <Header @getSerch="getSerch"
+              ref="header" />
       <div class="layout-main">
         <div class="community-container">
           <div class="community-main">
@@ -16,7 +17,8 @@
                   <li v-for="(item, index) in cardList"
                       :key="index">
                     <NewCard :type.sync="type"
-                             :content="item" />
+                             :content="item"
+                             @handlerTag="handlerTag" />
                   </li>
                 </ul>
                 <p v-show="loading">加载中...</p>
@@ -90,6 +92,7 @@ export default {
               if (e.created_at.includes(year)) {
                 e.created_at = e.created_at.substr(5, e.created_at.length - 1)
               }
+              e.planetBg = this.$state.allPlanet.find(v => v.id === e.planet_id).avatar
             })
             this.cardList = this.cardList.concat(res.data);
             if (res.last_page === res.current_page) {
@@ -160,6 +163,11 @@ export default {
         this.getData(this.type)
       }
     },
+    handlerTag (tag) {
+      let tagName = '#' + tag.name
+      this.$refs.header.setSearch(tagName)
+      this.getSerch(tagName)
+    }
   },
   computed: {
     disabled () {

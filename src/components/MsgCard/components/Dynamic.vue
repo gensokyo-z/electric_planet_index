@@ -18,17 +18,14 @@
       <div class="doc">
         <div class="content">
           <img :src="content.thumb_pic"
-               v-lazy="content.thumb_pic"
                v-show="content.thumb_pic">
           <div class="title">{{content.title}}</div>
         </div>
         <!-- 只在消息动态tab显示 -->
         <div class="planet"
              v-show="$route.path === '/message'">
-          <svg class="icon"
-               aria-hidden="true">
-            <use xlink:href="#iconfabu-xingqiu"></use>
-          </svg>
+          <img :src="content.planetBg"
+               class="icon">
           <span>来自{{content.planet.name}}</span>
         </div>
       </div>

@@ -1,7 +1,7 @@
 <template>
   <section class="message">
     <div class="layout">
-      <Header @getSerch="getSerch" />
+      <Header />
       <div class="layout-main">
         <div class="community-container">
           <div class="community-main">
@@ -34,7 +34,7 @@
                   </template>
                 </ul>
                 <p v-show="loading">加载中...</p>
-                <p v-show="finished"
+                <p v-show="disabled"
                    id="footer">{{page===last_page?'没有更多了':''}}</p>
               </div>
             </div>
@@ -62,8 +62,8 @@
     <!-- <van-pull-refresh v-model="isLoading"
                         @refresh="onRefresh">
         <van-list v-model="loading"
-                  :finished="finished"
-                  finished-text="没有更多了"
+                  :disabled="disabled"
+                  disabled-text="没有更多了"
                   offset="300"
                   @load="onLoad"> -->
 
@@ -89,10 +89,11 @@ export default {
       ],
       subType: 'fans',
       loading: false,
-      finished: false,
+      disabled: false,
       isLoading: false,
       page: 1,
       per_page: 10,
+      last_page: -1,
       msgCount: 0,
       dynamicCount: 0,
       dynamicList: [],
@@ -121,16 +122,17 @@ export default {
               e.user.avatar = util.defaultAvatar(e.user.avatar)
               e.thumb_pic = util.getFirstImg(e.content)
               e.thumb_video = util.getFirstVideo(e.content)
+              e.planetBg = this.$state.allPlanet.find(v => v.id === e.planet_id).avatar
             })
             this.dynamicList = this.dynamicList.concat(res.data)
             if (res.last_page === res.current_page) {
-              this.finished = true
+              this.disabled = true
             } else {
               this.loading = false;
               this.page++
             }
           } else {
-            this.finished = true
+            this.disabled = true
           }
         })
       } else {
@@ -140,13 +142,13 @@ export default {
               if (res.code === 200 && res.data.data.length > 0) {
                 this.initList(res.data.data)
                 if (res.last_page === res.current_page) {
-                  this.finished = true
+                  this.disabled = true
                 } else {
                   this.loading = false;
                   this.page++
                 }
               } else {
-                this.finished = true
+                this.disabled = true
                 // this.$toast(res.msg)
               }
             })
@@ -156,13 +158,13 @@ export default {
               if (res.code === 200 && res.data.data.length > 0) {
                 this.initList(res.data.data)
                 if (res.last_page === res.current_page) {
-                  this.finished = true
+                  this.disabled = true
                 } else {
                   this.loading = false;
                   this.page++
                 }
               } else {
-                this.finished = true
+                this.disabled = true
                 // this.$toast(res.msg)
               }
             })
@@ -172,13 +174,13 @@ export default {
               if (res.code === 200 && res.data.length > 0) {
                 this.initList(res.data.data)
                 if (res.last_page === res.current_page) {
-                  this.finished = true
+                  this.disabled = true
                 } else {
                   this.loading = false;
                   this.page++
                 }
               } else {
-                this.finished = true
+                this.disabled = true
                 // this.$toast(res.msg)
               }
             })
@@ -188,13 +190,13 @@ export default {
               if (res.code === 200 && res.data.data.length > 0) {
                 this.initList(res.data.data)
                 if (res.last_page === res.current_page) {
-                  this.finished = true
+                  this.disabled = true
                 } else {
                   this.loading = false;
                   this.page++
                 }
               } else {
-                this.finished = true
+                this.disabled = true
                 // this.$toast(res.msg)
               }
             })
@@ -228,13 +230,13 @@ export default {
       this.msgList = this.msgList.concat(data)
     },
     bindTab (type) {
-      this.finished = false
+      this.disabled = false
       this.page = 1
       this.type = type
       this.getData()
     },
     bindSubType (item) {
-      this.finished = false
+      this.disabled = false
       this.page = 1
       this.msgTypeList.forEach(e => { e.active = false })
       item.active = true
@@ -251,7 +253,7 @@ export default {
     },
     async onRefresh () {
       // 清空列表数据
-      this.finished = false;
+      this.disabled = false;
       // 重新加载数据
       // 将 loading 设置为 true，表示处于加载状态
       this.page = 1

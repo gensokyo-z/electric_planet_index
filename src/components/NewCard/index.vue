@@ -6,7 +6,7 @@
            @click="$router.push(`/planetdetail?id=${content.planet.id}`);"
            v-if="$route.path !=='/planetdetail'">
         <img class="icon"
-             src="../../assets/images/timg.jpg"
+             :src="content.planetBg"
              alt="">
         <span>来自</span><span class="planet">{{content.planet.name}}</span><span class="time">{{content.created_at}}</span>
       </div>
@@ -90,7 +90,7 @@
                  aria-hidden="true">
               <use xlink:href="#iconshouye-huati"></use>
             </svg> -->
-            <span>#{{item.name}}</span>
+            <span @click="handlerTag(item)">#{{item.name}}</span>
             <!-- <svg class="icon jiantou"
                  aria-hidden="true">
               <use xlink:href="#iconshouye-jiantou"></use>
@@ -204,6 +204,9 @@ export default {
     playVideo () {
       this.showPreview = false;
       this.$refs.video.play();
+    },
+    handlerTag (tag) {
+      this.$emit('handlerTag', tag)
     }
   },
 };
@@ -230,8 +233,9 @@ export default {
       cursor: pointer;
       .icon {
         margin-right: 16px;
-        width: 30px;
-        height: 30px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
       }
       span:nth-of-type(1) {
         padding-right: 8px;
@@ -301,7 +305,7 @@ export default {
     }
 
     .name {
-      font-size: 14 px;
+      font-size: 14px;
       color: rgba(0, 0, 0, 0.45);
     }
   }
