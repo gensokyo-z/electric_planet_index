@@ -2,6 +2,7 @@
 node_modules
 /dist
 /h5
+/community
 # local env files
 .env.local
 .env.*.local
