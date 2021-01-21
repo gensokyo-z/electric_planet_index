@@ -91,7 +91,7 @@ export default {
   right: 0;
 }
 .layout {
-  width: 1500px;
+  width: 1200px;
   margin: 0 auto;
   .menu-box {
     width: 120px;

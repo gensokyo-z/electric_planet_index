@@ -386,6 +386,7 @@ export default {
       display: flex;
       justify-content: flex-end;
       align-items: center;
+      z-index: 2;
       .el-button {
         margin-right: 20px;
         padding: 10px 10px;
@@ -417,6 +418,7 @@ export default {
     flex-wrap: wrap;
     flex-direction: column;
     border-top: 1px solid #e0e0e0;
+    z-index: 0;
     .el-radio {
       margin-bottom: 20px;
     }
