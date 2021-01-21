@@ -15,7 +15,7 @@
                 <ul class="infinite-list"
                     v-infinite-scroll="onLoad"
                     :infinite-scroll-disabled="disabled"
-                    :infinite-scroll-distance="10">
+                    :infinite-scroll-distance="300">
                   <template v-if="type === 'dynamic'">
                     <li v-for="(item, index1) in dynamicList"
                         :key="index1">
@@ -34,7 +34,7 @@
                   </template>
                 </ul>
                 <p v-show="loading">加载中...</p>
-                <p v-show="disabled"
+                <p v-show="finished"
                    id="footer">{{page===last_page?'没有更多了':''}}</p>
               </div>
             </div>
@@ -89,15 +89,17 @@ export default {
       ],
       subType: 'fans',
       loading: false,
-      disabled: false,
+      finished: false,
       isLoading: false,
       page: 1,
       per_page: 10,
+      current_page: 1,
       last_page: -1,
       msgCount: 0,
       dynamicCount: 0,
       dynamicList: [],
       msgList: [],
+      ajax: false,
       // fansList: [],
       // awesomeList: [],
       // appointList: [],
@@ -105,19 +107,38 @@ export default {
     }
   },
   mounted () {
-    this.getData()
+    setTimeout(() => {
+      this.listenerAction();
+    }, 20);
+    // this.getData()
     if (this.$route.query.type === 'msg') {
       this.type = 'msg'
       this.subType = this.$route.query.subType
       this.$refs.tabBar.active = 2
-      this.bindSubType(this.msgTypeList.find(e => e.value === this.subType))
+      // this.bindSubType(this.msgTypeList.find(e => e.value === this.subType))
+    }
+  },
+  beforeDestroy () {
+    window.removeEventListener('scroll', this.scrollhandle, false)
+  },
+  computed: {
+    disabled () {
+      // eslint-disable-next-line
+      return this.finished
     }
   },
   methods: {
     getData () {
+      if (this.ajax) {
+        return
+      }
+      this.ajax = true
+      this.finished = true
       if (this.type === 'dynamic') {
         getDynamic({ page: this.page, per_page: this.per_page }).then(res => {
           if (res.code === 200 && res.data.length > 0) {
+            this.current_page = res.current_page
+            this.last_page = res.last_page
             res.data.forEach(e => {
               e.user.avatar = util.defaultAvatar(e.user.avatar)
               e.thumb_pic = util.getFirstImg(e.content)
@@ -126,82 +147,52 @@ export default {
             })
             this.dynamicList = this.dynamicList.concat(res.data)
             if (res.last_page === res.current_page) {
-              this.disabled = true
+              this.finished = true
             } else {
               this.loading = false;
               this.page++
             }
           } else {
-            this.disabled = true
+            this.finished = true
           }
-        })
+          this.ajax = false
+        }).catch(() => {
+          this.ajax = false
+        });
       } else {
+        let path = null
         switch (this.subType) {
           case 'fans':
-            getFollowers({ page: this.page, per_page: this.per_page }).then(res => {
-              if (res.code === 200 && res.data.data.length > 0) {
-                this.initList(res.data.data)
-                if (res.last_page === res.current_page) {
-                  this.disabled = true
-                } else {
-                  this.loading = false;
-                  this.page++
-                }
-              } else {
-                this.disabled = true
-                // this.$toast(res.msg)
-              }
-            })
+            path = getFollowers
             break;
           case 'awesome':
-            getLiked({ page: this.page, per_page: this.per_page }).then(res => {
-              if (res.code === 200 && res.data.data.length > 0) {
-                this.initList(res.data.data)
-                if (res.last_page === res.current_page) {
-                  this.disabled = true
-                } else {
-                  this.loading = false;
-                  this.page++
-                }
-              } else {
-                this.disabled = true
-                // this.$toast(res.msg)
-              }
-            })
+            path = getLiked
             break;
           case 'appoint':
-            getAts({ page: this.page, per_page: this.per_page }).then(res => {
-              if (res.code === 200 && res.data.length > 0) {
-                this.initList(res.data.data)
-                if (res.last_page === res.current_page) {
-                  this.disabled = true
-                } else {
-                  this.loading = false;
-                  this.page++
-                }
-              } else {
-                this.disabled = true
-                // this.$toast(res.msg)
-              }
-            })
+            path = getAts
             break;
           default:
-            getComments({ page: this.page, per_page: this.per_page }).then(res => {
-              if (res.code === 200 && res.data.data.length > 0) {
-                this.initList(res.data.data)
-                if (res.last_page === res.current_page) {
-                  this.disabled = true
-                } else {
-                  this.loading = false;
-                  this.page++
-                }
-              } else {
-                this.disabled = true
-                // this.$toast(res.msg)
-              }
-            })
+            path = getComments
             break;
         }
+        path({ page: this.page, per_page: this.per_page }).then(res => {
+          if (res.code === 200 && res.data.data.length > 0) {
+            this.initList(res.data.data)
+            this.current_page = res.current_page
+            this.last_page = res.last_page
+            if (res.last_page === res.current_page) {
+              this.finished = true
+            } else {
+              this.page++
+              this.loading = false;
+            }
+          } else {
+            this.finished = true
+          }
+          this.ajax = false
+        }).catch(() => {
+          this.ajax = false
+        });
       }
     },
     initList (data) {
@@ -229,38 +220,34 @@ export default {
       }
       this.msgList = this.msgList.concat(data)
     },
-    bindTab (type) {
-      this.disabled = false
+    bindTab (type, subType) {
+      this.finished = false
       this.page = 1
+      this.last_page = -1
       this.type = type
-      this.getData()
-    },
-    bindSubType (item) {
-      this.disabled = false
-      this.page = 1
-      this.msgTypeList.forEach(e => { e.active = false })
-      item.active = true
-      this.subType = item.value
+      this.subType = subType
       this.msgList = []
+      this.dynamicList = []
       this.getData()
     },
     onLoad (flag) {
-      if (this.refreshing) {
-        this.list = [];
-        this.refreshing = false;
-      }
       this.getData()
     },
-    async onRefresh () {
-      // 清空列表数据
-      this.disabled = false;
-      // 重新加载数据
-      // 将 loading 设置为 true，表示处于加载状态
-      this.page = 1
-      this.loading = true;
-      this.isLoading = false;
-      await this.onLoad();
-    }
+    scrollhandle (event) {
+      if (this.current_page === this.last_page) {
+        return
+      }
+      const elOffsetTop = document.getElementById('footer').offsetTop
+      const docScrollTop = document.documentElement.scrollTop
+      if (elOffsetTop >= docScrollTop && elOffsetTop < (docScrollTop + window.innerHeight) && !this.loading) {
+        this.finished = false
+        this.getData()
+      }
+    },
+    listenerAction () {
+      window.addEventListener('scroll', this.scrollhandle);
+      document.documentElement.scrollTop = 0;
+    },
   },
   components: {
     TabBar,

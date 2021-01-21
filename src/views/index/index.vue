@@ -13,7 +13,7 @@
                 <ul class="infinite-list"
                     v-infinite-scroll="onLoad"
                     :infinite-scroll-disabled="disabled"
-                    :infinite-scroll-distance="10">
+                    :infinite-scroll-distance="300">
                   <li v-for="(item, index) in cardList"
                       :key="index">
                     <NewCard :type.sync="type"

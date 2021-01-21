@@ -39,10 +39,9 @@
         <div class="content">
           <img :src="content.thumb_pic"
                v-show="content.thumb_pic">
-          <div class="title">{{content.title}}</div>
+          <div class="title">{{content.title||content.likable.content}}</div>
         </div>
       </div>
-
     </div>
     <div class="footer">
       <!-- <TalkApprovalShare :content="content"
