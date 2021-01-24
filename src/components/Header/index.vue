@@ -29,6 +29,8 @@
             <div class="user-panel">
               <ul class="user-menu">
                 <li class="user-menu-item"
+                    @click="goUrl('/mine')">个人中心</li>
+                <li class="user-menu-item"
                     @click="logout">退出</li>
               </ul>
             </div>

@@ -4,19 +4,19 @@
       <Header @getSerch="getSerch" />
       <div class="layout-main">
         <div class="community-container">
-          <div class="planet-box"
-               :style="`background: url(${content.background}) no-repeat center; background-size: 750px 350px;`"
-               v-show="content.id">
-            <div class="top">
-              <div class="name">{{content.name}}</div>
-              <div :class="['btn',{'joined':!content.joined}]"
-                   @click="addPlanet(content)">{{content.joined?'已加入':'加入'}}</div>
-            </div>
-            <div class="buttom">
-              <div class="desc">{{content.intro}}</div>
-            </div>
-          </div>
           <div class="community-main">
+            <div class="planet-box"
+                 :style="`background: url(${content.background}) no-repeat center; background-size: 750px 350px;`"
+                 v-show="content.id">
+              <div class="top">
+                <div class="name">{{content.name}}</div>
+                <div :class="['btn',{'joined':!content.joined}]"
+                     @click="addPlanet(content)">{{content.joined?'已加入':'加入'}}</div>
+              </div>
+              <div class="buttom">
+                <div class="desc">{{content.intro}}</div>
+              </div>
+            </div>
             <div class="card-list">
               <div class="infinite-scroll"
                    style="overflow-y: auto">
@@ -35,6 +35,9 @@
                    id="footer">{{page===last_page?'没有更多了':''}}</p>
               </div>
             </div>
+          </div>
+          <div class="community-aside">
+            <BannerCard />
           </div>
         </div>
       </div>
@@ -173,7 +176,8 @@ export default {
     window.removeEventListener('scroll', this.scrollhandle, false)
   },
   components: {
-    NewCard
+    NewCard,
+    BannerCard: () => import('@/components/banner')
   }
 };
 </script>

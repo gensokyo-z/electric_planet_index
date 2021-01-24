@@ -90,9 +90,7 @@ const defaultForm = {
   url: '',
   source: 'user',
   create_time: '',
-  keywords: '',
   desc_content: '',
-  editor: null
 };
 
 export default {
@@ -292,7 +290,7 @@ export default {
 
       // if (valid) {
       this.loading = true;
-      this.postForm.active = 1;
+      // this.postForm.active = 1;
       if (!this.postForm.thumb_pic) {
         this.postForm.thumb_pic = util.getFirstImg(this.postForm.content);
       }
@@ -330,8 +328,10 @@ export default {
           }
         });
       } else {
+        this.postForm.create_time = this.initDate()
         if (!this.postForm.desc_content) {
-          this.postForm.desc_content = this.postForm.content.substr(0, 140);
+          this.postForm.desc_content = this.editor.txt.text()// 获取  获取纯文本
+          this.postForm.desc_content = this.postForm.desc_content.substr(0, 140);
         }
         this.postForm.content += `<p style="padding:0.4rem;border:1px solid #ccc;line-height:1.2em;color:#999">信息来源于网络，本平台予以链接仅为传递信息之目的，不代表本平台立场。本平台不对文章信息准确性、完整性和及时性做任何保证，亦不对因信赖文章信息引发的任何损失承担任何责任。<p>`;
         if (!this.postForm.thumb_pic) {
@@ -362,6 +362,11 @@ export default {
       await this.uploadOSS(videoFile.file).then(path => {
         this.editor.execCommand('insertHTML', `<video src="https:${path}"  controls="controls"></video>`); // 插入视频
       });
+    },
+    initDate () {
+      let now = new Date()
+      let create_time = `${now.getFullYear}-${now.getMonth() + 1}-${now.getDate()} ${now.getHours > 9 ? now.getHours : '0' + now.getHours}:${now.getMinutes > 9 ? now.getMinutes : '0' + now.getMinutes}:${now.getSeconds > 9 ? now.getSeconds : '0' + now.getSeconds}`
+      return create_time
     }
   }
 };

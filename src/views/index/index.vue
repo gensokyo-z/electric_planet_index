@@ -27,6 +27,9 @@
               </div>
             </div>
           </div>
+          <div class="community-aside">
+            <BannerCard />
+          </div>
         </div>
       </div>
     </div>
@@ -182,7 +185,8 @@ export default {
   components: {
     TabBar: () => import('./components/TabBar'),
     // Search: () => import('@/components/Search/index.vue'),
-    NewCard
+    NewCard,
+    BannerCard: () => import('@/components/banner'),
   }
 };
 </script>

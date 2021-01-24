@@ -30,11 +30,11 @@ module.exports = {
   productionSourceMap: !isProduction || process.env.VUE_APP_CONFIG === 'test', // 生产打包的map文件是否生成
   devServer: {
     open: true, // 是否自动打开浏览器页面
-    host: 'index.tech', // 指定使用一个 host，默认是 localhost
+    host: 'index.ddxq.tech', // 指定使用一个 host，默认是 localhost
     port: 80, // 端口地址
     proxy: {
       [process.env.VUE_APP_BASE_API]: {
-        target: `https://ddxq.tech`,
+        target: `https://www.ddxq.tech`,
         changeOrigin: true,
         secure: false,
         pathRewrite: {

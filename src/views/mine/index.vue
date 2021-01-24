@@ -1,93 +1,99 @@
 <template>
   <section class="mine">
-    <div class="header">
-      <div class="avatar"><img :src="avatar"></div>
-      <div class="name-card">
-        <span class="name">{{userInfo.username}}</span>
-        <span class="desc"
-          @click="openIntroductionEdit">{{userInfo.intro}}<svg class="icon"
-            aria-hidden="true"
-            v-if="accountType==='me'">
-            <use xlink:href="#iconedit"></use>
-          </svg></span>
-      </div>
-      <div class="btn-box">
-        <button class="edit"
-          v-if="accountType==='me'"
-          @click="goto('/profile')">编辑资料</button>
-        <button class="appoint"
-          v-else>+&nbsp;关注</button>
+    <div class="layout">
+      <Header />
+      <div class="community-container">
+        <div class="community-main">
+          <div class="personal-aside">
+            <div class="personal-nav">
+              <div class="info-area">
+                <div class="personal-top">
+                  <div class="avatar">
+                    <img :src="avatar">
+                  </div>
+                  <div class="top-right">
+                    <a class="account-link">编辑资料</a>
+                  </div>
+                </div>
+                <div class="personal-name">
+                  <span class="name">{{userInfo.username}}</span>
+                </div>
+                <div class="personal-privilege">
+                  <div class="personal-intro">{{userInfo.intro || '请输入个人简介'}}</div>
+                </div>
+                <div class="personal-data">
+                  <a class="data-item">
+                    <div class="data-number">{{userInfo.all_likes_count}}</div>
+                    <div class="data-name">点赞</div>
+                  </a>
+                  <div class="data-line"></div>
+                  <a class="data-item">
+                    <div class="data-number">{{userInfo.followers_count}}</div>
+                    <div class="data-name">粉丝</div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="personal-main">
+            <section class="section-simple data-section">
+              <h3 class="data-title">数据概览</h3>
+              <div class="section-main">
+                <ul class="data-list">
+                  <li class="data-item">
+                    <div class="data-name">动态</div>
+                    <div class="data-number">{{dynamicCount}}</div>
+                  </li>
+                  <li class="data-item">
+                    <div class="data-name">参于</div>
+                    <div class="data-number">{{msgCount}}</div>
+                  </li>
+                  <li class="data-item">
+                    <div class="data-name">点赞</div>
+                    <div class="data-number">{{userInfo.all_likes_count}}</div>
+                  </li>
+                  <li class="data-item">
+                    <div class="data-name">粉丝</div>
+                    <div class="data-number">{{userInfo.followers_count}}</div>
+                  </li>
+                </ul>
+              </div>
+            </section>
+            <section class="content-section">
+              <div class="card-list">
+                <div class="infinite-scroll"
+                     style="overflow-y: auto">
+                  <ul class="infinite-list"
+                      v-infinite-scroll="onLoad"
+                      :infinite-scroll-disabled="disabled"
+                      :infinite-scroll-distance="300">
+                    <template v-if="type === 'dynamic'">
+                      <li v-for="(item, index1) in dynamicList"
+                          :key="index1">
+                        <MsgCard :type.sync="type"
+                                 :subType.sync="subType"
+                                 :content="item" />
+                      </li>
+                    </template>
+                    <template v-if="type === 'msg'">
+                      <li v-for="(item, index2) in msgList"
+                          :key="index2">
+                        <MsgCard :type.sync="type"
+                                 :subType.sync="subType"
+                                 :content="item" />
+                      </li>
+                    </template>
+                  </ul>
+                  <p v-show="loading">加载中...</p>
+                  <p v-show="finished"
+                     id="footer">{{page===last_page?'没有更多了':''}}</p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="flex header-footer">
-      <div class="data-board">
-        <div class="item"
-          @click="goto('/message?type=msg&subType=awesome')">
-          <span class="name">点赞</span>
-          <span class="data">{{userInfo.all_likes_count}}</span>
-        </div>
-        <!-- <div class="item"
-             @click="goto('/message?type=msg&subType=fans')">
-          <span class="name">关注</span>
-          <span class="data">{{userInfo.followed_count}}</span>
-        </div> -->
-        <div class="item"
-          @click="goto('/message?type=msg&subType=fans')">
-          <span class="name">粉丝</span>
-          <span class="data">{{userInfo.followers_count}}</span>
-        </div>
-      </div>
-      <button class="logout"
-        @click="logout">退出登录</button>
-    </div>
-    <TabBar :type.sync="type"
-      @bindTab="bindTab"
-      :dynamicCount="dynamicCount"
-      :msgCount="msgCount" />
-
-    <div class="card-list">
-      <!-- <van-list v-model="loading"
-        :finished="finished"
-        offset="300"
-        @load="onLoad"> -->
-        <template v-if="type==='dynamic'">
-          <MsgCard :type.sync="type"
-            :subType.sync="item.subType"
-            v-for="(item, index) in cardList"
-            :key="index"
-            :content="item" />
-        </template>
-        <template v-else>
-          <MsgCard :type.sync="type"
-            :subType.sync="item.subType"
-            v-for="(item, index) in cardList"
-            :key="index"
-            :content="item" />
-        </template>
-      <!-- </van-list> -->
-    </div>
-    <!-- <van-popup v-model="
-               showIntroductionPop"
-      round
-      position="bottom"
-      :style="{ height: '50%' }"> -->
-      <div class="editDialog"
-        ref="editDialog">
-        <div class="title-box">
-          <div class="cancle"
-            @click="handleConfirm(false)">取消</div>
-          <div class="title">个人简介</div>
-          <div class="confirm"
-            @click="handleConfirm(true)">保存</div>
-        </div>
-        <div class="input-box">
-          <van-field v-model="tempObj.intro"
-            type="textarea"
-            placeholder="填写个人简介更容易获得别人的关注哦…" />
-        </div>
-      </div>
-    <!-- </van-popup> -->
-    <div class="footer-pad"></div>
   </section>
 </template>
 <script>
@@ -96,13 +102,10 @@ import { mapState } from 'vuex';
 // import { PullRefresh, Popup, Field, List } from 'vant';
 import { setUserInfo, getUserDynamic, getUserParticipation } from '@/api/user';
 import util from '@/utils/util';
-// Vue.use(PullRefresh);
-// Vue.use(List);
-// Vue.use(Popup);
-// Vue.use(Field);
+
 export default {
   name: 'mine',
-  data() {
+  data () {
     return {
       loading: false,
       finished: false,
@@ -114,27 +117,34 @@ export default {
       tempObj: {},
       cardList: [],
       dynamicCount: 0,
-      msgCount: 0
+      msgCount: 0,
+      page: 1,
+      per_page: 10,
+      current_page: 1,
+      last_page: -1,
+      dynamicList: [],
+      msgList: [],
+      ajax: false,
     };
   },
   computed: {
     ...mapState(['userInfo']),
-    avatar() {
+    avatar () {
       return this.userInfo.avatar ? this.userInfo.avatar : util.defaultAvatar();
     }
   },
-  mounted() {
+  mounted () {
     this.getPosts('dynamic')
     this.getPosts('participate', false);
   },
   methods: {
-    onLoad(flag) {
+    onLoad (flag) {
       this.getPosts(this.type);
     },
-    goto(path) {
+    goto (path) {
       this.$router.push(path);
     },
-    getPosts(type, flag) {
+    getPosts (type, flag) {
       switch (type) {
         case 'dynamic':
           getUserDynamic({ page: 1 }).then(res => {
@@ -146,7 +156,7 @@ export default {
                 e.thumb_pic = util.getFirstImg(e.content);
                 e.thumb_video = util.getFirstVideo(e.content);
               });
-              this.cardList = res.data;
+              this.dynamicList = res.data;
               this.dynamicCount = res.total;
             }
             this.finished = true;
@@ -182,7 +192,7 @@ export default {
               // console.log(object);
 
               if (flag) {
-                this.cardList = res.data;
+                this.msgList = res.data;
               }
               this.msgCount = res.total;
             }
@@ -192,20 +202,20 @@ export default {
           break;
       }
     },
-    bindTab(type) {
+    bindTab (type) {
       this.finished = false;
       this.type = type;
       this.cardList = [];
       this.getPosts(type, true);
     },
-    logout() {
+    logout () {
       this.$router.push('/login');
     },
-    openIntroductionEdit() {
+    openIntroductionEdit () {
       this.tempObj.intro = this.userInfo.intro;
       this.showIntroductionPop = true;
     },
-    handleConfirm(flag) {
+    handleConfirm (flag) {
       this.showIntroductionPop = false;
       if (flag) {
         this.tempObj = {
@@ -228,7 +238,7 @@ export default {
     }
   },
   components: {
-    TabBar: () => import('./components/TabBar'),
+    // TabBar: () => import('./components/TabBar'),
     MsgCard: () => import('@/components/MsgCard')
   }
 };
