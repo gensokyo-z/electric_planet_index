@@ -35,11 +35,12 @@
            v-if="subType === 'fans'">关注了你<span>{{content.created_at}}</span></div>
       <!-- 粉丝tab不显示 -->
       <div class="doc"
-           v-else>
+           v-else
+             v-show="content.title">
         <div class="content">
           <img :src="content.thumb_pic"
                v-show="content.thumb_pic">
-          <div class="title">{{content.title||content.likable.content}}</div>
+          <div class="title">{{content.title}}</div>
         </div>
       </div>
     </div>

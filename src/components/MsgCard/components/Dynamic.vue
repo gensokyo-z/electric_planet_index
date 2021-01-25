@@ -10,7 +10,8 @@
         <span class="new"
               v-show="$route.path === '/message'">发布了新动态</span>
         <span class="new"
-              v-show="$route.path === '/mine'">发布到<span class="from">{{content.planet.name}}</span></span>
+              v-show="$route.path === '/mine'">发布到<span class="from"
+                @click.stop="$router.push('/planetdetail?id='+content.planet_id)">{{content.planet.name}}</span></span>
       </div>
       <div class="right"></div>
     </div>

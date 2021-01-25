@@ -40,23 +40,30 @@
               <h3 class="data-title">数据概览</h3>
               <div class="section-main">
                 <ul class="data-list">
-                  <li class="data-item">
+                  <li class="data-item"
+                      @click="bindTab('dynamic')">
                     <div class="data-name">动态</div>
                     <div class="data-number">{{dynamicCount}}</div>
                   </li>
-                  <li class="data-item">
+                  <li class="data-item"
+                      @click="bindTab('participate')">
                     <div class="data-name">参于</div>
                     <div class="data-number">{{msgCount}}</div>
                   </li>
-                  <li class="data-item">
+                  <!-- <li class="data-item">
                     <div class="data-name">点赞</div>
                     <div class="data-number">{{userInfo.all_likes_count}}</div>
                   </li>
                   <li class="data-item">
                     <div class="data-name">粉丝</div>
                     <div class="data-number">{{userInfo.followers_count}}</div>
-                  </li>
+                  </li> -->
                 </ul>
+                <div class="write-wrapper">
+                  <div>写作是最好的自我投资</div>
+                  <a class="primary-button"
+                     @click="goto('/post')">开始创作</a>
+                </div>
               </div>
             </section>
             <section class="content-section">
@@ -65,21 +72,21 @@
                      style="overflow-y: auto">
                   <ul class="infinite-list"
                       v-infinite-scroll="onLoad"
-                      :infinite-scroll-disabled="disabled"
+                      :infinite-scroll-disabled="finished"
                       :infinite-scroll-distance="300">
                     <template v-if="type === 'dynamic'">
-                      <li v-for="(item, index1) in dynamicList"
+                      <li v-for="(item, index1) in cardList"
                           :key="index1">
                         <MsgCard :type.sync="type"
-                                 :subType.sync="subType"
+                                 :subType.sync="item.subType"
                                  :content="item" />
                       </li>
                     </template>
-                    <template v-if="type === 'msg'">
-                      <li v-for="(item, index2) in msgList"
+                    <template v-else>
+                      <li v-for="(item, index2) in cardList"
                           :key="index2">
                         <MsgCard :type.sync="type"
-                                 :subType.sync="subType"
+                                 :subType.sync="item.subType"
                                  :content="item" />
                       </li>
                     </template>
@@ -122,8 +129,6 @@ export default {
       per_page: 10,
       current_page: 1,
       last_page: -1,
-      dynamicList: [],
-      msgList: [],
       ajax: false,
     };
   },
@@ -139,7 +144,7 @@ export default {
   },
   methods: {
     onLoad (flag) {
-      this.getPosts(this.type);
+      // this.getPosts(this.type);
     },
     goto (path) {
       this.$router.push(path);
@@ -156,27 +161,38 @@ export default {
                 e.thumb_pic = util.getFirstImg(e.content);
                 e.thumb_video = util.getFirstVideo(e.content);
               });
-              this.dynamicList = res.data;
+              this.cardList = res.data;
               this.dynamicCount = res.total;
             }
             this.finished = true;
           });
           break;
-        default:
+        case 'participate':
           getUserParticipation({ page: 1 }).then(res => {
             if (res.code === 200 && res.data.length > 0) {
               res.data.forEach(e => {
                 switch (e.related_type) {
                   case 'likes':
-                    e.title = e.related.likable && e.related.likable.title;
-                    e.content = e.related.likable;
+                    if (e.related.likable_type === 'posts') {
+                      e.content = e.related.likable;
+                      e.title = e.related.likable && e.related.likable.title;
+                    } else {
+                      // e.title = e.related.likable && e.related.likable.title;
+                      e.content = e.related.likable;
+                      if (e.related.likable && e.related.likable.post) {
+                        e.title = e.related.likable.post.title
+                      } else {
+                        e.title = ''
+                      }
+                    }
                     e.subType = 'awesome';
                     break;
                   case 'comments':
-                    e.title = e.related.post && e.related.post.title;
                     e.content = e.related.content;
+                    e.title = e.related.post && e.related.post.title
                     e.subType = 'review';
                     break;
+
                   default:
                     break;
                 }
@@ -192,13 +208,15 @@ export default {
               // console.log(object);
 
               if (flag) {
-                this.msgList = res.data;
+                this.cardList = res.data;
               }
               this.msgCount = res.total;
             }
             this.finished = true;
           });
           this.cardList = [];
+          break;
+        default:
           break;
       }
     },

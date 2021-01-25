@@ -6,7 +6,7 @@
         <div class="community-container">
           <div class="community-main">
             <div class="planet-box"
-                 :style="`background: url(${content.background}) no-repeat center; background-size: 750px 350px;`"
+                 :style="`background: url(${content.background}) no-repeat  center center; background-size: 750px 350px;`"
                  v-show="content.id">
               <div class="top">
                 <div class="name">{{content.name}}</div>
