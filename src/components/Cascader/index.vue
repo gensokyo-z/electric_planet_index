@@ -1,81 +1,81 @@
 <template>
   <div id="address">
     <div class="address-box"
-      @click="showTabBox">
+         @click="showTabBox">
       <el-input :value="regions"
-        type="text"
-        size="mini"
-        placeholder="请选择地区"></el-input>
+                type="text"
+                size="mini"
+                placeholder="请选择地区"></el-input>
       <i class="el-icon-caret-bottom"></i>
     </div>
     <div class="tab-wrap">
       <ul v-show="isShowTab"
-        class="tab-list">
+          class="tab-list">
         <li v-for="items in tab"
-          :key="items.value"
-          :class="items.selected?'select tab':'tab'"
-          @click="bindTap(items.value)">
+            :key="items.value"
+            :class="items.selected?'select tab':'tab'"
+            @click="bindTap(items.value)">
           <a>{{items.name}}</a>
         </li>
       </ul>
       <div v-show="isShowCommon"
-        class="tab-box">
+           class="tab-box">
         <a v-for="items in common"
-          :key="items.name"
-          @click="bindCommon(items.name)"
-          class="city">{{items.name}}</a>
+           :key="items.name"
+           @click="bindCommon(items.name)"
+           class="city">{{items.name}}</a>
         <a @click="bindTap('province')">更多&gt;</a>
         <!-- <span class="forEnglish"
               v-if="enAdderFlag"
               @click="changeENAdder">这是一个外文地址&gt;</span> -->
       </div>
       <div v-show="isShowProvince"
-        class="tab-box province-box">
+           class="tab-box province-box">
         <dl>
           <dt>A-G</dt>
           <dd>
             <a v-for="items in province.A_G"
-              :key="items.name"
-              @click="bindProvince(items.name)">{{items.name}}</a>
+               :key="items.name"
+               @click="bindProvince(items.name)">{{items.name}}</a>
           </dd>
           <dt>H-K</dt>
           <dd>
             <a v-for="items in province.H_K"
-              :key="items.name"
-              @click="bindProvince(items.name)">{{items.name}}</a>
+               :key="items.name"
+               @click="bindProvince(items.name)">{{items.name}}</a>
           </dd>
           <dt>L-S</dt>
           <dd>
             <a v-for="items in province.L_S"
-              :key="items.name"
-              @click="bindProvince(items.name)">{{items.name}}</a>
+               :key="items.name"
+               @click="bindProvince(items.name)">{{items.name}}</a>
           </dd>
           <dt>T-Z</dt>
           <dd>
             <a v-for="items in province.T_Z"
-              :key="items.name"
-              @click="bindProvince(items.name)">{{items.name}}</a>
+               :key="items.name"
+               @click="bindProvince(items.name)">{{items.name}}</a>
           </dd>
         </dl>
       </div>
       <div v-show="isShowCity"
-        class="tab-box city-box">
+           class="tab-box city-box">
         <a v-for="items in city"
-          :key="items.name"
-          @click="bindCity(items.name)">{{items.name}}</a>
+           :key="items.name"
+           @click="bindCity(items.name)">{{items.name}}</a>
       </div>
       <div v-show="isShowCounty"
-        class="tab-box county-box">
+           class="tab-box county-box">
         <a v-for="items in county"
-          :key="items.name"
-          @click="bindCounty(items.name)">{{items.name}}</a>
+           :key="items.name"
+           @click="bindCounty(items.name)">{{items.name}}</a>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import areaList from '@/utils/area';
+import area from '@/utils/area';
 export default {
   name: 'cascader',
   props: {
@@ -84,7 +84,7 @@ export default {
       default: ''
     }
   },
-  data() {
+  data () {
     return {
       tab: [
         {
@@ -112,13 +112,13 @@ export default {
       ],
       common: [
         {
-          name: '上海'
+          name: '上海市'
         },
         {
           name: '深圳市'
         },
         {
-          name: '北京'
+          name: '北京市'
         },
         {
           name: '广州市'
@@ -136,7 +136,7 @@ export default {
           name: '宁波市'
         },
         {
-          name: '天津'
+          name: '天津市'
         },
         {
           name: '杭州市'
@@ -145,7 +145,7 @@ export default {
           name: '青岛市'
         },
         {
-          name: '重庆'
+          name: '重庆市'
         },
         {
           name: '武汉市'
@@ -278,29 +278,39 @@ export default {
     };
   },
   watch: {
-    provinceCode() {
+    provinceCode () {
+      this.city = []
+      this.county = []
       let provinceCode = this.provinceCode.substring(0, 2);
       // eslint-disable-next-line
-      this.city = area.city_list.filter((items, index) => {
-        Object()
-        if (items.code.substring(0, 2) === provinceCode) {
-          return items;
+      let city_list = area.city_list
+      for (let i in city_list) {
+        if (i.substring(0, 2) === provinceCode) {
+          this.city.push({
+            name: city_list[i],
+            number: i
+          })
         }
-      });
+      }
     },
-    cityCode() {
-      // try {
-      //   loadArea({ city: this.cityCode }).then(district => {
-      //     this.county = district;
-      //   });
-      // } catch (e) {
-      //   console.log(e);
-      // }
+    cityCode () {
+      this.county = []
+      let cityCode = this.cityCode.substring(0, 4);
+      // eslint-disable-next-line
+      let county_list = area.county_list
+      for (let i in county_list) {
+        if (i.substring(0, 4) === cityCode) {
+          this.county.push({
+            name: county_list[i],
+            number: i
+          })
+        }
+      }
     }
   },
   methods: {
     // tab条
-    showTabBox() {
+    showTabBox () {
       this.isShowTab = !this.isShowTab;
       if (this.isShowTab) {
         this.bindTap('common');
@@ -314,7 +324,7 @@ export default {
       }
     },
     // 跳转tab
-    bindTap(type) {
+    bindTap (type) {
       switch (type) {
         case 'common':
           this.isShowCommon = true;
@@ -344,7 +354,7 @@ export default {
       this.tabChange(type);
     },
     // tab选择css控制
-    tabChange(type) {
+    tabChange (type) {
       this.tab.forEach(e => {
         if (e.value === type) {
           e.selected = true;
@@ -354,22 +364,24 @@ export default {
       });
     },
     // 选择常用
-    bindCommon(name) {
-      this.provinceCode =
-        areaList.city_list
-          .find(e => {
-            if (name.includes(e.name)) {
-              return e;
-            }
-          })
-          .code.substring(0, 2) + `0000000000`;
-      let provinceName = areaList.province.find(e => {
-        if (e.code === this.provinceCode) {
-          return e;
+    bindCommon (name) {
+      let city_list = area.city_list
+      let provinceList = area.province_list
+      let provinceName = ''
+      for (let i in city_list) {
+        if (city_list[i].includes(name)) {
+          this.provinceCode = i.substring(0, 2)
+          break;
         }
-      }).name;
+      }
+      for (let i in provinceList) {
+        if (i.substr(0, 2) === this.provinceCode) {
+          provinceName = provinceList[i]
+          break;
+        }
+      }
       this.$emit('setRegions', provinceName, 'province');
-      if (name === '北京市' || name === '天津市' || name === '上海市' || name === '重庆市') {
+      if ('北京市'.includes(name) || '天津市'.includes(name) || '上海市'.includes(name) || '重庆市'.includes(name)) {
         this.textToCode(name, 'city');
         this.bindTap('county');
         this.$emit('setRegions', name, 'city');
@@ -378,12 +390,17 @@ export default {
       }
     },
     // 选择省区
-    bindProvince(name) {
+    bindProvince (name) {
+      let province_list = area.province_list
+      for (let i in province_list) {
+        if (province_list[i].includes(name)) {
+          name = province_list[i]
+        }
+      }
       this.$emit('setRegions', name, 'province');
       this.textToCode(name, 'province');
-      if (name === '北京' || name === '天津' || name === '上海' || name === '重庆') {
+      if ('北京市'.includes(name) || '天津市'.includes(name) || '上海市'.includes(name) || '重庆市'.includes(name)) {
         this.textToCode(name, 'city');
-        // this.bindCity(name + "市");
         this.bindTap('county');
         this.$emit('setRegions', name, 'city');
       } else {
@@ -392,63 +409,50 @@ export default {
       }
     },
     // 选择市区
-    bindCity(name) {
+    bindCity (name) {
       this.textToCode(name, 'city');
       this.bindTap('county');
       this.$emit('setRegions', name, 'city');
       this.$emit('setRegions', '', 'county');
     },
     // 选择县区
-    bindCounty(name) {
+    bindCounty (name) {
       name = name === '暂不选择' ? '' : name;
       if (name) {
-        let cityCode =
-          this.county
-            .find(e => {
-              if (name === e.name) {
-                return e;
-              }
-            })
-            .number.substring(0, 4) + `00000000`;
-        let cityName = areaList.city_list.find(e => {
-          if (e.code === cityCode) {
-            return e;
+        let cityCode = this.county.find(e => name === e.name).number.substring(0, 4);
+        let cityName = this.city.find(e => e.number.substring(0, 4) === cityCode).name;
+        this.provinceCode = cityCode.substring(0, 2);
+        let province_list = area.province_list
+        let provinceName = ''
+        for (let i in province_list) {
+          if (i.substring(0, 2) === cityCode.substring(0, 2)) {
+            this.provinceCode = i.substring(0, 2)
+            provinceName = province_list[i]
           }
-        }).name;
-        let provinceCode =
-          areaList.city
-            .find(e => {
-              if (cityName === e.name) {
-                return e;
-              }
-            })
-            .code.substring(0, 2) + `0000000000`;
-        let provinceName = areaList.province_list.find(e => {
-          if (e.code === provinceCode) {
-            return e;
-          }
-        }).name;
+        }
         this.$emit('setRegions', provinceName, 'province');
         this.$emit('setRegions', cityName, 'city');
       }
       this.$emit('setRegions', name, 'county');
       this.showTabBox();
     },
-    textToCode(name, type) {
+    textToCode (name, type) {
       if (type === 'province') {
-        this.provinceCode = areaList.province_list.find(items => {
-          return items.name.includes(name);
-        }).code;
+        let province_list = area.province_list
+        for (let i in province_list) {
+          if (province_list[i].includes(name)) {
+            this.provinceCode = i.substring(0, 2)
+          }
+        }
       } else if (type === 'city') {
-        this.cityCode = areaList.city_list.find(items => {
-          return items.name.includes(name);
-        }).code;
+        let city_list = area.city_list
+        for (let i in city_list) {
+          if (city_list[i].includes(name)) {
+            this.cityCode = i.substring(0, 4)
+          }
+        }
       }
     }
-    // 这是一个外文地址
-    // changeENAdder () {
-    //   this.$emit("changeENAdder")
-    // },
   }
 };
 </script>
@@ -458,11 +462,6 @@ export default {
 }
 .address-box {
   position: relative;
-  // border: 1px solid #999;
-  // margin-left: 90px;
-  // padding-left: 5px;
-  // height: 40px;
-  // line-height: 40px;
   cursor: pointer;
   i {
     width: 10px;
@@ -471,22 +470,15 @@ export default {
     right: 4px;
     top: 6px;
     color: #999;
-    // float: right;
     margin-right: 10px;
   }
-  // .el-input {
-  //   width: 200px;
-  //   pointer-events: none;
-  // }
   .el-input /deep/ .el-input__inner {
     pointer-events: none;
-    // border: none;
   }
 }
 .tab-wrap {
   position: absolute;
   top: 32x;
-  // left: 90px;
   z-index: 10;
   width: 420px;
   .tab-list {
