@@ -376,11 +376,11 @@ export default {
       min-height: 200px;
       margin-bottom: 20px;
       .photo {
+        width: 300px;
+        height: 200px;
         /deep/ .el-image {
           img {
-            width: unset;
-            max-width: 860px;
-            min-height: 200px;
+            // width: unset;
           }
         }
       }

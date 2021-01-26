@@ -12,7 +12,7 @@
                     <img :src="avatar">
                   </div>
                   <div class="top-right">
-                    <a class="account-link">编辑资料</a>
+                    <a class="account-link" @click="goto('/profile')">编辑资料</a>
                   </div>
                 </div>
                 <div class="personal-name">
