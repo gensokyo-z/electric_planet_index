@@ -373,6 +373,7 @@ export default {
     .photo-box {
       // width: 158px;
       // height: 108px;
+      overflow: hidden;
       min-height: 200px;
       margin-bottom: 20px;
       .photo {

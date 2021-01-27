@@ -32,7 +32,6 @@
             </el-row>
             <el-form-item prop="content"
               style="margin: 0 100px;">
-
               <div id="editor"></div>
               <input id="uploadFileVideo"
                 ref="uploadFileVideo"
@@ -65,7 +64,6 @@
             </el-form-item>
           </div>
         </div>
-
       </div>
     </el-form>
   </div>
@@ -112,35 +110,12 @@ export default {
       html: '',
       loading: false,
       rules: {},
-      // tempRoute: {},
       planetList: [],
       tagList: [],
       editor: null
     };
   },
-  computed: {
-    // oss () {
-    //   return this.$store.getters.oss;
-    // }
-  },
   created() {
-    // eslint-disable-next-line
-    // if ((this.isEdit && this.$route.params && this.$route.params.id) || this.$route.query.spider) {
-    //   let id = null;
-    //   let type = '';
-    //   if (this.$route.params && this.$route.params.id !== '0') {
-    //     id = this.$route.params.id;
-    //     type = 'params';
-    //   } else if (this.$route.query.spider) {
-    //     id = this.$route.query.spider;
-    //     type = 'spider';
-    //   }
-    //   this.fetchData(id, type);
-    // }
-    // this.tempRoute = Object.assign({}, this.$route);
-    // if (JSON.stringify(this.oss) === '{}') {
-    //   this.$store.dispatch('getOssToken');
-    // }
     this.$nextTick(() => {
       this.createEditor();
     });
@@ -180,7 +155,9 @@ export default {
       // 最大300M
       this.editor.config.uploadImgMaxSize = 300 * 1024 * 1024;
       this.editor.config.customUploadImg = (files, insert) => {
-        this.upload(files[0]);
+        for (let i of files) {
+          this.upload(i);
+        }
       };
       this.editor.config.onchange = html => {
         this.postForm.content = html;
@@ -191,7 +168,7 @@ export default {
     },
     seteditor() {
       // 给菜单栏中的视频icon绑定相应的点击事件
-      this.editor.$toolbarElem.elems[0].childNodes[17].onclick = e => {
+      this.editor.$toolbarElem.elems[0].childNodes[18].onclick = e => {
         e.stopPropagation();
         e.preventDefault();
         // childNodes 跟随着菜单栏变化
