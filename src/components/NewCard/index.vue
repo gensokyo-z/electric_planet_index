@@ -40,10 +40,9 @@
           <div class="info"
             v-if="content.desc_content"
             v-html="content.desc_content"></div>
-          <div class="info"
+          <!-- <div class="info"
             v-else
-            v-html="content.content"></div>
-
+            v-html="content.content"></div> -->
         </div>
         <!-- 文章图片 -->
         <div class="photo-box"

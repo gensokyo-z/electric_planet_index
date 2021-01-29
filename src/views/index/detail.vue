@@ -9,34 +9,34 @@
               <h1 class="article-title">{{content.title}}</h1>
               <div class="article-info">
                 <div class="article-avatar"
-                     v-show="content.source === 'user'">
+                  v-show="content.source === 'user'">
                   <img :src="content.user.avatar">
                 </div>
                 <div class="article-author"
-                     v-show="content.source === 'user'"> {{content.user.username}}· </div>
+                  v-show="content.source === 'user'"> {{content.user.username}}· </div>
 
-                <div class="article-date">{{content.create_time}}</div>
+                <div class="article-date">{{content.create_time||content.created_at}}</div>
                 <div class="article-date"
-                     v-show="content.url"> <a :href="content.url"
-                     target="_blank">查看原文</a></div>
+                  v-show="content.url"> <a :href="content.url"
+                    target="_blank">查看原文</a></div>
               </div>
               <div class="article-planet"
-                   v-show="content.source !== 'user'">&nbsp;{{content.planet.name}}
+                v-show="content.source !== 'user'">&nbsp;{{content.planet.name}}
                 <a v-for="(tag,idx) in content.tags"
-                   :key="idx">#{{tag.name}}</a>
+                  :key="idx">#{{tag.name}}</a>
               </div>
               <div class="article-content"
-                   v-html="content.content"></div>
+                v-html="content.content"></div>
               <section class="comments-section"
-                       id="comments-section"
-                       ref="commentsSection"
-                       v-show="commentList">
+                id="comments-section"
+                ref="commentsSection"
+                v-show="commentList">
                 <h2 class="section-title">全部评论</h2>
                 <div class="comment-container">
                   <ul class="comments-list">
                     <li class="comment-item"
-                        v-for="(item,index) in commentList"
-                        :key="index">
+                      v-for="(item,index) in commentList"
+                      :key="index">
                       <div class="author-avatar">
                         <img :src="item.user.avatar">
                       </div>
@@ -50,22 +50,22 @@
                         </div>
                         <div class="comment-footer">
                           <div class="footer-button"
-                               @click="checkAuth(bindApproval(item))">
+                            @click="checkAuth(bindApproval(item))">
                             <div class="like-simple">
                               <i class="iconfont iconzan"></i>
                               <span class="data-number">{{item.user_liked_count>0?item.user_liked_count:'点赞'}}</span>
                             </div>
                           </div>
                           <div class="footer-button"
-                               @click="checkAuth(handlerInputDialog(item))">
+                            @click="checkAuth(handlerInputDialog(item))">
                             <i class="iconfont iconpinglun"></i>
                             <span class="data-number">{{item.second_comments_count>0?item.second_comments_count:'回复'}}</span>
                           </div>
                         </div>
                         <ul class="reply-container">
                           <li class="comment-item"
-                              v-for="(item1,index) in item.second_comments"
-                              :key="index">
+                            v-for="(item1,index) in item.second_comments"
+                            :key="index">
                             <div class="author-avatar">
                               <img :src="item1.user.avatar">
                             </div>
@@ -79,14 +79,14 @@
                               </div>
                               <div class="comment-footer">
                                 <div class="footer-button"
-                                     @click="checkAuth(bindApproval(item1))">
+                                  @click="checkAuth(bindApproval(item1))">
                                   <div class="like-simple">
                                     <i class="iconfont iconzan"></i>
                                     <span class="data-number">点赞</span>
                                   </div>
                                 </div>
                                 <div class="footer-button"
-                                     @click="checkAuth(handlerInputDialog(item1))">
+                                  @click="checkAuth(handlerInputDialog(item1))">
                                   <i class="iconfont iconpinglun"></i>
                                   <span class="data-number">回复</span>
                                 </div>
@@ -109,25 +109,25 @@
       </div>
     </div>
     <el-dialog title="发表评论"
-               top="30vh"
-               width="630px"
-               :visible.sync="showInput"
-               custom-class="input-item"
-               append-to-body>
+      top="30vh"
+      width="630px"
+      :visible.sync="showInput"
+      custom-class="input-item"
+      append-to-body>
       <div class="comment-editor">
         <div class="editor">
           <el-input type="textarea"
-                    :rows="4"
-                    placeholder="请输入评论内容"
-                    maxlength="140"
-                    show-word-limit
-                    v-model="message">
+            :rows="4"
+            placeholder="请输入评论内容"
+            maxlength="140"
+            show-word-limit
+            v-model="message">
           </el-input>
         </div>
         <div class="editor-function">
           <el-button :class="{'empty':message.length === 0}"
-                     :disabled="message.length === 0"
-                     @click="sendMessage">回复</el-button>
+            :disabled="message.length === 0"
+            @click="sendMessage">回复</el-button>
         </div>
       </div>
     </el-dialog>
@@ -137,7 +137,7 @@
 import { getPostsDetail, getPostsComments, comments, commentsLikes, commentsUnlikes } from '@/api/post';
 import util from '@/utils/util';
 export default {
-  data () {
+  data() {
     return {
       flash: true,
       loading: true,
@@ -154,7 +154,7 @@ export default {
       message: ''
     };
   },
-  mounted () {
+  mounted() {
     this.$bus.$on('snedComment', () => {
       this.getDetail(true);
     });
@@ -164,16 +164,16 @@ export default {
     // })
   },
   methods: {
-    checkAuth (cb) {
-      this.$store.dispatch('needAuth', cb)
+    checkAuth(cb) {
+      this.$store.dispatch('needAuth', cb);
     },
-    conutDown (time = 700) {
+    conutDown(time = 700) {
       setTimeout(() => {
         this.flash = false;
         this.loading = false;
       }, time);
     },
-    getDetail (flag) {
+    getDetail(flag) {
       if (flag) {
         const commentsSection = this.$refs.commentsSection;
         if (commentsSection) {
@@ -192,6 +192,7 @@ export default {
             res.data.weiboAvatar = util.defaultAvatar('');
           }
           res.data.thumb_pic = util.getFirstImg(res.data.content);
+          res.data.planetBg = this.$state.allPlanet.find(v => v.id === res.data.planet_id).avatar;
           this.content = res.data;
           if (this.content.url) {
             this.conutDown(time);
@@ -203,10 +204,10 @@ export default {
             if (res.code === 200) {
               res.data.forEach(e => {
                 e.comments_count = e.second_comments_count;
-                e.user.avatar = util.defaultAvatar(e.user.avatar)
+                e.user.avatar = util.defaultAvatar(e.user.avatar);
                 e.second_comments.forEach(v => {
-                  v.user.avatar = util.defaultAvatar(v.user.avatar)
-                })
+                  v.user.avatar = util.defaultAvatar(v.user.avatar);
+                });
               });
               this.commentList = res.data;
             }
@@ -214,7 +215,7 @@ export default {
         }
       });
     },
-    bindApproval (item) {
+    bindApproval(item) {
       if (item.has_liked) {
         commentsUnlikes(item.id).then(res => {
           if (res.code === 200) {
@@ -233,11 +234,11 @@ export default {
         });
       }
     },
-    handlerInputDialog (item) {
-      this.comment = item
-      this.showInput = true
+    handlerInputDialog(item) {
+      this.comment = item;
+      this.showInput = true;
     },
-    sendMessage () {
+    sendMessage() {
       let content = this.message;
       if (content.length > 140) {
         return this.$message('请限制评论在140个字以内');
@@ -256,10 +257,10 @@ export default {
         }
       });
     },
-    goBack () {
+    goBack() {
       this.$router.back();
     },
-    addPlanet () {
+    addPlanet() {
       this.$dialog
         .confirm({
           title: '提示',
@@ -272,10 +273,10 @@ export default {
           // on cancel
         });
     },
-    sendComment () { },
+    sendComment() {}
   },
   computed: {
-    btnName () {
+    btnName() {
       return '加入';
     }
   }

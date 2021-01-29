@@ -1,117 +1,67 @@
 <template>
   <section class="share-content"
-           ref="dowmImg">
+    ref="dowmImg">
     <div class="share-header">
-      <img class="avatar"
-           src="@/assets/images/logo.png">
+      <img class="logo"
+        src="@/assets/images/logo.png">
+      <span>电动星球</span>
     </div>
     <div class="share-body">
       <div class="header-title">
         <div class="left">
-          <svg class="icon"
-               aria-hidden="true">
-            <use xlink:href="#icontab-shouye-xingqiu"></use>
-          </svg>
+          <img :src="content.planetBg"
+            class="icon">
           <span></span>
           <span class="planet"
-                v-if="content.planet">{{content.planet.name}}</span>
+            v-if="content.planet">{{content.planet.name}}</span>
         </div>
       </div>
       <div class="content-body">
         <div class="item-title">{{content.title}}</div>
-        <div class="item-content"
-             v-html="content.content"></div>
+        <div class="item-content">
+          <div class="qr-code"
+            ref="qrCode"></div>
+        </div>
       </div>
       <div class="content-footer">
-        <div class="left">
-          <div class="user-info">
-            <img class="logo"
-                 :src="content.user.avatar">
+        <div class="user">
+          <!-- <div class="user-info">
+            <img class="avatar"
+              :src="content.user.avatar">
             <span>{{content.user.username}}</span>
-          </div>
-          <div class="info"
-               v-if="content.planet">扫码查看更多{{content.planet.name}}相关内容</div>
-        </div>
-        <div class="right">
-          <div class="qr-code"
-               ref="qrCode"></div>
+          </div> -->
+          <div class="info">用微信扫描二维码</div>
+          <div class="info">分享至好友和朋友圈</div>
         </div>
       </div>
-    </div>
-    <div class="footer-btn">
-      <a @click="saveImg">
-        <svg class="icon"
-             aria-hidden="true">
-          <use xlink:href="#iconfenxiang-baocun"></use>
-        </svg>
-        <span>保存图片</span>
-      </a>
-      <a>
-        <svg class="icon"
-             aria-hidden="true">
-          <use xlink:href="#iconfenxiang-fenxiang"></use>
-        </svg>
-        <span @click="showVanShare = true">分享链接</span>
-      </a>
     </div>
 
   </section>
 </template>
 <script>
-import Vue from 'vue';
 import QRCode from 'QRCode';
 import html2canvas from 'html2canvas';
 export default {
   props: {
     content: {
       type: Object,
-      default: () => { }
+      default: () => {}
     },
     showShare: {
       type: Boolean,
       default: () => false
     }
   },
-  data () {
+  data() {
     return {
-      showVanShare: false,
-      options: [
-        // { name: '微信', icon: 'wechat' },
-        // { name: '微博', icon: 'weibo' },
-        // { name: 'QQ', icon: 'qq' },
-        { name: '复制链接', icon: 'link' },
-      ],
-      data: {
-        qrCode: null
-      }
+      qrCode: null
     };
   },
+  mounted() {
+    this.getCode();
+  },
   methods: {
-    onSelect (option) {
-      this.showVanShare = false;
-      switch (option.name) {
-        case '微信':
-          this.$message('分享到微信')
-          break;
-        case '微博':
-          this.$message('分享到微博')
-          break;
-        case 'QQ':
-          this.$message('分享到QQ')
-          break;
-        default:
-          this.$copyText('http://ddxq.tech/h5/postdetail?share=1&id=' + this.content.id).then(
-            () => {
-              this.$message('复制成功!内容已经拷贝至剪贴板.');
-            },
-            () => {
-              this.$message('复制失败');
-            }
-          );
-          break;
-      }
-    },
-    dataURLToBlob (dataurl) {
+    dataURLToBlob(dataurl) {
       let arr = dataurl.split(',');
       let mime = arr[0].match(/:(.*?);/)[1];
       let bstr = atob(arr[1]);
@@ -125,7 +75,7 @@ export default {
     /* 保存图片的方法（即按钮点击触发的方法）
       第一个参数为需要保存的div的id名
       第二个参数为保存图片的名称 */
-    saveImg () {
+    saveImg() {
       let canvasID = this.$refs.dowmImg;
       let that = this;
       let a = document.createElement('a');
@@ -148,171 +98,158 @@ export default {
         URL.revokeObjectURL(blob);
         document.body.removeChild(a);
       });
+    },
+    getCode() {
+      // eslint-disable-next-line no-unused-vars
+      this.qrCode = new QRCode(this.$refs.qrCode, {
+        text: location.href,
+        width: 180,
+        height: 180,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.L
+      });
     }
   },
   watch: {
     showShare: {
-      handler (val) {
+      handler(val) {
         if (val) {
-          // eslint-disable-next-line no-unused-vars
-          this.qrCode = new QRCode(this.$refs.qrCode, {
-            text: location.href,
-            width: 92,
-            height: 92,
-            colorDark: '#000000',
-            colorLight: '#ffffff',
-            correctLevel: QRCode.CorrectLevel.L
-          });
+          // this.getCode();
         } else {
-          const codeHtml = this.$refs.qrCode // document.getElementById("qrcode");
+          const codeHtml = this.$refs.qrCode; // document.getElementById("qrcode");
           codeHtml.innerHTML = '';
         }
       },
       deep: true
-    },
+    }
     // 图片转换格式的方法 直接使用就好  不需要知道为什么
   }
 };
 </script>
 <style lang="less" scoped>
 .share-content {
-  width: 632px;
+  width: 300px;
+  border-radius: 20px;
+  box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.1);
   .share-header {
     width: 100%;
-    height: 128px;
+    height: 50px;
     background: #ffdd27;
     display: flex;
     align-items: center;
     justify-content: center;
+
     .logo {
-      width: 72px;
-      height: 72px;
+      width: 30px;
+      height: 30px;
     }
-    border-radius: 50px 50px 0 0;
+    span {
+      padding-left: 10px;
+      color: rgba(0, 0, 0, 0.9);
+      font-size: 18px;
+      font-weight: 600;
+    }
+    border-radius: 20px 20px 0 0;
   }
   .share-body {
     width: 100%;
-    padding: 48px 32px 32px 32px;
+    padding: 28px 16px 16px 16px;
     background-color: #fff;
+    border-radius: 0 0 20px 20px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
     .header-title {
-      margin-bottom: 34px;
+      margin-bottom: 17px;
       padding: 16px;
       width: 100%;
-      height: 64px;
+      height: 40px;
       box-sizing: border-box;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: linear-gradient(90deg, rgba(0, 0, 0, 0.04) 0%, rgba(255, 255, 255, 0.04) 100%);
-      border-radius: 32px 32px 0 0;
+      background: linear-gradient(90deg, rgba(0, 0, 0, 0.1) 0%, rgba(226, 226, 226, 0.04) 100%);
+      border-radius: 16px 16px 0 0;
       .left {
         display: flex;
         align-items: center;
         .icon {
-          margin-right: 16px;
-          width: 48px;
-          height: 48px;
+          margin-right: 8px;
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
         }
         span:nth-of-type(1) {
-          padding-right: 16px;
-          font-size: 28px;
+          padding-right: 8px;
+          font-size: 18px;
           color: rgba(0, 0, 0, 0.45);
         }
         .planet {
-          font-size: 28px;
+          font-size: 16px;
           color: rgba(0, 0, 0, 0.9);
         }
       }
     }
     .content-body {
-      margin-top: 48px;
+      margin-top: 12px;
       .item-title {
-        height: 104px;
+        margin-left: 20px;
         overflow: hidden;
-        font-size: 36px;
+        font-size: 18px;
         font-weight: 600;
         color: rgba(0, 0, 0, 0.9);
-        line-height: 57px;
       }
       .item-content {
-        margin-top: 32px;
-        height: 176px;
-        overflow: hidden;
-        font-size: 29px;
-        font-weight: 400;
-        color: rgba(0, 0, 0, 0.45);
-        line-height: 44px;
-      }
-    }
-    .content-footer {
-      margin-top: 48px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      .left,
-      .right {
-        display: flex;
-      }
-      .left {
-        flex-direction: column;
-        .user-info {
-          margin-bottom: 16px;
-          display: flex;
-          align-items: center;
-          span {
-            font-size: 29px;
-            color: rgba(0, 0, 0, 0.9);
-          }
-        }
-        .avatar {
-          margin-right: 16px;
-          width: 48px;
-          height: 48px;
-        }
-        .info {
-          font-size: 24px;
-          color: rgba(0, 0, 0, 0.45);
-        }
-      }
-      .right {
+        margin-top: 16px;
         .qr-code {
           padding: 5px;
-          width: 108px;
-          height: 108px;
+          width: 180px;
+          height: 180px;
+          margin: 0 auto;
           border-radius: 4px;
           border: 1px solid rgba(0, 0, 0, 0.15);
           /deep/ canvas,
           /deep/ img {
-            width: 94px;
-            height: 94px;
+            width: 167px;
+            height: 167px;
           }
         }
       }
     }
-  }
-  .footer-btn {
-    width: 100%;
-    background: #eeeeee;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 0 0 50px 50px;
-    a {
+    .content-footer {
+      margin-top: 24px;
+      width: 100%;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      margin: 38px 0;
-      padding: 0 76px;
-      justify-content: center;
-      &:nth-of-type(1) {
-        border-right: 1px solid #ccc;
+      .user {
+        display: flex;
       }
-      span {
-        font-size: 29px;
-      }
-      .icon {
-        width: 27px;
-        height: 27px;
-        margin-right: 16px;
+      .user {
+        flex-direction: column;
+        width: 100%;
+        .user-info {
+          margin-bottom: 8px;
+          display: flex;
+          align-items: center;
+          span {
+            font-size: 18px;
+            color: rgba(0, 0, 0, 0.9);
+          }
+          .avatar {
+            margin-right: 16px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+          }
+        }
+
+        .info {
+          width: 100%;
+          margin: 0 auto;
+          text-align: center;
+          font-size: 18px;
+          color: rgba(0, 0, 0, 0.45);
+        }
       }
     }
   }

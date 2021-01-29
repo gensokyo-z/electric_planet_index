@@ -1,17 +1,14 @@
 <template>
   <section class="input-item">
- 
-      <div class="wrapper"
-        @click.stop>
-        <ShareContent :content="content"
-          :showShare="showShare" />
-      </div>
+    <div class="wrapper">
+      <ShareContent :content="content"
+        :showShare="showShare"
+        v-show="showShare" />
+    </div>
   </section>
 </template>
 <script>
-import Vue from 'vue';
 import ShareContent from './ShareContent';
-import util from '@/utils/util';
 export default {
   props: {
     content: {
@@ -28,27 +25,22 @@ export default {
     };
   },
   methods: {
-    async openShowShare() {
-      let needAuth = false;
-      if (!util.getcookie('TOKEN')) {
-        await this.$store
-          .dispatch('getInfo')
-          .then(res => {})
-          .catch(err => {
-            needAuth = true;
-            return console.log(err);
-          });
-      }
-      if (needAuth) return;
-      this.showShare = false;
+    checkAuth(cb) {
+      this.$store.dispatch('needAuth', cb);
+    },
+    async openShowShare(flag) {
+      this.checkAuth(() => {
+        this.showShare = flag;
+      });
     }
   }
 };
 </script>
 <style lang="less" scoped>
-.van-overlay {
-  display: flex;
-  align-items: center;
+.input-item {
+  position: absolute;
+  right: 0;
+  bottom: 30px;
 }
 .wrapper {
   display: flex;

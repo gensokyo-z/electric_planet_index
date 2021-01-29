@@ -1,16 +1,16 @@
 <template>
   <section class="component-footer">
     <div class="comment-button"
-         @click="checkAuth(initInput)">我也说一句...</div>
+      @click="checkAuth(initInput)">我也说一句...</div>
     <div class="bottom-button"
-         @click="checkAuth(goComment)">
+      @click="checkAuth(goComment)">
       <i class="iconfont iconpinglun"></i>
       <span class="data-number">{{content.comments_count ||0}}</span>
     </div>
     <div class="bottom-button"
-         @click="checkAuth(bindApproval)">
+      @click="checkAuth(bindApproval)">
       <i class="iconfont iconzan"
-         :class="{'has-liked':hasLiked}"></i>
+        :class="{'has-liked':hasLiked}"></i>
       <span class="data-number">{{userLikedCount|| 0}}</span>
     </div>
     <!-- <div class="bottom-button">
@@ -23,43 +23,46 @@
         <span class="data-number"
               @click="checkAuth(goComment)">收藏</span>
       </div> -->
-      <div class="popover share-popover">
+      <div class="popover share-popover"
+        @mouseenter="showShareCard(true)"
+        @mouseleave="showShareCard(false)">
         <div class="popover-eleplanet">
           <div class="share-button">
             <i class="iconfont icondenglu-weixin"></i>
-            <span class="data-number"
-                  @click="checkAuth(goComment)"> 分享</span>
+            <span class="data-number"> 分享</span>
           </div>
         </div>
+        <Share :content="content"
+          ref="share" />
       </div>
-      <div class="popover">
+      <!-- <div class="popover">
         <div class="popover-eleplanet">
           <div class="more-button">
             <i class="iconfont iconellipsis"></i>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
     <el-dialog title="发表评论"
-               top="30vh"
-               width="630px"
-               :visible.sync="showInput"
-               custom-class="input-item"
-               append-to-body>
+      top="30vh"
+      width="630px"
+      :visible.sync="showInput"
+      custom-class="input-item"
+      append-to-body>
       <div class="comment-editor">
         <div class="editor">
           <el-input type="textarea"
-                    :rows="4"
-                    placeholder="请输入评论内容"
-                    maxlength="140"
-                    show-word-limit
-                    v-model="message">
+            :rows="4"
+            placeholder="请输入评论内容"
+            maxlength="140"
+            show-word-limit
+            v-model="message">
           </el-input>
         </div>
         <div class="editor-function">
           <el-button :class="{'empty':message.length === 0}"
-                     :disabled="message.length === 0"
-                     @click="sendMessage">回复</el-button>
+            :disabled="message.length === 0"
+            @click="sendMessage">回复</el-button>
         </div>
       </div>
     </el-dialog>
@@ -72,10 +75,13 @@ export default {
   props: {
     content: {
       type: Object,
-      default: () => { }
+      default: () => {}
     }
   },
-  data () {
+  components: {
+    Share: () => import('@/components/ShareImg/index')
+  },
+  data() {
     return {
       message: '',
       showInput: false,
@@ -85,7 +91,7 @@ export default {
   },
   watch: {
     content: {
-      handler (val) {
+      handler(val) {
         this.hasLiked = val.has_liked;
         this.userLikedCount = val.user_liked_count;
       },
@@ -93,14 +99,14 @@ export default {
     }
   },
   methods: {
-    checkAuth (cb) {
-      this.$store.dispatch('needAuth', cb)
+    checkAuth(cb) {
+      this.$store.dispatch('needAuth', cb);
     },
-    initInput () {
-      this.message = ''
-      this.showInput = true
+    initInput() {
+      this.message = '';
+      this.showInput = true;
     },
-    bindApproval () {
+    bindApproval() {
       if (this.hasLiked) {
         postUnlike(this.content.id).then(res => {
           if (res.code === 200) {
@@ -119,7 +125,7 @@ export default {
         });
       }
     },
-    sendMessage () {
+    sendMessage() {
       let content = this.message;
       if (content.length > 140) {
         return this.$message('请限制评论在140个字以内');
@@ -138,8 +144,11 @@ export default {
         }
       });
     },
-    goComment () {
+    goComment() {
       this.$bus.$emit('snedComment');
+    },
+    showShareCard(flag) {
+      this.$refs.share.openShowShare(flag);
     }
   }
 };
