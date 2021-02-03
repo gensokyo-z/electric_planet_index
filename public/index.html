@@ -24,16 +24,22 @@
         }
       </style>
       <script>
-
-        window.οnlοad = function () {
-          if (document.documentElement.scrollHeight <= document.documentElement.clientHeight) {
-            bodyTag = document.getElementsByTagName('body')[0];
-            bodyTag.style.height = document.documentElement.clientWidth / screen.width * screen.height + 'px';
-          }
-          setTimeout(function () {
-            window.scrollTo(0, 1)
-          }, 0);
-        };
+        var _hmt = _hmt || [];
+        (function () {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?510efe5a6ce0169da007b59ccfbf99d5";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        // window.οnlοad = function () {
+        //   if (document.documentElement.scrollHeight <= document.documentElement.clientHeight) {
+        //     bodyTag = document.getElementsByTagName('body')[0];
+        //     bodyTag.style.height = document.documentElement.clientWidth / screen.width * screen.height + 'px';
+        //   }
+        //   setTimeout(function () {
+        //     window.scrollTo(0, 1)
+        //   }, 0);
+        // };
       </script>
 </head>
 

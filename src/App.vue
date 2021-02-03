@@ -58,6 +58,7 @@ export default {
     //   signature: '', // 必填，签名
     //   jsApiList: [] // 必填，需要使用的JS接口列表
     // });
+    this.$store.dispatch('getAllPlanetList');
   },
   methods: {
     checkBrowser() {
