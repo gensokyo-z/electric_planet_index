@@ -14,7 +14,7 @@
         @click.stop="addPlanet(content)"
         v-if="$route.path !=='/planetdetail'">
         <button class="add"
-          v-if="!joined">{{`+ 加入`}}</button>
+          v-if="!joined">{{`加入`}}</button>
         <button class="enter"
           v-else>{{`进入`}}</button>
       </div>
@@ -183,6 +183,7 @@ export default {
               if (res.code === 200) {
                 this.$store.dispatch('getUserPlanetList').then(() => {
                   this.$message.success('已成功加入星球');
+                  this.$emit('getData', this.type);
                 });
               }
             });
@@ -284,9 +285,10 @@ export default {
         &::after {
           position: absolute;
           top: 50%;
+          right: 15px;
           transform: translateY(-50%) rotateZ(-45deg);
-          width: 15px;
-          height: 15px;
+          width: 12px;
+          height: 12px;
           content: '';
           border-right: 1px solid #979797;
           border-bottom: 1px solid #979797;
