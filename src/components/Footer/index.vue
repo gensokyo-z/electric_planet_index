@@ -137,7 +137,7 @@ export default {
         if (res.code === 200) {
           this.message = '';
           this.showInput = false;
-          this.$bus.$emit('snedComment');
+          this.$bus.$emit('sendComment');
           this.$message.success('评论成功！');
         } else {
           this.$message(res.msg);
@@ -145,7 +145,7 @@ export default {
       });
     },
     goComment() {
-      this.$bus.$emit('snedComment');
+      this.$bus.$emit('sendComment');
     },
     showShareCard(flag) {
       this.$refs.share.openShowShare(flag);

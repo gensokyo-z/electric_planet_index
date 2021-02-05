@@ -357,9 +357,13 @@ export default {
     },
     initDate() {
       let now = new Date();
-      let create_time = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()} ${now.getHours() > 9 ? now.getHours() : '0' + now.getHours()}:${
-        now.getMinutes() > 9 ? now.getMinutes() : '0' + now.getMinutes()
-      }:${now.getSeconds() > 9 ? now.getSeconds() : '0' + now.getSeconds()}`;
+      let year = now.getFullYear()
+      let month = now.getMonth() + 1
+      let date = now.getDate()
+      let hours = now.getHours() > 9 ? now.getHours() : '0' + now.getHours()
+      let minutes = now.getMinutes() > 9 ? now.getMinutes() : '0' + now.getMinutes()
+      let seconds = now.getSeconds() > 9 ? now.getSeconds() : '0' + now.getSeconds()
+      let create_time = year + '-' + month + '-' + date + ' ' + hours + ':' + minutes + ':' + seconds
       return create_time;
     }
   }

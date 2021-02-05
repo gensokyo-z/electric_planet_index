@@ -8,6 +8,14 @@ export function joinPlanet(id) {
   });
 }
 
+// 退出星球
+export function quitPlanet(id) {
+  return request({
+    url: `/api/feed/planets/${id}/quit`,
+    method: 'post'
+  });
+}
+
 // 获取星球下的文章（分页）
 export function getPlanetPosts(params) {
   return request({

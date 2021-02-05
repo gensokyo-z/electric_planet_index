@@ -39,7 +39,8 @@
           v-if="!content.thumb_video">
           <div class="info"
             v-if="content.desc_content"
-            v-html="content.desc_content"></div>
+            v-html="content.desc_content"
+            @click="goUrl(`/postdetail?id=${content.id}`)"></div>
           <!-- <div class="info"
             v-else
             v-html="content.content"></div> -->
@@ -180,7 +181,9 @@ export default {
           .then(() => {
             joinPlanet(content.planet_id).then(res => {
               if (res.code === 200) {
-                this.goUrl(`/planetdetail?id=${content.planet_id}`);
+                this.$store.dispatch('getUserPlanetList').then(() => {
+                  this.$message.success('已成功加入星球');
+                });
               }
             });
           })
@@ -332,6 +335,7 @@ export default {
         -webkit-line-clamp: 2;
         /*! autoprefixer: off */
         -webkit-box-orient: vertical;
+        cursor: pointer;
       }
     }
 

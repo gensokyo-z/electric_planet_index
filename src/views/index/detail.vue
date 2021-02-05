@@ -14,7 +14,6 @@
                 </div>
                 <div class="article-author"
                   v-show="content.source === 'user'"> {{content.user.username}}· </div>
-
                 <div class="article-date">{{content.create_time||content.created_at}}</div>
                 <div class="article-date"
                   v-show="content.url"> <a :href="content.url"
@@ -155,10 +154,11 @@ export default {
     };
   },
   mounted() {
-    this.$bus.$on('snedComment', () => {
+    this.$bus.$on('sendComment', () => {
       this.getDetail(true);
     });
-    this.getDetail(false);
+    let flag = !!this.$route.query.sendComment
+    this.getDetail(flag);
     // document.querySelector('#app').addEventListener('click', () => {
     //   this.hiddenMeun = false
     // })
@@ -174,14 +174,6 @@ export default {
       }, time);
     },
     getDetail(flag) {
-      if (flag) {
-        const commentsSection = this.$refs.commentsSection;
-        if (commentsSection) {
-          setTimeout(() => {
-            commentsSection.scrollIntoView(true);
-          }, 100);
-        }
-      }
       getPostsDetail(this.id).then(res => {
         if (res.code === 200) {
           let time = 700;
@@ -201,6 +193,14 @@ export default {
             this.loading = false;
           }
           getPostsComments({ id: this.id, page: 1 }).then(res => {
+            if (flag) {
+              const commentsSection = this.$refs.commentsSection;
+              if (commentsSection) {
+                setTimeout(() => {
+                  commentsSection.scrollIntoView(true);
+                }, 100);
+              }
+            }
             if (res.code === 200) {
               res.data.forEach(e => {
                 e.comments_count = e.second_comments_count;
@@ -250,7 +250,7 @@ export default {
         if (res.code === 200) {
           this.message = '';
           this.showInput = false;
-          this.$bus.$emit('snedComment');
+          this.$bus.$emit('sendComment');
           this.$message.success('评论成功！');
         } else {
           this.$message(res.msg);

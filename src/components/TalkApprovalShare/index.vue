@@ -2,13 +2,14 @@
   <div class="tool">
     <div class="tool-bar">
       <div class="talk"
-           @click="bindTalk">
+        @click="bindTalk">
         <i class="iconfont iconpinglun"></i>
         <span>{{content.comments_count===0?'回复':content.comments_count}}</span>
       </div>
       <div class="approval"
-           @click="bindApproval">
-        <i class="iconfont iconzan" :class="{active:hasLiked}"></i>
+        @click="bindApproval">
+        <i class="iconfont iconzan"
+          :class="{active:hasLiked}"></i>
         <!-- <img v-else
              class="icon"
              src="@/assets/images/zan.png"> -->
@@ -37,7 +38,7 @@ export default {
   props: {
     content: {
       type: Object,
-      default: () => { }
+      default: () => {}
     },
     type: {
       type: String,
@@ -51,7 +52,7 @@ export default {
   components: {
     // ShareImg
   },
-  data () {
+  data() {
     return {
       hasLiked: false,
       userLikedCount: 0
@@ -59,7 +60,7 @@ export default {
   },
   watch: {
     content: {
-      handler (val) {
+      handler(val) {
         this.hasLiked = val.has_liked;
         this.userLikedCount = val.user_liked_count;
       },
@@ -67,16 +68,16 @@ export default {
     }
   },
   methods: {
-    bindTalk () {
+    bindTalk() {
       if (this.$route.path.includes('postdetail')) {
         this.$refs.inputItem.showInput = true;
       } else {
-        this.$router.push(`/postdetail?id=${this.content.id}`);
+        this.$router.push(`/postdetail?id=${this.content.id}&sendComment=1`);
       }
     },
-    bindApproval () {
+    bindApproval() {
       if (!util.getcookie('TOKEN')) {
-        this.$store.dispatch('needAuth')
+        this.$store.dispatch('needAuth');
       }
       if (this.type === 'post') {
         if (this.hasLiked) {
@@ -131,6 +132,7 @@ export default {
     align-items: center;
     font-size: 14px;
     line-height: 18px;
+    cursor: pointer;
   }
   .share {
     margin-right: 0;
