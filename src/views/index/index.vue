@@ -156,7 +156,7 @@ export default {
       this.getClear();
     },
     gotoDetail(item) {
-      this.$router.push(`/postdetail?id=${item.id}`);
+      this.$router.push(`/docdetail?id=${item.id}`);
     },
     listenerAction() {
       window.addEventListener('scroll', this.scrollhandle);

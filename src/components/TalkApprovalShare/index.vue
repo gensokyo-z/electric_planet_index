@@ -72,7 +72,7 @@ export default {
       if (this.$route.path.includes('postdetail')) {
         this.$refs.inputItem.showInput = true;
       } else {
-        this.$router.push(`/postdetail?id=${this.content.id}&sendComment=1`);
+        this.$router.push(`/docdetail?id=${this.content.id}&sendComment=1`);
       }
     },
     bindApproval() {

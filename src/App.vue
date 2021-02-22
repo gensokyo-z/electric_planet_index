@@ -2,12 +2,12 @@
   <div id="app">
     <!-- <transition :name="direction"> -->
     <router-view v-if="!$route.meta.keepAlive"
-      class="page" />
+                 class="page" />
     <!-- </transition> -->
     <!-- <transition :name="direction"> -->
     <keep-alive>
       <router-view v-if="$route.meta.keepAlive"
-        class="page"></router-view>
+                   class="page"></router-view>
     </keep-alive>
     <!-- </transition> -->
   </div>
@@ -18,7 +18,7 @@
 // import Vue from 'vue';
 export default {
   name: 'App',
-  data() {
+  data () {
     return {
       isLogin: false
     };
@@ -44,24 +44,16 @@ export default {
     }
   },
   watch: {
-    $route(to, from) {
+    $route (to, from) {
       this.isLogin = typeof to.meta.isFooter === 'boolean' && !to.meta.isFooter;
     }
   },
-  created() {
+  created () {
     this.checkBrowser()
-    // wx.config({
-    //   debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-    //   appId: 'wx72e3cff551efae8f', // 必填，公众号的唯一标识
-    //   timestamp: '', // 必填，生成签名的时间戳
-    //   nonceStr: '', // 必填，生成签名的随机串
-    //   signature: '', // 必填，签名
-    //   jsApiList: [] // 必填，需要使用的JS接口列表
-    // });
     this.$store.dispatch('getAllPlanetList');
   },
   methods: {
-    checkBrowser() {
+    checkBrowser () {
       let browser = {
         versions: (function () {
           let u = navigator.userAgent;
@@ -101,10 +93,7 @@ export default {
         // if (browser.versions.android) {
         //   // 是否在安卓浏览器打开
         // }
-        location.href = 'https://ddxq.tech/h5';
-      } else {
-        // 否则就是PC浏览器打开
-        // location.href = 'https://huawei.kuaidi100.com/page/errorpage?errorMsg=' + this.msg;
+        location.href = location.href.replace('community', 'h5')
       }
     }
   }

@@ -48,9 +48,9 @@ const routes = [
     }
   },
   {
-    path: '/postdetail',
-    name: 'postDetail',
-    component: () => import(/* webpackChunkName: "postdetail" */ '@/views/index/detail.vue'),
+    path: '/docdetail',
+    name: 'docdetail',
+    component: () => import(/* webpackChunkName: "docdetail" */ '@/views/index/detail.vue'),
     meta: {
       title: '文章详情',
       keepAlive: false
@@ -65,15 +65,15 @@ const routes = [
       keepAlive: false
     }
   },
-  {
-    path: '/postedit',
-    name: 'postedit',
-    component: () => import(/* webpackChunkName: "postedit" */ '@/views/post/edit.vue'),
-    meta: {
-      title: '编辑文章',
-      keepAlive: false
-    }
-  },
+  // {
+  //   path: '/postedit',
+  //   name: 'postedit',
+  //   component: () => import(/* webpackChunkName: "postedit" */ '@/views/post/edit.vue'),
+  //   meta: {
+  //     title: '编辑文章',
+  //     keepAlive: false
+  //   }
+  // },
   {
     path: '/message',
     name: 'message',

@@ -21,7 +21,7 @@
     </div>
     <div>
       <div class="user-info"
-        @click="goUrl(`/postdetail?id=${content.id}`)">
+        @click="goUrl(`/docdetail?id=${content.id}`)">
         <img class="avatar"
           v-if="content.source==='user'"
           :src="content.user.avatar"
@@ -33,14 +33,14 @@
       <div class="content">
         <div class="title"
           v-if="content.source !== '微博'"
-          @click="goUrl(`/postdetail?id=${content.id}`)">{{content.title}}</div>
+          @click="goUrl(`/docdetail?id=${content.id}`)">{{content.title}}</div>
         <!-- 文章预览 -->
         <div class="desc"
           v-if="!content.thumb_video">
           <div class="info"
             v-if="content.desc_content"
             v-html="content.desc_content"
-            @click="goUrl(`/postdetail?id=${content.id}`)"></div>
+            @click="goUrl(`/docdetail?id=${content.id}`)"></div>
           <!-- <div class="info"
             v-else
             v-html="content.content"></div> -->
