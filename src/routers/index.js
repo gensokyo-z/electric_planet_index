@@ -8,7 +8,7 @@ const routes = [
     name: 'home',
     meta: {
       title: '电动星球',
-      keepAlive: false
+      keepAlive: true
     }
   },
   {
