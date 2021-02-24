@@ -154,18 +154,18 @@ export default {
             // on cancel
           });
       } else {
-        this.$confirm('是否加入该星球', '提示')
-          .then(() => {
-            joinPlanet(this.id).then(res => {
-              this.$store.dispatch('getUserPlanetList').then(() => {
-                this.$message.success('加入星球成功！');
-                this.getData();
-              });
-            });
-          })
-          .catch(() => {
-            // on cancel
+        // this.$confirm('是否加入该星球', '提示')
+        //   .then(() => {
+        joinPlanet(this.id).then(res => {
+          this.$store.dispatch('getUserPlanetList').then(() => {
+            this.$message.success('加入星球成功！');
+            this.getData();
           });
+        });
+        // })
+        // .catch(() => {
+        //   // on cancel
+        // });
       }
     },
     listenerAction() {
