@@ -4,7 +4,7 @@
       <div class="talk"
         @click="bindTalk">
         <i class="iconfont iconpinglun"></i>
-        <span>{{content.comments_count===0?'回复':content.comments_count}}</span>
+        <span>{{content.comments_count===0?'评论':content.comments_count}}</span>
       </div>
       <div class="approval"
         @click="bindApproval">

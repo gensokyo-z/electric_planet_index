@@ -4,7 +4,7 @@
       <i class="iconfont iconnav-dark"></i>
     </div> -->
     <div class="logo"
-         @click="$router.push('/')"></div>
+      @click="$router.push('/')"></div>
     <!-- <div class="
          login-msg">欢迎来到电动星球</div> -->
     <!-- <div class="btn-box"
@@ -21,21 +21,22 @@
       <div class="form-item">
         <i class="iconfont icondenglu-dianhua"></i>
         <input type="tel"
-               v-model.trim="form.phone"
-               maxlength="11"
-               placeholder="请输入手机号码">
+          v-model.trim="form.phone"
+          maxlength="11"
+          placeholder="请输入手机号码">
       </div>
       <div class="form-item">
         <i class="iconfont icondenglu-mima"></i>
         <input type="tel"
-               v-model.trim="form.code"
-               oninput="if(value.length>6)value=value.slice(0,6)"
-               placeholder="请输入短信验证码">
+          v-model.trim="form.code"
+          oninput="if(value.length>6)value=value.slice(0,6)"
+          @keyup.enter="handleLogin"
+          placeholder="请输入短信验证码">
         <span class="down-code"
-              @click="sendCode">{{second === 60 ? '输入验证码': `重新发送${second}s`}}</span>
+          @click="sendCode">{{second === 60 ? '输入验证码': `重新发送${second}s`}}</span>
       </div>
       <div class="login-btn"
-           @click="handleLogin">登&ensp;录&ensp;/&ensp;注&ensp;册</div>
+        @click="handleLogin">登&ensp;录&ensp;/&ensp;注&ensp;册</div>
       <div class="tips">未注册用户登陆默认为新注册用户</div>
     </div>
     <!-- <div class="footer-tips"
@@ -55,7 +56,7 @@ import util from '@/utils/util';
 let timer = null;
 export default {
   name: 'login',
-  data () {
+  data() {
     return {
       showFrom: false,
       mobileReg: /^1\d{10}$/,
@@ -68,7 +69,7 @@ export default {
       redirect: ''
     };
   },
-  created () {
+  created() {
     if (this.$route.query.code && this.$route.query.state === 'wxlogin') {
       wxLogin({ code: this.$route.query.code }).then(res => {
         if (res.code === 200) {
@@ -80,7 +81,7 @@ export default {
     }
   },
   methods: {
-    sendCode () {
+    sendCode() {
       if (this.second !== 60) return;
       if (!this.mobileReg.test(this.form.phone)) {
         this.$message('请输入正确的手机号码');
@@ -102,7 +103,7 @@ export default {
           console.log(err);
         });
     },
-    validcode () {
+    validcode() {
       if (!this.mobileReg.test(this.form.phone)) {
         this.$message('请输入正确的手机号码');
         return false;
@@ -119,7 +120,7 @@ export default {
       }
       return true;
     },
-    wxLogin () {
+    wxLogin() {
       getWechatAppid().then(res => {
         if (res.code === 200) {
           this.appId = res.data.app_id;
@@ -127,7 +128,7 @@ export default {
         }
       });
     },
-    handleLogin () {
+    handleLogin() {
       if (this.validcode()) {
         let obj = {
           phone: this.form.phone,
@@ -138,8 +139,9 @@ export default {
             if (res.code === 200) {
               util.setcookie('TOKEN', res.data.access_token);
               this.$store.commit('setToken', res.data.access_token);
+              this.$store.dispatch('getInfo');
               if (this.redirect) {
-                location.href = (decodeURIComponent(this.redirect));
+                location.href = decodeURIComponent(this.redirect);
               } else {
                 this.$router.replace('/index');
               }
@@ -152,7 +154,7 @@ export default {
           });
       }
     },
-    calcTime () {
+    calcTime() {
       timer && clearInterval(timer);
       timer = setInterval(() => {
         if (!this.second--) {
@@ -163,7 +165,7 @@ export default {
       }, 1000);
     }
   },
-  beforeDestroy () {
+  beforeDestroy() {
     timer && clearInterval(timer);
   }
 };

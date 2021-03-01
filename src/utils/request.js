@@ -3,6 +3,7 @@ import qs from 'qs';
 import store from '@/stores';
 import router from '@/routers/';
 import { Message } from 'element-ui';
+import util from '@/utils/util';
 // 消息提示 显示时间
 const duration = 5 * 1000;
 // create an axios instance
@@ -32,6 +33,18 @@ service.interceptors.request.use(
     if (store.state.token) {
       config.headers['Authorization'] = `Bearer ${store.state.token}`;
     }
+    let url = config.url;
+    // 设置cancelToken对象
+    config.cancelToken = new axios.CancelToken(cancel => {
+      store.state._axiosPromiseCancel.push(cancel);
+    });
+    const loginUrlList = ['/api/auth/login', '/api/sms/captcha'];
+    if (!loginUrlList.includes(url) && router.currentRoute.name === 'login' && util.getcookie('TOKEN')) {
+      // 取消当前请求
+      store.state._axiosPromiseCancel[store.state._axiosPromiseCancel.length - 1]();
+      console.log(config);
+      return config;
+    }
     return config;
   },
   error => {
@@ -57,12 +70,16 @@ service.interceptors.response.use(
       if (result.code === 200) {
         return Promise.resolve(result);
       } else if (result.code === 401) {
+        Message.closeAll();
         Message({
           message: '请登录后再操作',
           duration,
           type: 'error'
         });
-        // router.push('/login');
+        util.delcookie('TOKEN');
+        if (router.currentRoute.name !== 'login') {
+          router.push('/login');
+        }
         return Promise.reject(result);
       } else {
         Message({
@@ -78,16 +95,15 @@ service.interceptors.response.use(
   error => {
     console.log('err' + error); // for debug
     const response = error.response;
-    const info = response.data; // 自定义封装data
-
-    if (response === undefined) {
-      Message({
-        message: '服务请求超时！',
-        duration,
-        type: 'error'
-      });
-      return Promise.reject(error);
-    }
+    const info = (response && response.data) || {}; // 自定义封装data
+    // if (response === undefined) {
+    //   Message({
+    //     message: '服务请求超时！',
+    //     duration,
+    //     type: 'error'
+    //   });
+    //   return Promise.reject(error);
+    // }
     if (response.code === 500 || response.code === 504) {
       Message({
         message: info.message || '后端服务异常，请联系管理员！',

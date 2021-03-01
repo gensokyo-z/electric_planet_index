@@ -19,6 +19,7 @@ router.beforeEach(async (to, from, next) => {
   if (util.getcookie('TOKEN')) {
     // 用户信息
     const hasRoles = store.state.userInfo && Object.keys(store.state.userInfo).length > 0;
+    console.log('hasRoles', hasRoles);
     if (hasRoles) {
       // nginx重定向到index.html，前端主动跳转到首页
       if (to.fullPath === '/index.html') {

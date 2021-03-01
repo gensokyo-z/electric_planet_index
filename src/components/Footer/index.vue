@@ -62,7 +62,7 @@
         <div class="editor-function">
           <el-button :class="{'empty':message.length === 0}"
             :disabled="message.length === 0"
-            @click="sendMessage">回复</el-button>
+            @click="sendMessage">评论</el-button>
         </div>
       </div>
     </el-dialog>

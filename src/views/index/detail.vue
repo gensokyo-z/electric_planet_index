@@ -58,7 +58,7 @@
                           <div class="footer-button"
                             @click="checkAuth(handlerInputDialog(item))">
                             <i class="iconfont iconpinglun"></i>
-                            <span class="data-number">{{item.second_comments_count>0?item.second_comments_count:'回复'}}</span>
+                            <span class="data-number">{{item.second_comments_count>0?item.second_comments_count:'评论'}}</span>
                           </div>
                         </div>
                         <ul class="reply-container">
@@ -87,7 +87,7 @@
                                 <div class="footer-button"
                                   @click="checkAuth(handlerInputDialog(item1))">
                                   <i class="iconfont iconpinglun"></i>
-                                  <span class="data-number">回复</span>
+                                  <span class="data-number">评论</span>
                                 </div>
                               </div>
                               <ul class="reply-container">
@@ -126,7 +126,7 @@
         <div class="editor-function">
           <el-button :class="{'empty':message.length === 0}"
             :disabled="message.length === 0"
-            @click="sendMessage">回复</el-button>
+            @click="sendMessage">评论</el-button>
         </div>
       </div>
     </el-dialog>

@@ -14,7 +14,8 @@ export default new Vuex.Store({
     userInfo: {},
     userPlanet: [],
     allPlanet: [],
-    endPoint: '//planetoss.oss-cn-hangzhou.aliyuncs.com'
+    endPoint: '//planetoss.oss-cn-hangzhou.aliyuncs.com',
+    _axiosPromiseCancel: []
   },
   mutations: {
     setToken(state, token) {

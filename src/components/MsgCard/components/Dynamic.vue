@@ -57,7 +57,7 @@ export default {
   },
   computed: {
     buttonName () {
-      return '回复'
+      return '评论'
     },
     btnClassName () {
       return 're-follow'

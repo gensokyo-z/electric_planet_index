@@ -93,6 +93,7 @@ export default {
     },
     logout () {
       logout().then(() => {
+        util.delcookie('TOKEN');
         this.$router.push('/login')
       })
     },

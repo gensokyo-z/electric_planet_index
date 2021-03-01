@@ -1,32 +1,33 @@
 /* eslint-disable */
 const ua = navigator.userAgent.toLowerCase();
 let util = {
-  getcookie(cookieName) {
-    let cookieValue = '';
-    if (document.cookie && document.cookie != '') {
-      let cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-        let cookie = cookies[i].replace(/(^\s*)|(\s*$)/g, '');
-        if (cookie.substring(0, cookieName.length + 1) == cookieName + '=') {
-          cookieValue = unescape(cookie.substring(cookieName.length + 1));
-          break;
-        }
-      }
+  getcookie(name) {
+    let arr;
+    let reg = new RegExp('(^| )' + name + '=([^;]*)(;|$)');
+    if ((arr = document.cookie.match(reg))) {
+      return unescape(arr[2]);
+    } else {
+      return null;
     }
-    return cookieValue;
   },
-  setcookie(cookieName, cookieValue) {
-    const expires = new Date(new Date().getTime() + 30 * 24 * 60 * 60000); //有效期一个月
-    document.cookie = `${escape(cookieName)}=${escape(cookieValue)};expires=${expires.toGMTString()}";path=/`;
+  // 设置生命周期COOKIE
+  setcookie(cookieName, cookieValue, cookieExpire = 2592000, domain = '.ddxq.tech') {
+    // cookieExpire的单位为秒
+    let expires = new Date();
+    let now = parseInt(expires.getTime());
+    now += cookieExpire * 1000;
+    expires.setTime(now);
+    let str = escape(cookieName) + '=' + escape(cookieValue) + ';expires=' + expires.toGMTString() + '; path=/';
+    if (domain) {
+      str += ';domain=' + domain;
+    }
+    document.cookie = str;
   },
   delcookie(name) {
-    let exp = new Date();
-    exp.setTime(exp.getTime() - 1);
-    let cval = getcookie(name);
-    document.cookie = escape(name) + '=' + escape(cval) + '; expires=' + exp.toGMTString() + '; path=/';
+    this.setcookie(name, '', -1);
   },
   resetcookie(name) {
-    util.setcookie(name, '');
+    this.setcookie(name, '');
   },
   getStorage(name) {
     let value = null;
@@ -67,11 +68,11 @@ let util = {
     script.src = src;
     document.head.appendChild(script);
     script.onload = function() {
-      util.isFunc(callback) && callback();
+      this.isFunc(callback) && callback();
     };
   },
   getLastPage() {
-    let history = util.getSession('$localHistory') || [];
+    let history = this.getSession('$localHistory') || [];
     return history.length > 1 ? history[history.length - 2] : null;
   },
   singleClone(obj) {

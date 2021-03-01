@@ -70,7 +70,7 @@ export default {
       if (this.subType === 'fans') {
         return this.content.follow ? '互相关注' : '关注'
       } else {
-        return '回复'
+        return '评论'
       }
     },
     btnClassName () {
