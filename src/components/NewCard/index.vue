@@ -86,12 +86,13 @@
         <div class="tag-box">
           <div v-for="(item, index) in content.tags"
                :key="index"
-               class="tag">
+               class="tag"
+               @click="handlerTag(item)">
             <!-- <svg class="icon huati"
                  aria-hidden="true">
               <use xlink:href="#iconshouye-huati"></use>
             </svg> -->
-            <span @click="handlerTag(item)">#{{item.name}}</span>
+            <span>#{{item.name}}</span>
             <!-- <svg class="icon jiantou"
                  aria-hidden="true">
               <use xlink:href="#iconshouye-jiantou"></use>
