@@ -4,6 +4,7 @@ import store from '@/stores';
 import router from '@/routers/';
 import { Message } from 'element-ui';
 import util from '@/utils/util';
+import Bus from '@/utils/bus'; // 事件总线
 // 消息提示 显示时间
 const duration = 5 * 1000;
 // create an axios instance
@@ -77,11 +78,13 @@ service.interceptors.response.use(
           type: 'error'
         });
         util.delcookie('TOKEN');
-        if (router.currentRoute.name !== 'login') {
-          router.push('/login');
-        }
+        Bus.$emit('login', true);
+        // if (router.currentRoute.name !== 'login') {
+        //   router.push('/login');
+        // }
         return Promise.reject(result);
       } else {
+        Message.closeAll();
         Message({
           message: result && result.msg ? result.msg : '无效的返回数据',
           duration,

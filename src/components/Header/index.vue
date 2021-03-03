@@ -38,10 +38,10 @@
         </div>
         <a class="login-item"
            v-else
-           @click="goUrl('/login')">注册/登录</a>
-
+           @click="showLogin">注册/登录</a>
       </div>
     </div>
+    <Login ref="login" />
   </header>
 </template>
 
@@ -82,6 +82,9 @@ export default {
     getSerch (kw) {
       this.$emit('getSerch', kw)
     },
+    showLogin () {
+      this.$refs.login.visible = true
+    },
     goUrl (url) {
       if (url === '/login') {
         url += '?redirect=' + encodeURIComponent(location.href)
@@ -109,7 +112,8 @@ export default {
     })
   },
   components: {
-    Search: () => import('../Search')
+    Search: () => import('../Search'),
+    Login: () => import('../Login')
   }
 };
 </script>
@@ -201,20 +205,21 @@ export default {
       align-items: center;
       font-size: 16px;
       color: #2c2e3b;
+      border-radius: 8px;
       .hide {
         display: none;
       }
       .logout {
         padding-top: 50px;
-        transform: translate(10px, 40px);
+        transform: translate(-70px, 42px);
         position: absolute;
         z-index: 100;
+        border-radius: 8px;
         .user-panel {
           position: relative;
           width: 150px;
           background-color: #fff;
           box-shadow: 0 0 4px 0 rgba(8, 15, 19, 0.06);
-          border-radius: 4px;
           &::before {
             content: '';
             position: absolute;
