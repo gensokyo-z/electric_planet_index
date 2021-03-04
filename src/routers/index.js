@@ -2,15 +2,15 @@ import Vue from 'vue';
 import Router from 'vue-router';
 Vue.use(Router);
 const routes = [
-  {
-    path: '/',
-    component: () => import(/* webpackChunkName: "index" */ '@/views/index/index.vue'),
-    name: 'home',
-    meta: {
-      title: '电动星球',
-      keepAlive: true
-    }
-  },
+  // {
+  //   path: '/index',
+  //   component: () => import(/* webpackChunkName: "index" */ '@/views/index/index.vue'),
+  //   name: 'home',
+  //   meta: {
+  //     title: '电动星球',
+  //     keepAlive: true
+  //   }
+  // },
   {
     path: '/index',
     name: 'index',
@@ -112,7 +112,7 @@ const routes = [
   },
   {
     path: '*',
-    redirect: '/'
+    redirect: '/index'
   }
 ];
 // const originalPush = Router.prototype.push;

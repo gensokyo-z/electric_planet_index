@@ -1,7 +1,7 @@
 import router from './index';
 import util from '@/utils/util';
 import store from '@/stores/index.js';
-const whiteList = ['/', '/index', '/planet', '/docdetail', '/planetdetail', '/login', '/error'];
+const whiteList = ['/index', '/planet', '/docdetail', '/planetdetail', '/login', '/error'];
 // 路由导航守卫
 router.beforeEach(async (to, from, next) => {
   // 登录权限
@@ -23,7 +23,7 @@ router.beforeEach(async (to, from, next) => {
     if (hasRoles) {
       // nginx重定向到index.html，前端主动跳转到首页
       if (to.fullPath === '/index.html') {
-        return next({ path: '/' });
+        return next({ path: '/index' });
       } else {
         // 路由发生变化修改页面title
         if (to.meta.title) {
@@ -61,7 +61,7 @@ router.beforeEach(async (to, from, next) => {
 });
 
 router.afterEach((to, from) => {
-  if (!(from.path === '/' && from.name === null)) {
+  if (!(from.path === '/index' && from.name === null)) {
     setLocalRoute(to, from);
   }
 });
