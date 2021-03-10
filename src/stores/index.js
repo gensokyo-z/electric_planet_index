@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import util from '@/utils/util';
 import axios from 'axios';
-import router from '@/routers/';
+import Bus from '@/utils/bus';
 import { getOssToken } from '@/api/oss';
 import { getJoinedPlanetList, getPlanetList } from '@/api/planet';
 import { getUserInfo } from '@/api/user';
@@ -54,7 +54,8 @@ export default new Vuex.Store({
           typeof cb === 'function' && cb();
         })
         .catch(() => {
-          router.push('/login?redirect=' + encodeURIComponent(location.href));
+          Bus.$emit('login', true);
+          // router.push('/login?redirect=' + encodeURIComponent(location.href));
         });
     },
     getAllPlanetList({ commit }) {
@@ -69,7 +70,7 @@ export default new Vuex.Store({
                   e.avatar = e.avatar.includes('//') ? e.avatar : require('@/assets/images/timg.jpg');
                 });
                 commit('setAllPlanet', response.data);
-                resolve(response);
+                resolve(response.data);
               } else {
                 reject();
               }

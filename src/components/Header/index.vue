@@ -87,7 +87,7 @@ export default {
     },
     goUrl (url) {
       if (url === '/login') {
-        url += '?redirect=' + encodeURIComponent(location.href)
+        return this.$bus.$emit('login', true)
       }
       this.$router.push(url)
     },
@@ -97,7 +97,7 @@ export default {
     logout () {
       logout().then(() => {
         util.delcookie('TOKEN');
-        this.$router.push('/login')
+        window.location.reload()
       })
     },
     setSearch (kw) {

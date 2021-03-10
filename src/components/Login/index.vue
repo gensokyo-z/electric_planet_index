@@ -25,7 +25,6 @@
                   placeholder="请输入手机号"
                   v-model="phone"
                   class="phone"></el-input>
-
         <div class="flex relative">
           <el-input type="tel"
                     :maxlength="6"
@@ -66,30 +65,24 @@ export default {
   name: 'Login',
   data () {
     return {
-      visible: true,
+      visible: false,
       phone: '',
       verify: '',
       isOthers: false,
       showFrom: false,
       mobileReg: /^1\d{10}$/,
       second: 60,
-      redirect: ''
+      code: this.$route.query.code
     }
   },
   created () {
     if (this.$route.query.code && this.$route.query.state === 'wechat') {
-      wxLogin({ code: this.$route.query.code }).then(res => {
-        if (res.code === 200) {
-          util.setcookie('TOKEN', res.data.access_token);
-          this.$store.commit('setToken', res.data.access_token);
-          this.$store.dispatch('getInfo')
-          this.$router.replace('/index');
-        }
-      });
+      this.isOthers = true
+      this.visible = true
     }
   },
   mounted () {
-    this.$bus.$on('login', (flag) => {
+    this.$bus.$on('login', (flag,) => {
       this.visible = flag
     })
   },
@@ -135,17 +128,20 @@ export default {
           phone: this.phone,
           captcha: this.verify
         };
-        login(obj)
+        let path = null
+        if (this.isOthers && this.code) {
+          path = wxLogin
+          obj.code = this.code
+        } else {
+          path = login
+        }
+        path(obj)
           .then(res => {
             if (res.code === 200) {
               util.setcookie('TOKEN', res.data.access_token);
               this.$store.commit('setToken', res.data.access_token);
               this.$store.dispatch('getInfo');
-              if (this.redirect) {
-                location.href = decodeURIComponent(this.redirect);
-              } else {
-                this.$router.replace('/index');
-              }
+              window.location.reload()
             } else {
               this.$message(res.msg);
             }

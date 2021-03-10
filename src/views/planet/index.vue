@@ -53,6 +53,7 @@ export default {
     getPlanetList () {
       this.cardList = [];
       this.$store.dispatch('getAllPlanetList').then(list => {
+        console.log(list);
         list.forEach(e => {
           e.joined = this.$state.userPlanet.some(v => v.id === e.id);
         });

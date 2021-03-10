@@ -227,7 +227,7 @@ export default {
       this.getPosts(type, true);
     },
     logout () {
-      this.$router.push('/login');
+      this.$bus.$emit('login', true)
     },
     openIntroductionEdit () {
       this.tempObj.intro = this.userInfo.intro;

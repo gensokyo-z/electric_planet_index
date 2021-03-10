@@ -8,13 +8,13 @@ router.beforeEach(async (to, from, next) => {
   // if (to.meta.requireAuth) {
   if (!whiteList.includes(to.path)) {
     // 判断是否校验登录权限
-    if (!util.getcookie('TOKEN')) {
-      // 判断是否登录，根据实际业务处理
-      next({
-        path: '/login'
-      });
-      return;
-    }
+    // if (!util.getcookie('TOKEN')) {
+    //   // 判断是否登录，根据实际业务处理
+    //   next({
+    //     path: '/login'
+    //   });
+    //   return;
+    // }
   }
   if (util.getcookie('TOKEN')) {
     // 用户信息
