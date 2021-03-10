@@ -186,6 +186,10 @@ export default {
     line-height: 26px;
     background-color: #ffe000;
     border-radius: 15px;
+    &:hover {
+      background: #ffec5d;
+      border-color: #ffec5d;
+    }
   }
   .header-login {
     display: flex;

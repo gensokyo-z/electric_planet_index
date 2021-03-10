@@ -2,47 +2,92 @@
   <div class="createPost-container">
     <Header />
     <el-form ref="postForm"
-      :model="postForm"
-      :rules="rules"
-      class="form-container">
+             :model="postForm"
+             :rules="rules"
+             class="form-container">
       <div class="createPost-main-container">
-        <div class="bg">
-          <el-button size="mini"
-            @click="submitForm">发布文章</el-button>
-        </div>
         <div class="layout-content">
-          <div class="editer-box">
-            <div id="meun"></div>
-            <SingleImage class="single-image"
-              :value.sync="postForm.thumb_pic"
-              @input="upLoadThumbPic" />
-            <el-row style="width: 750px;margin: 0 100px;">
-              <el-col :span="24">
-                <el-form-item style="margin-bottom: 20px;"
-                  prop="title">
-                  <MDinput v-if="postForm.source!=='微博'"
-                    v-model="postForm.title"
-                    :maxlength="100"
-                    name="name"
-                    required>
-                    请在这里输入标题
-                  </MDinput>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-form-item prop="content"
-              style="margin: 0 100px;">
-              <div id="editor"></div>
-              <input id="uploadFileVideo"
-                ref="uploadFileVideo"
-                type="file"
-                accept="video/*"
-                name="file"
-                style="opacity: 0; width: 0; height: 0;cursor: pointer"
-                @change="changeVideo" />
-            </el-form-item>
+          <div class="tab-bar">
+            <div class="title">发布</div>
+            <div class="layout">
+              <div class="left">
+                <label>选择发布类型：</label>
+                <div class="type-box">
+                  <div :class="['item',{'active':item.checked}]"
+                       v-for="(item,index) in typeList"
+                       :key="index">{{item.name}}</div>
+                </div>
+              </div>
+              <div class="right">
+                <label>选择星球社区：</label>
+                <div class="type-box">
+                  <div :class="['item',{'active':item.checked}]"
+                       v-for="(item,index) in planetList"
+                       :key="index">{{item.name}}</div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="planet-tag">
+          <div class="dt"
+               v-show="type === 'dt'">
+            <el-input type="textarea"
+                      show-word-limit
+                      placeholder="分享关于你关于电动星球的人/车/生活"
+                      size="medium"
+                      :rows="5"
+                      resize="none"
+                      v-model="dt"></el-input>
+          </div>
+          <div v-show="type === 'wz'">
+            <div class="editer-box">
+              <div id="meun"></div>
+              <SingleImage class="single-image"
+                           :value.sync="postForm.thumb_pic"
+                           @input="upLoadThumbPic" />
+              <el-row style="width: 750px;margin: 0 100px;">
+                <el-col :span="24">
+                  <el-form-item style="margin-bottom: 20px;"
+                                prop="title">
+                    <MDinput v-if="postForm.source!=='微博'"
+                             v-model="postForm.title"
+                             :maxlength="100"
+                             name="name"
+                             required>
+                      请在这里输入标题
+                    </MDinput>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-form-item prop="content"
+                            style="margin: 0 100px;">
+                <div id="editor"></div>
+                <input id="uploadFileVideo"
+                       ref="uploadFileVideo"
+                       type="file"
+                       accept="video/*"
+                       name="file"
+                       style="opacity: 0; width: 0; height: 0;cursor: pointer"
+                       @change="changeVideo" />
+              </el-form-item>
+            </div>
+          </div>
+          <div v-show="type==='sp'">
+          </div>
+          <div class="tag">
+            <label>关联的标签({{postForm.tag_id.length}}/6)：</label>
+            <div class="tag-box">
+              <div :class="['item',{'active':item.checked}]"
+                   v-for="(item,index) in tagList"
+                   :key="index">#{{item.name}}</div>
+            </div>
+          </div>
+          <el-button class="submit"
+                     size="mini"
+                     @click="submitForm">发布</el-button>
+        </div>
+      </div>
+    </el-form>
+    <!-- <div class="planet-tag">
             <el-form-item prop="planet_id"
               class="bind-planet">
               <p>发布到星球</p>
@@ -62,10 +107,7 @@
                   :label="item.id">{{ item.name }}</el-checkbox>
               </el-checkbox-group>
             </el-form-item>
-          </div>
-        </div>
-      </div>
-    </el-form>
+          </div> -->
   </div>
 </template>
 
@@ -104,7 +146,7 @@ export default {
     }
   },
 
-  data() {
+  data () {
     return {
       postForm: Object.assign({}, defaultForm),
       html: '',
@@ -112,24 +154,31 @@ export default {
       rules: {},
       planetList: [],
       tagList: [],
-      editor: null
+      editor: null,
+      dt: '',
+      type: 'dt',
+      typeList: [
+        { name: '动态', value: 'dt', checked: true },
+        { name: '文章', value: 'wz', checked: false },
+        { name: '视频', value: 'sp', checked: false },
+      ]
     };
   },
-  created() {
+  created () {
     this.$nextTick(() => {
       this.createEditor();
     });
   },
-  mounted() {
+  mounted () {
     this.init();
   },
-  beforeDestroy() {
+  beforeDestroy () {
     // 销毁编辑器
     this.editor.destroy();
     this.editor = null;
   },
   methods: {
-    createEditor() {
+    createEditor () {
       // 创建编辑器
       // eslint-disable-next-line new-cap
       this.editor = new wangeditor('#meun', '#editor');
@@ -137,7 +186,7 @@ export default {
       this.editor.create(); // 生成编辑器
       this.editor.txt.html(''); // 初始化内容
     },
-    initEditorConfig() {
+    initEditorConfig () {
       // 初始化编辑器配置
       // this.editor.config.onblur = () => {}
       // this.editor.config.onfocus = () => {}
@@ -166,7 +215,7 @@ export default {
         this.seteditor();
       }, 100);
     },
-    seteditor() {
+    seteditor () {
       // 给菜单栏中的视频icon绑定相应的点击事件
       this.editor.$toolbarElem.elems[0].childNodes[18].onclick = e => {
         e.stopPropagation();
@@ -175,10 +224,13 @@ export default {
         this.$refs.uploadFileVideo.click(); // 触发input的上传
       };
     },
-    init() {
+    init () {
       getTagList({ page: 1, per_page: 200 })
         .then(response => {
           if (response.code === 200) {
+            response.data.forEach(e => {
+              e.checked = false
+            })
             this.tagList = response.data;
           }
         })
@@ -188,6 +240,9 @@ export default {
       getPlanetList()
         .then(response => {
           if (response.code === 200) {
+            response.data.forEach(e => {
+              e.checked = false
+            })
             this.planetList = response.data;
           }
         })
@@ -195,10 +250,10 @@ export default {
           console.log(error);
         });
     },
-    upLoadThumbPic(path) {
+    upLoadThumbPic (path) {
       this.postForm.thumb_pic = path;
     },
-    async uploadOSS(content) {
+    async uploadOSS (content) {
       // eslint-disable-next-line
       const params = await this.$store.dispatch('getOssToken').then(res => {
         return res.data;
@@ -215,15 +270,15 @@ export default {
         return imgPath;
       });
     },
-    upload(content) {
+    upload (content) {
       this.uploadOSS(content).then(path => {
         this.editor.cmd.do('insertHTML', `<img src="${path}" width="100%"/>`);
       });
     },
-    clearImg(str) {
+    clearImg (str) {
       return str.replace(/<img.+?src=/g, '<img src=');
     },
-    fetchData(id, type) {
+    fetchData (id, type) {
       if (type === 'params') {
         getPostsDetail(id).then(res => {
           if (res.code === 200) {
@@ -241,7 +296,7 @@ export default {
         });
       }
     },
-    submitForm() {
+    submitForm () {
       if (this.postForm.source !== '微博' && this.postForm.title.length === 0) {
         this.$message({
           message: '请填写标题',
@@ -349,22 +404,15 @@ export default {
       // }
       // });
     },
-    async changeVideo() {
+    async changeVideo () {
       const videoFile = { file: this.$refs.uploadFileVideo.files[0] };
       await this.uploadOSS(videoFile.file).then(path => {
         this.editor.execCommand('insertHTML', `<video src="https:${path}"  controls="controls"></video>`); // 插入视频
       });
     },
-    initDate() {
-      let now = new Date();
-      let year = now.getFullYear()
-      let month = now.getMonth() + 1
-      let date = now.getDate()
-      let hours = now.getHours() > 9 ? now.getHours() : '0' + now.getHours()
-      let minutes = now.getMinutes() > 9 ? now.getMinutes() : '0' + now.getMinutes()
-      let seconds = now.getSeconds() > 9 ? now.getSeconds() : '0' + now.getSeconds()
-      let create_time = year + '-' + month + '-' + date + ' ' + hours + ':' + minutes + ':' + seconds
-      return create_time;
+    initDate () {
+      let now = new Date()
+      return util.formatDate(now, 'y-m-d');
     }
   }
 };
@@ -379,67 +427,102 @@ export default {
     margin: 0 auto;
     width: 1200px;
     display: flex;
+    flex-direction: column;
     justify-content: space-around;
-    .bg {
-      width: 1200px;
-      height: 40px;
-      top: 50px;
-      position: fixed;
-      background-color: #d0d0d0;
+    .layout-content {
+      margin: 20px 0;
+      position: relative;
+    }
+    .tab-bar {
       display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      z-index: 2;
-      .el-button {
-        margin-right: 20px;
-        padding: 10px 10px;
-        height: 30px;
-
-        background-color: #13ce66;
-        border-color: #13ce66;
-        color: #fff;
-        font-size: 14px;
-        line-height: 10px;
-        border-radius: 4px;
-        &:hover {
-          background: #42d885;
-          border-color: #42d885;
+      flex-direction: column;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e0e0e0;
+      .title {
+        margin-bottom: 20px;
+        font-size: 26px;
+        color: #333;
+      }
+      .layout {
+        display: flex;
+        justify-content: space-between;
+        font-size: 20px;
+        color: #333;
+        .left,
+        .right {
+          display: flex;
+          align-items: center;
+        }
+        .type-box {
+          display: flex;
+          align-items: center;
+          .item {
+            padding: 3px 20px;
+            font-size: 15px;
+            line-height: 20px;
+            border-radius: 45px;
+            background-color: #f2f2f2;
+            color: #333;
+            cursor: pointer;
+            &:not(:nth-last-child(1)) {
+              margin-right: 20px;
+            }
+            &.active {
+              background-color: #ffe000;
+              border-color: #ffe000;
+            }
+            &:hover {
+              background: #ffec5d;
+              border-color: #ffec5d;
+            }
+          }
+        }
+      }
+    }
+    .tag {
+      margin-top: 20px;
+      width: 80%;
+      font-size: 16px;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      .tag-box {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 10px;
+        .item {
+          margin-bottom: 10px;
+          color: #333;
+          cursor: pointer;
+          &:not(:nth-last-child(1)) {
+            margin-right: 20px;
+          }
+          &.active {
+            color: royalblue;
+          }
         }
       }
     }
   }
 }
-.layout-content {
-  margin: 50px 0;
-  position: relative;
-  .planet-tag {
-    position: absolute;
-    top: 100px;
-    right: -200px;
-    width: 280px;
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    border-top: 1px solid #e0e0e0;
-    z-index: 0;
-    .el-radio {
-      margin-bottom: 20px;
-    }
-    .bind-planet {
-      padding: 0 20px 20px 20px;
-      border-bottom: 1px solid #e0e0e0;
-    }
-    .bind-tag {
-      padding: 0 20px 20px 20px;
-      display: flex;
-      height: 270px;
-      overflow: auto;
-    }
-  }
+.dt{
+  margin-top: 20px;
 }
-
-.app-wrapper {
-  overflow: hidden !important;
+.submit {
+  position: absolute;
+  right: 0;
+  margin-top: 20px;
+  padding: 10px 30px;
+  font-weight: 700;
+  font-size: 20px;
+  border-radius: 45px;
+  background-color: #ffe000;
+  border-color: #ffe000;
+  color: #333;
+  &:hover {
+    background: #ffec5d;
+    border-color: #ffec5d;
+  }
 }
 .single-image {
   width: 750px;
@@ -464,8 +547,8 @@ export default {
   border: 1px solid #ccc;
 }
 .w-e-toolbar {
-  position: fixed;
-  top: 50px;
+  // position: fixed;
+  // top: 50px;
   // left: 9%;
   background-color: #d0d0d0;
 }

@@ -125,6 +125,31 @@ let util = {
     }
     return pwd;
   },
+  // 格式化星期时间
+  formatTimeDay(date) {
+    const dayArray = ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+    return dayArray[date.getDay()];
+  },
+
+  formatNumber(n) {
+    n = n.toString();
+    return n[1] ? n : '0' + n;
+  },
+
+  // 格式化日历时间
+  formatDate(date, type) {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    // const hour = date.getHours()
+    // const minute = date.getMinutes()
+    // const second = date.getSeconds()
+    if (type === 'y-m-d') {
+      return [year, month, day].map(this.formatNumber).join('-');
+    } else {
+      return [month, day].map(this.formatNumber).join('-');
+    }
+  },
   ua: ua,
   isIOS: ua.indexOf('iphone') !== -1 || ua.indexOf('ipad') !== -1,
   isAndroid: ua.indexOf('android') !== -1
