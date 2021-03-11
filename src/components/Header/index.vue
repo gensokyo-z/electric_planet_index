@@ -97,7 +97,11 @@ export default {
     logout () {
       logout().then(() => {
         util.delcookie('TOKEN');
-        window.location.reload()
+        if (this.$route.query.code) {
+          window.location.href = window.location.href.replace(/\?code=.*/, '')
+        } else {
+          window.location.reload()
+        }
       })
     },
     setSearch (kw) {

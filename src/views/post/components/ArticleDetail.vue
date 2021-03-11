@@ -15,7 +15,8 @@
                 <div class="type-box">
                   <div :class="['item',{'active':item.checked}]"
                        v-for="(item,index) in typeList"
-                       :key="index">{{item.name}}</div>
+                       :key="index"
+                       @click="selectType(item)">{{item.name}}</div>
                 </div>
               </div>
               <div class="right">
@@ -23,22 +24,58 @@
                 <div class="type-box">
                   <div :class="['item',{'active':item.checked}]"
                        v-for="(item,index) in planetList"
-                       :key="index">{{item.name}}</div>
+                       :key="index"
+                       @click="selectPlant(item)">{{item.name}}</div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="dt"
-               v-show="type === 'dt'">
+          <div class='dynamic'
+               v-show="type === 'dynamic'">
+
             <el-input type="textarea"
+                      class="dynamic-text-area"
                       show-word-limit
                       placeholder="分享关于你关于电动星球的人/车/生活"
                       size="medium"
                       :rows="5"
                       resize="none"
-                      v-model="dt"></el-input>
+                      v-model='dynamicForm.content'></el-input>
+            <div class="upload-box">
+              <div class="preview-upload">
+                <el-upload action="#"
+                           class="preview"
+                           list-type="picture-card"
+                           multiple
+                           :limit="9"
+                           :on-remove="handleRemove"
+                           :on-exceed="exceed"
+                           :file-list="previewList"
+                           :http-request="uploadDynamic">
+                  <i slot="default"
+                     class="el-icon-plus">
+                  </i>
+                  <div class="el-upload__text">添加图片{{previewList.length}}/9</div>
+                  <div slot="file"
+                       slot-scope="{file}">
+                    <img class="el-upload-list__item-thumbnail"
+                         :src="file.url">
+                    <span class="el-upload-list__item-actions">
+                      <span class="el-upload-list__item-preview"
+                            @click="handlePictureCardPreview(file)">
+                        <i class="el-icon-zoom-in"></i>
+                      </span>
+                      <span class="el-upload-list__item-delete"
+                            @click="handleRemove(file)">
+                        <i class="el-icon-delete"></i>
+                      </span>
+                    </span>
+                  </div>
+                </el-upload>
+              </div>
+            </div>
           </div>
-          <div v-show="type === 'wz'">
+          <div v-show="type === 'article'">
             <div class="editer-box">
               <div id="meun"></div>
               <SingleImage class="single-image"
@@ -71,14 +108,15 @@
               </el-form-item>
             </div>
           </div>
-          <div v-show="type==='sp'">
+          <div v-show="type==='video'">
           </div>
           <div class="tag">
-            <label>关联的标签({{postForm.tag_id.length}}/6)：</label>
+            <label>关联的标签({{dynamicForm.tag_id.length}}/6)：</label>
             <div class="tag-box">
               <div :class="['item',{'active':item.checked}]"
                    v-for="(item,index) in tagList"
-                   :key="index">#{{item.name}}</div>
+                   :key="index"
+                   @click="selectTag(item)">#{{item.name}}</div>
             </div>
           </div>
           <el-button class="submit"
@@ -108,18 +146,42 @@
               </el-checkbox-group>
             </el-form-item>
           </div> -->
+    <el-dialog :visible.sync="dialogVisible">
+      <img width="100%"
+           :src="dialogImageUrl"
+           alt="">
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import wangeditor from 'wangeditor';
-import { getPlanetList } from '@/api/planet';
-import { getTagList } from '@/api/tag';
+import { getPlanetList, getPlanetTags } from '@/api/planet';
 import MDinput from '@/components/MDinput';
 import SingleImage from '@/components/Upload/SingleImage2';
-import { addPosts, editPosts, getPostsDetail } from '@/api/post';
+import { addPosts } from '@/api/post';
 import util from '@/utils/util';
 const defaultForm = {
+  title: '', // 文章题目
+  content: '', // 文章内容
+  thumb_pic: '',
+  thumb_video: '',
+  planet_id: '',
+  tag_id: [],
+  url: '',
+  source: 'user',
+  create_time: '',
+  desc_content: ''
+};
+const dynamicForm = {
+  content: '', // 文章内容
+  planet_id: '',
+  tag_id: [],
+  thumb_pic: [],
+  source: 'user',
+  create_time: '',
+};
+const vedioForm = {
   title: '', // 文章题目
   content: '', // 文章内容
   thumb_pic: '',
@@ -132,7 +194,6 @@ const defaultForm = {
   create_time: '',
   desc_content: ''
 };
-
 export default {
   name: 'ArticleDetail',
   components: {
@@ -155,13 +216,17 @@ export default {
       planetList: [],
       tagList: [],
       editor: null,
-      dt: '',
-      type: 'dt',
+      dynamicForm: Object.assign({}, dynamicForm),
+      vedioForm: Object.assign({}, vedioForm),
+      type: 'dynamic',
       typeList: [
-        { name: '动态', value: 'dt', checked: true },
-        { name: '文章', value: 'wz', checked: false },
-        { name: '视频', value: 'sp', checked: false },
-      ]
+        { name: '动态', value: 'dynamic', checked: true },
+        { name: '文章', value: 'article', checked: false },
+        { name: '视频', value: 'video', checked: false },
+      ],
+      previewList: [],
+      dialogImageUrl: '',
+      dialogVisible: false,
     };
   },
   created () {
@@ -192,7 +257,7 @@ export default {
       // this.editor.config.onfocus = () => {}
       this.editor.config.placeholder = '请输入文章内容';
       // 关闭粘贴样式的过滤
-      this.editor.config.pasteFilterStyle = false;
+      this.editor.config.pasteFilterStyle = true;
       // 忽略粘贴内容中的图片
       this.editor.config.pasteIgnoreImg = false;
       // 使用 base64 保存图片
@@ -225,25 +290,33 @@ export default {
       };
     },
     init () {
-      getTagList({ page: 1, per_page: 200 })
-        .then(response => {
-          if (response.code === 200) {
-            response.data.forEach(e => {
-              e.checked = false
-            })
-            this.tagList = response.data;
-          }
-        })
-        .catch(error => {
-          console.log(error);
-        });
       getPlanetList()
         .then(response => {
           if (response.code === 200) {
             response.data.forEach(e => {
               e.checked = false
             })
+            let fristPlant = response.data.findIndex(e => e.name === '星球总部');
+            let tempItem = []
+            tempItem.push(response.data[fristPlant])
+            response.data.splice(fristPlant, 1)
+            response.data = [...tempItem, ...response.data]
+            response.data.forEach((e, i) => {
+              e.checked = i === 0
+            })
             this.planetList = response.data;
+            getPlanetTags(response.data[0].id)
+              .then(response => {
+                if (response.code === 200) {
+                  response.data.forEach(e => {
+                    e.checked = false
+                  })
+                  this.tagList = response.data;
+                }
+              })
+              .catch(error => {
+                console.log(error);
+              });
           }
         })
         .catch(error => {
@@ -253,13 +326,13 @@ export default {
     upLoadThumbPic (path) {
       this.postForm.thumb_pic = path;
     },
-    async uploadOSS (content) {
+    async uploadOSS (content, type) {
       // eslint-disable-next-line
       const params = await this.$store.dispatch('getOssToken').then(res => {
         return res.data;
       });
       params.file = content;
-      params.dir = 'posts/community';
+      params.dir = 'posts/community/' + type;
       // eslint-disable-next-line
       let data = await this.$store.dispatch('setParams', params);
       // eslint-disable-next-line
@@ -267,34 +340,21 @@ export default {
       // eslint-disable-next-line
       let imgPath = url + '/' + data.get('key');
       return this.$store.dispatch('upload', { url, data }).then(res => {
-        return imgPath;
+        return { path: imgPath, uid: content.uid };
+      });
+    },
+    uploadDynamic (content) {
+      this.uploadOSS(content.file, 'dynamic').then(obj => {
+        this.previewList.push({ url: obj.path, uid: obj.uid })
       });
     },
     upload (content) {
-      this.uploadOSS(content).then(path => {
-        this.editor.cmd.do('insertHTML', `<img src="${path}" width="100%"/>`);
+      this.uploadOSS(content).then(obj => {
+        this.editor.cmd.do('insertHTML', `<img src="${obj.path}" width="100%"/>`);
       });
     },
     clearImg (str) {
       return str.replace(/<img.+?src=/g, '<img src=');
-    },
-    fetchData (id, type) {
-      if (type === 'params') {
-        getPostsDetail(id).then(res => {
-          if (res.code === 200) {
-            const tag_id = [];
-            for (const i of res.data.related_tags) {
-              tag_id.push(i.tag_id);
-            }
-            res.data.tag_id = tag_id;
-            res.data.content = this.clearImg(res.data.content);
-            this.postForm = res.data;
-            // this.postForm.content = ``
-            // 编辑器方法
-            this.editor.txt.html(this.postForm.content);
-          }
-        });
-      }
     },
     submitForm () {
       if (this.postForm.source !== '微博' && this.postForm.title.length === 0) {
@@ -318,101 +378,103 @@ export default {
         });
         return;
       }
-      // this.$refs.postForm.validate(valid => {
-
-      // if (valid) {
       this.loading = true;
-      // this.postForm.active = 1;
       if (!this.postForm.thumb_pic) {
         this.postForm.thumb_pic = util.getFirstImg(this.postForm.content);
       }
       if (!this.postForm.thumb_video) {
         this.postForm.thumb_video = util.getFirstVideo(this.postForm.content);
       }
-      if (this.postForm.id) {
-        const obj = {
-          title: this.postForm.title,
-          content: this.postForm.content,
-          thumb_pic: this.postForm.thumb_pic,
-          thumb_video: this.postForm.thumb_video,
-          planet_id: this.postForm.planet_id,
-          tag_id: this.postForm.tag_id,
-          desc_content: this.postForm.desc_content,
-          source: this.postForm.source,
-          id: this.postForm.id,
-          url: this.postForm.url,
-          create_time: this.postForm.create_time
-          // keywords: this.postForm.keywords
-        };
-        editPosts(this.postForm.id, obj).then(res => {
-          if (res.code === 200) {
-            this.$notify({
-              title: '成功',
-              message: '修改文章成功',
-              type: 'success',
-              duration: 2000
-            });
-            this.$store.dispatch('user/setCacha', []);
-            this.loading = false;
-            this.$router.push('/docmanage/index');
-          } else {
-            this.loading = false;
-          }
-        });
-      } else {
-        this.postForm.create_time = this.initDate();
-        this.postForm.create_at = this.initDate();
-        if (!this.postForm.desc_content) {
-          this.postForm.desc_content = this.editor.txt.text(); // 获取  获取纯文本
-          this.postForm.desc_content = this.postForm.desc_content.substr(0, 140);
-        }
-        this.postForm.content += `<p style="padding:0.4rem;border:1px solid #ccc;line-height:1.2em;color:#999">信息来源于网络，本平台予以链接仅为传递信息之目的，不代表本平台立场。本平台不对文章信息准确性、完整性和及时性做任何保证，亦不对因信赖文章信息引发的任何损失承担任何责任。<p>`;
-        if (!this.postForm.thumb_pic) {
-          this.postForm.thumb_pic = util.getFirstImg(this.postForm.content);
-        }
-        if (!this.postForm.thumb_video) {
-          this.postForm.thumb_video = util.getFirstVideo(this.postForm.content);
-        }
-        const obj = {
-          title: this.postForm.title,
-          content: this.postForm.content,
-          thumb_pic: this.postForm.thumb_pic,
-          thumb_video: this.postForm.thumb_video,
-          planet_id: this.postForm.planet_id,
-          desc_content: this.postForm.desc_content,
-          source: 'user'
-          // create_time: this.postForm.create_time,
-          // create_at: this.postForm.create_at
-        };
-        if (this.postForm.tag_id) {
-          obj.tag_id = this.postForm.tag_id;
-        }
-        addPosts(obj).then(res => {
-          if (res.code === 200) {
-            this.$message.success('发布文章成功');
-            // this.$store.dispatch('user/setCacha', []);
-            this.loading = false;
-            this.$router.push('/');
-          } else {
-            this.loading = false;
-          }
-        });
+
+      this.postForm.create_time = this.initDate();
+      this.postForm.create_at = this.initDate();
+      if (!this.postForm.desc_content) {
+        this.postForm.desc_content = this.editor.txt.text(); // 获取  获取纯文本
+        this.postForm.desc_content = this.postForm.desc_content.substr(0, 140);
       }
-      // } else {
-      //   console.log('error submit!!');
-      //   return false;
-      // }
-      // });
+      this.postForm.content += `<p style="padding:0.4rem;border:1px solid #ccc;line-height:1.2em;color:#999">信息来源于网络，本平台予以链接仅为传递信息之目的，不代表本平台立场。本平台不对文章信息准确性、完整性和及时性做任何保证，亦不对因信赖文章信息引发的任何损失承担任何责任。<p>`;
+      if (!this.postForm.thumb_pic) {
+        this.postForm.thumb_pic = util.getFirstImg(this.postForm.content);
+      }
+      if (!this.postForm.thumb_video) {
+        this.postForm.thumb_video = util.getFirstVideo(this.postForm.content);
+      }
+      const obj = {
+        title: this.postForm.title,
+        content: this.postForm.content,
+        thumb_pic: this.postForm.thumb_pic,
+        thumb_video: this.postForm.thumb_video,
+        planet_id: this.postForm.planet_id,
+        desc_content: this.postForm.desc_content,
+        source: 'user'
+        // create_time: this.postForm.create_time,
+        // create_at: this.postForm.create_at
+      };
+      if (this.postForm.tag_id) {
+        obj.tag_id = this.postForm.tag_id;
+      }
+      addPosts(obj).then(res => {
+        if (res.code === 200) {
+          this.$message.success('发布文章成功');
+          // this.$store.dispatch('user/setCacha', []);
+          this.loading = false;
+          this.$router.push('/');
+        } else {
+          this.loading = false;
+        }
+      });
     },
     async changeVideo () {
       const videoFile = { file: this.$refs.uploadFileVideo.files[0] };
-      await this.uploadOSS(videoFile.file).then(path => {
-        this.editor.execCommand('insertHTML', `<video src="https:${path}"  controls="controls"></video>`); // 插入视频
+      await this.uploadOSS(videoFile.file).then(obj => {
+        this.editor.execCommand('insertHTML', `<video src="https:${obj.path}"  controls="controls"></video>`); // 插入视频
       });
     },
     initDate () {
       let now = new Date()
       return util.formatDate(now, 'y-m-d');
+    },
+    selectType (item) {
+      this.typeList.forEach(e => {
+        e.checked = e.value === item.value
+      })
+      this.type = item.value
+    },
+    selectPlant (item) {
+      this.tagList = []
+      this.planetList.forEach(e => {
+        e.checked = e.id === item.id
+      })
+      getPlanetTags(item.id).then(res => {
+        if (res.code === 200) {
+          this.dynamicForm.tag_id = []
+          this.tagList = res.data
+        }
+      })
+    },
+    selectTag (item) {
+      if (this.dynamicForm.tag_id.length < 6) {
+        this.dynamicForm.tag_id = []
+        item.checked = !item.checked
+        this.tagList.forEach(e => {
+          if (e.checked) {
+            this.dynamicForm.tag_id.push(e.id)
+          }
+        })
+      } else {
+        this.$alert('一次最多选择6个标签')
+      }
+    },
+    handleRemove (file) {
+      let index = this.previewList.findIndex(e => e.uid === file.uid)
+      this.previewList.splice(index, 1)
+    },
+    handlePictureCardPreview (file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    exceed () {
+      this.$alert('一次最多上传9张图片')
     }
   }
 };
@@ -432,6 +494,7 @@ export default {
     .layout-content {
       margin: 20px 0;
       position: relative;
+      min-height: 500px;
     }
     .tab-bar {
       display: flex;
@@ -480,7 +543,7 @@ export default {
       }
     }
     .tag {
-      margin-top: 20px;
+      margin-top: 15px;
       width: 80%;
       font-size: 16px;
       color: #333;
@@ -492,25 +555,46 @@ export default {
         margin-top: 10px;
         .item {
           margin-bottom: 10px;
+          line-height: 16px;
           color: #333;
           cursor: pointer;
           &:not(:nth-last-child(1)) {
             margin-right: 20px;
           }
           &.active {
-            color: royalblue;
+            color: rgb(136, 165, 255);
           }
         }
       }
     }
   }
 }
-.dt{
+.dynamic {
   margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  .preview-upload {
+    margin-top: 20px;
+    .preview {
+      /deep/ .el-upload {
+        position: relative;
+        .el-upload__text {
+          position: absolute;
+          top: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 100%;
+          height: 100%;
+          padding-top: 28px;
+        }
+      }
+    }
+  }
 }
 .submit {
   position: absolute;
   right: 0;
+  bottom: 0;
   margin-top: 20px;
   padding: 10px 30px;
   font-weight: 700;

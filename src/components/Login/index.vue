@@ -56,7 +56,8 @@
 import {
   login,
   sendSms,
-  wxLogin
+  wxLogin,
+  loginByCode
   // bindAndLogin, bindWechat, getWechatJsSdk
 } from '@/api/auth';
 import util from '@/utils/util';
@@ -77,8 +78,26 @@ export default {
   },
   created () {
     if (this.$route.query.code && this.$route.query.state === 'wechat') {
-      this.isOthers = true
-      this.visible = true
+      loginByCode({
+        code: this.code
+      }).then(res => {
+        if (res.code === 200) {
+          util.setcookie('TOKEN', res.data.access_token);
+          this.$store.commit('setToken', res.data.access_token);
+          this.$store.dispatch('getInfo');
+          if (this.$route.query.code) {
+            window.location.href = window.location.href.replace(/\?code=.*/, '')
+          } else {
+            window.location.reload()
+          }
+        } else {
+          this.isOthers = true
+          this.visible = true
+        }
+      }).catch(() => {
+        this.isOthers = true
+        this.visible = true
+      })
     }
   },
   mounted () {
@@ -141,7 +160,11 @@ export default {
               util.setcookie('TOKEN', res.data.access_token);
               this.$store.commit('setToken', res.data.access_token);
               this.$store.dispatch('getInfo');
-              window.location.reload()
+              if (this.$route.query.code) {
+                window.location.href = window.location.href.replace(/\?code=.*/, '')
+              } else {
+                window.location.reload()
+              }
             } else {
               this.$message(res.msg);
             }

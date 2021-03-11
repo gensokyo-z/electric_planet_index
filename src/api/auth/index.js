@@ -56,7 +56,7 @@ export function bindWechat(data = {}) {
 // 微信登录接口
 export function wxLogin(data = {}) {
   return request({
-    url: '/api/wechat/login',
+    url: '/api/wechat/openplatlogin',
     method: 'post',
     data
   });
@@ -75,6 +75,15 @@ export function bindAndLogin(data = {}) {
 export function getWechatJsSdk(data = {}) {
   return request({
     url: '/api/wechat/jssdk',
+    method: 'post',
+    data
+  });
+}
+
+// 微信登录
+export function loginByCode(data = {}) {
+  return request({
+    url: '/api/wechat/login',
     method: 'post',
     data
   });

@@ -48,3 +48,11 @@ export function getPlanetDetail(id) {
     method: 'get'
   });
 }
+
+// 获取星球标签
+export function getPlanetTags(id) {
+  return request({
+    url: `/api/feed/planets/${id}/tags`,
+    method: 'get'
+  });
+}
