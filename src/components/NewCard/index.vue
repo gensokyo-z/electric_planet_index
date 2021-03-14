@@ -1,54 +1,53 @@
 <template>
   <section class="new-card">
     <div class="header-title"
-         v-if="type === 'new'">
+      v-if="type === 'new'">
       <div class="left"
-           @click="$router.push(`/planetdetail?id=${content.planet.id}`);"
-           v-if="$route.path !=='/planetdetail'">
+        @click="$router.push(`/planetdetail?id=${content.planet.id}`);"
+        v-if="$route.path !=='/planetdetail'">
         <img class="icon"
-             :src="content.planetBg"
-             alt="">
+          :src="content.planetBg"
+          alt="">
         <span>来自</span><span class="planet">{{content.planet.name}}</span><span class="time">{{content.created_at}}</span>
       </div>
       <div :class="['right',{'joined':joined}]"
-           @click.stop="addPlanet(content)"
-           v-if="$route.path !=='/planetdetail'">
+        @click.stop="addPlanet(content)"
+        v-if="$route.path !=='/planetdetail'">
         <button class="add"
-                v-if="!joined">{{`加入`}}</button>
+          v-if="!joined">{{`加入`}}</button>
         <button class="enter"
-                v-else>{{`进入`}}</button>
+          v-else>{{`进入`}}</button>
       </div>
     </div>
     <div>
       <div class="user-info"
-           @click="goUrl(`/docdetail?id=${content.id}`)">
+        v-if="content.source==='user'"
+        @click="goUrl(`/docdetail?id=${content.id}`)">
         <img class="avatar"
-             v-if="content.source==='user'"
-             :src="content.user.avatar"
-             alt="头像">
-        <span class="name"
-              v-if="content.source==='user'">{{content.user.username}}</span>
+          :src="avatar"
+          alt="头像">
+        <span class="name">{{username}}</span>
       </div>
       <!-- 文章内容 -->
       <div class="content">
         <div class="title"
-             v-if="content.source !== '微博'"
-             @click="goUrl(`/docdetail?id=${content.id}`)">{{content.title}}</div>
+          v-if="content.source !== '微博'"
+          @click="goUrl(`/docdetail?id=${content.id}`)">{{content.title}}</div>
         <!-- 文章预览 -->
         <div class="desc"
-             v-if="!content.thumb_video">
+          v-if="!content.media.length === 0 || (content.media[0]&& content.media[0].media_type!=='video')">
           <div class="info"
-               v-if="content.desc_content"
-               v-html="content.desc_content"
-               @click="goUrl(`/docdetail?id=${content.id}`)"></div>
+            v-if="content.desc_content"
+            v-html="content.desc_content"
+            @click="goUrl(`/docdetail?id=${content.id}`)"></div>
           <!-- <div class="info"
             v-else
             v-html="content.content"></div> -->
         </div>
         <!-- 文章图片 -->
         <div class="photo-box"
-             v-if="content.thumb_pic"
-             @click="goUrl(`/docdetail?id=${content.id}`)">
+          v-if="content.thumb_pic"
+          @click="goUrl(`/docdetail?id=${content.id}`)">
           <div class="photo">
             <img :src="content.thumb_pic">
             <!-- <el-image :src="content.thumb_pic"
@@ -57,37 +56,37 @@
           </div>
         </div>
         <div class="video-box"
-             v-if="content.thumb_video">
+          v-if="content.media.length>0&&content.media[0].media_type==='video'">
           <video :class="{'hidden':showPreview}"
-                 :src="content.thumb_video"
-                 controls="controls"
-                 preload='metadata'
-                 controlslist="nodownload"
-                 ref="video"
-                 x5-playsinline=""
-                 playsinline="true"
-                 webkit-playsinline="true"
-                 x-webkit-airplay="true"
-                 x5-video-player-type="h5"
-                 x5-video-player-fullscreen=""
-                 x5-video-orientation="portraint">
+            :src="content.media[0].media_link"
+            controls="controls"
+            preload='metadata'
+            controlslist="nodownload"
+            ref="video"
+            x5-playsinline=""
+            playsinline="true"
+            webkit-playsinline="true"
+            x-webkit-airplay="true"
+            x5-video-player-type="h5"
+            x5-video-player-fullscreen=""
+            x5-video-orientation="portraint">
           </video>
           <div class="previwe-img"
-               v-show="showPreview"
-               ref="previewImg"
-               @click.stop="playVideo">
+            v-show="showPreview"
+            ref="previewImg"
+            @click.stop="playVideo">
             <img :src="videoPreviwe">
             <div v-if="videoPlayed"
-                 class="video-replay"></div>
+              class="video-replay"></div>
             <div v-else
-                 class="video-ready"></div>
+              class="video-ready"></div>
           </div>
         </div>
         <div class="tag-box">
           <div v-for="(item, index) in content.tags"
-               :key="index"
-               class="tag"
-               @click="handlerTag(item)">
+            :key="index"
+            class="tag"
+            @click="handlerTag(item)">
             <!-- <svg class="icon huati"
                  aria-hidden="true">
               <use xlink:href="#iconshouye-huati"></use>
@@ -123,10 +122,14 @@ export default {
     },
     content: {
       type: Object,
-      default: () => { }
+      default: () => {
+        return {
+          user: {}
+        };
+      }
     }
   },
-  data () {
+  data() {
     return {
       joined: false,
       showPreview: true,
@@ -135,25 +138,41 @@ export default {
       srcList: []
     };
   },
+  computed: {
+    avatar() {
+      if (this.content.user && this.content.user.avatar) {
+        return this.content.user.avatar;
+      } else {
+        return util.defaultAvatar('');
+      }
+    },
+    username() {
+      if (this.content.user && this.content.user.username) {
+        return this.content.user.username;
+      } else {
+        return '临时用户';
+      }
+    }
+  },
   watch: {
     'content.thumb_pic': {
-      handler (val) {
+      handler(val) {
         if (val) {
           this.srcList.push(val);
         }
       },
       immediate: true
     },
-    'content.thumb_video': {
-      handler (val) {
-        if (val) {
+    'content.media': {
+      handler(val) {
+        if (val.length > 0 && val[0].media_type === 'video') {
           this.$nextTick(this.getVideoposter);
         }
       },
       immediate: true
     },
     '$state.userPlanet': {
-      handler (val) {
+      handler(val) {
         if (val.some(e => e.id === this.content.planet_id)) {
           this.joined = true;
         }
@@ -163,16 +182,16 @@ export default {
     }
   },
   methods: {
-    goUrl (url) {
+    goUrl(url) {
       this.$router.push(url);
     },
     // previewImg (img) {
     //   ImagePreview([img]);
     // },
-    bindTalk () {
+    bindTalk() {
       this.$refs.inputItem.showInput = true;
     },
-    async addPlanet (content) {
+    async addPlanet(content) {
       if (!util.getcookie('TOKEN')) {
         this.$store.dispatch('needAuth');
       }
@@ -193,11 +212,12 @@ export default {
         // .catch(() => {});
       }
     },
-    getVideoposter () {
+    getVideoposter() {
       let video = this.$refs.video;
       video.setAttribute('crossOrigin', 'Anonymous');
       video.currentTime = 0.001;
       video.onloadeddata = e => {
+        console.log('videoPreviwe');
         this.videoPreviwe = util.getVideoPre(video);
       };
       video.onended = e => {
@@ -206,11 +226,11 @@ export default {
         this.showPreview = true;
       };
     },
-    playVideo () {
+    playVideo() {
       this.showPreview = false;
       this.$refs.video.play();
     },
-    handlerTag (tag) {
+    handlerTag(tag) {
       this.$emit('handlerTag', tag);
     }
   }
@@ -396,14 +416,18 @@ export default {
     }
     .video-box {
       margin-bottom: 32px;
-      // width: 686px;
-      height: 385px;
       position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 500px;
+      height: 280px;
+      background-color: #000;
       video {
-        width: 100%;
-        max-height: 384px;
+        width: 500px;
       }
       .previwe-img {
+        position: relative;
         width: 100%;
         height: 100%;
         display: flex;
@@ -411,7 +435,10 @@ export default {
         justify-content: center;
         background-color: #000;
         img {
-          height: 100%;
+          width: 500px;
+          height: 280px;
+          // width: 100%;
+          // height: 100%;
         }
       }
       .hidden {

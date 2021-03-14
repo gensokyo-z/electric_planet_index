@@ -35,23 +35,6 @@ export function logout() {
     method: 'post'
   });
 }
-// 获取公众号appid
-
-export function getWechatAppid() {
-  return request({
-    url: '/api/wechat/appid',
-    method: 'get'
-  });
-}
-
-// 绑定微信
-export function bindWechat(data = {}) {
-  return request({
-    url: '/api/wechat/bind',
-    method: 'post',
-    data
-  });
-}
 
 // 微信登录接口
 export function wxLogin(data = {}) {
@@ -62,28 +45,19 @@ export function wxLogin(data = {}) {
   });
 }
 
+// 微信注册接口
+export function wxRegister(data = {}) {
+  return request({
+    url: '/api/wechat/firstbindphone',
+    method: 'post',
+    data
+  });
+}
+
 // 绑定并登录
 export function bindAndLogin(data = {}) {
   return request({
-    url: '/api/wechat/bindAndLogin',
-    method: 'post',
-    data
-  });
-}
-
-// 获取微信js-sdk配置
-export function getWechatJsSdk(data = {}) {
-  return request({
-    url: '/api/wechat/jssdk',
-    method: 'post',
-    data
-  });
-}
-
-// 微信登录
-export function loginByCode(data = {}) {
-  return request({
-    url: '/api/wechat/login',
+    url: '/api/wechat/phone/login',
     method: 'post',
     data
   });

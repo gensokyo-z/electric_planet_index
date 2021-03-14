@@ -16,7 +16,16 @@ const routes = [
     name: 'index',
     component: () => import(/* webpackChunkName: "index" */ '@/views/index'),
     meta: {
-      title: '电动星球',
+      title: '星球资讯',
+      keepAlive: false
+    }
+  },
+  {
+    path: '/video',
+    name: 'video',
+    component: () => import(/* webpackChunkName: "index" */ '@/views/index/video'),
+    meta: {
+      title: '星球视频',
       keepAlive: false
     }
   },
@@ -34,7 +43,7 @@ const routes = [
     name: 'planet',
     component: () => import(/* webpackChunkName: "planet" */ '@/views/planet'),
     meta: {
-      title: '星球',
+      title: '星球社区',
       keepAlive: false
     }
   },

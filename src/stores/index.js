@@ -37,13 +37,22 @@ export default new Vuex.Store({
         getUserInfo()
           .then(res => {
             if (res.code === 200) {
+              if (/^1[\d]{10}/.test(res.data.username)) {
+                res.data.username = res.data.username.substring(0, 3) + '****' + res.data.username.substring(7, 10);
+              }
               commit('setUserInfo', res.data); // 用户所有信息
+              this._actions.getUserPlanetList[0]();
               resolve(res.data);
-            } else {
-              reject(res.message);
             }
           })
           .catch(error => {
+            // getWxUserInfo().then(res => {
+            //   if (res.code === 200) {
+            //     commit('setUserInfo', res.data); // 用户所有信息
+            //     this._actions.getUserPlanetList[0]();
+            //     resolve(res.data);
+            //   }
+            // });
             reject(error);
           });
       });
@@ -66,9 +75,6 @@ export default new Vuex.Store({
           getPlanetList()
             .then(response => {
               if (response.code === 200) {
-                response.data.forEach(e => {
-                  e.avatar = e.avatar.includes('//') ? e.avatar : require('@/assets/images/timg.jpg');
-                });
                 commit('setAllPlanet', response.data);
                 resolve(response.data);
               } else {
@@ -86,9 +92,6 @@ export default new Vuex.Store({
         getJoinedPlanetList()
           .then(response => {
             if (response.code === 200) {
-              response.data.forEach(e => {
-                e.avatar = e.avatar.includes('//') ? e.avatar : require('@/assets/images/timg.jpg');
-              });
               commit('setUserPlanet', response.data);
               resolve(response);
             } else {
@@ -120,7 +123,7 @@ export default new Vuex.Store({
       const formData = new FormData();
       const filename = `${util.random_string(5)}.${params.file.type.split('/')[1]}`;
       // 文件名字，可设置路径
-      formData.append('key', `${params.dir}${filename}`);
+      formData.append('key', `${params.dir}/${filename}`);
       // policy规定了请求的表单域的合法性
       formData.append('policy', params.policy);
       // Bucket 拥有者的Access Key Id

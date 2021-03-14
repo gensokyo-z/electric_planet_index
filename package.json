@@ -23,6 +23,7 @@
     "analyz": "vue-cli-service build --mode analyz"
   },
   "dependencies": {
+    "ali-oss": "^6.13.2",
     "axios": "^0.21.1",
     "core-js": "^2.6.5",
     "element-ui": "^2.14.1",

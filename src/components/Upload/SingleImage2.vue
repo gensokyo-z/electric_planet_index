@@ -1,28 +1,39 @@
 <template>
   <div class="singleImageUpload2 upload-container">
     <el-upload :multiple="false"
-               :show-file-list="false"
-               :on-success="handleImageSuccess"
-               class="image-uploader"
-               drag
-               action=""
-               :http-request="upload">
-      <i class="el-icon-upload" />
-      <div class="el-upload__text">
-        拖拽<em>点击上传</em>题图
+      :show-file-list="false"
+      :on-success="handleImageSuccess"
+      class="image-uploader"
+      drag
+      action=""
+      accept="image/*"
+      :http-request="upload">
+      <div class="iconfont"
+        v-loading="imgFlag">
+        <i class="el-icon-plus" />
+        <div class="el-upload__text">
+          拖拽<em>点击上传</em>题图
+        </div>
       </div>
     </el-upload>
     <div v-show="imageUrl.length>0"
-         class="image-preview">
+      class="image-preview">
       <div v-show="imageUrl.length>1"
-           class="image-preview-wrapper">
+        class="image-preview-wrapper">
         <img :src="imageUrl">
         <div class="image-preview-action">
+          <i class="el-icon-zoom-in"
+            @click="previewImg" />
           <i class="el-icon-delete"
-             @click="rmImage" />
+            @click="rmImage" />
         </div>
       </div>
     </div>
+    <el-dialog :visible.sync="dialogVisible"
+      top="10vh">
+      <img width="100%"
+        :src="dialogImageUrl">
+    </el-dialog>
   </div>
 </template>
 
@@ -35,33 +46,36 @@ export default {
       default: ''
     }
   },
-  data () {
+  data() {
     return {
-      tempUrl: ''
+      tempUrl: '',
+      imgFlag: false,
+      dialogImageUrl: '',
+      dialogVisible: false
     };
   },
   computed: {
-    imageUrl () {
+    imageUrl() {
       return this.value;
     }
   },
   methods: {
-    rmImage () {
+    rmImage() {
       this.emitInput('');
     },
-    emitInput (val) {
+    emitInput(val) {
       this.$emit('input', val);
     },
-    handleImageSuccess () {
+    handleImageSuccess() {
       this.emitInput(this.tempUrl);
     },
-    async uploadOSS (content) {
+    async uploadOSS(content) {
       // eslint-disable-next-line
       const params = await this.$store.dispatch('getOssToken').then(res => {
         return res.data;
       });
       params.file = content.file;
-      params.dir = 'posts/community';
+      params.dir = 'posts/community/pic';
       // eslint-disable-next-line
       let data = await this.$store.dispatch('setParams', params);
       // eslint-disable-next-line
@@ -72,12 +86,18 @@ export default {
         return imgPath;
       });
     },
-    upload (content) {
+    upload(content) {
+      this.imgFlag = true;
       this.uploadOSS(content).then(path => {
         this.tempUrl = path;
         this.emitInput(path);
         this.handleImageSuccess();
+        this.imgFlag = false;
       });
+    },
+    previewImg() {
+      this.dialogImageUrl = this.imageUrl;
+      this.dialogVisible = true;
     }
     // beforeUpload () {
     //   const _self = this
@@ -141,9 +161,15 @@ export default {
       transition: opacity 0.3s;
       cursor: pointer;
       text-align: center;
-      line-height: 340px;
-      .el-icon-delete {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .el-icon-delete,
+      .el-icon-zoom-in {
         font-size: 36px;
+      }
+      i {
+        margin-right: 10px;
       }
     }
     &:hover {
@@ -153,7 +179,18 @@ export default {
     }
   }
 }
-.el-upload-dragger .el-icon-upload {
-  margin: 130px 0 16px;
+.el-upload-dragger {
+  border-color: #000;
+  .iconfont {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  .el-icon-plus {
+    font-size: 28px;
+    color: #8c939d;
+  }
 }
 </style>

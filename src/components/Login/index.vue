@@ -1,19 +1,20 @@
 <template>
   <section class="login">
     <el-dialog class="login-dialog"
-               :visible.sync="visible"
-               append-to-body
-               :close-on-click-modal="false"
-               width="390px">
+      :visible.sync="visible"
+      append-to-body
+      :close-on-click-modal="false"
+      :before-close="closeDialog"
+      width="390px">
       <div class="top"
-           v-if="!isOthers">
+        v-if="!isOthers">
         <p class="title">
           <span>快捷登录注册</span>
         </p>
         <span class="title-desc">未注册的手机号码将自动注册并登录</span>
       </div>
       <div class="top"
-           v-else>
+        v-else>
         <p class="title">
           <span>首次第三方登录需绑定手机</span>
         </p>
@@ -21,28 +22,28 @@
       </div>
       <div class="input-box">
         <el-input type="tel"
-                  :maxlength="11"
-                  placeholder="请输入手机号"
-                  v-model="phone"
-                  class="phone"></el-input>
+          :maxlength="11"
+          placeholder="请输入手机号"
+          v-model="phone"
+          class="phone"></el-input>
         <div class="flex relative">
           <el-input type="tel"
-                    :maxlength="6"
-                    v-model="verify"
-                    @keyup.enter="handleLogin"
-                    placeholder="请输入验证码"
-                    class="verify"></el-input>
+            :maxlength="6"
+            v-model="verify"
+            @keyup.native.enter="handleLogin"
+            placeholder="请输入验证码"
+            class="verify"></el-input>
           <span class="get-verify"
-                @click="sendCode">{{second === 60 ? '获取验证码': `重新发送${second}s`}}</span>
+            @click="sendCode">{{second === 60 ? '获取验证码': `重新发送${second}s`}}</span>
         </div>
         <button class="btn_r login_btn"
-                @click="handleLogin">登录</button>
+          @click="handleLogin">登录</button>
       </div>
       <div class="others-login flex flex-middle"
-           v-if="!isOthers">
+        v-if="!isOthers">
         <p>第三方账号登录:</p>
         <a class="iconfont iconweixin"
-           @click="wechatLogin"></a>
+          @click="wechatLogin"></a>
         <!-- <a class="qq"
            href="/login/qqLogin"></a>
         <a class="weibo"
@@ -53,60 +54,41 @@
   </section>
 </template>
 <script>
-import {
-  login,
-  sendSms,
-  wxLogin,
-  loginByCode
-  // bindAndLogin, bindWechat, getWechatJsSdk
-} from '@/api/auth';
+import { sendSms, wxLogin, bindAndLogin, wxRegister } from '@/api/auth';
 import util from '@/utils/util';
 let timer = null;
 export default {
   name: 'Login',
-  data () {
+  data() {
     return {
       visible: false,
       phone: '',
       verify: '',
       isOthers: false,
-      showFrom: false,
       mobileReg: /^1\d{10}$/,
       second: 60,
-      code: this.$route.query.code
-    }
+      code: ''
+    };
   },
-  created () {
+  beforeCreate() {
+    // 微信跳转code
     if (this.$route.query.code && this.$route.query.state === 'wechat') {
-      loginByCode({
-        code: this.code
-      }).then(res => {
-        if (res.code === 200) {
-          util.setcookie('TOKEN', res.data.access_token);
-          this.$store.commit('setToken', res.data.access_token);
-          this.$store.dispatch('getInfo');
-          if (this.$route.query.code) {
-            window.location.href = window.location.href.replace(/\?code=.*/, '')
-          } else {
-            window.location.reload()
-          }
-        } else {
-          this.isOthers = true
-          this.visible = true
-        }
-      }).catch(() => {
-        this.isOthers = true
-        this.visible = true
-      })
+      util.setStorage('wxCode', this.$route.query.code);
+      this.$router.push(this.$route.path);
     }
   },
-  mounted () {
-    this.$bus.$on('login', (flag,) => {
-      this.visible = flag
-    })
+  mounted() {
+    this.$bus.$on('login', flag => {
+      this.visible = flag;
+    });
+    this.code = util.getStorage('wxCode');
+    if (this.code) {
+      util.setStorage('wxCode', '');
+      this.wxLogin();
+    }
   },
   methods: {
-    sendCode () {
+    sendCode() {
       if (this.second !== 60) return;
       if (!this.mobileReg.test(this.phone)) {
         this.$message('请输入正确的手机号码');
@@ -128,7 +110,7 @@ export default {
           console.log(err);
         });
     },
-    validcode () {
+    validcode() {
       if (!this.mobileReg.test(this.phone)) {
         this.$message('请输入正确的手机号码');
         return false;
@@ -141,40 +123,63 @@ export default {
       }
       return true;
     },
-    handleLogin () {
+    handleLogin() {
       if (this.validcode()) {
         let obj = {
           phone: this.phone,
           captcha: this.verify
         };
-        let path = null
+        let path = null;
         if (this.isOthers && this.code) {
-          path = wxLogin
-          obj.code = this.code
+          path = wxRegister;
+          obj.token = this.code;
         } else {
-          path = login
+          path = bindAndLogin;
         }
         path(obj)
           .then(res => {
             if (res.code === 200) {
-              util.setcookie('TOKEN', res.data.access_token);
-              this.$store.commit('setToken', res.data.access_token);
+              let token = this.isOthers ? this.code : res.data.access_token;
+              util.setcookie('TOKEN', token);
+              this.$store.commit('setToken', token);
               this.$store.dispatch('getInfo');
-              if (this.$route.query.code) {
-                window.location.href = window.location.href.replace(/\?code=.*/, '')
-              } else {
-                window.location.reload()
-              }
-            } else {
-              this.$message(res.msg);
+              this.closeDialog();
+              // window.location.reload();
             }
           })
           .catch(err => {
-            this.$message(err.msg);
+            if (err.code === 1012) {
+              this.isOthers = false;
+              this.verify = '';
+            }
           });
       }
     },
-    calcTime () {
+    wxLogin() {
+      wxLogin({
+        code: this.code
+      })
+        .then(res => {
+          if (res.code === 200) {
+            if (res.data.haveuser === 0) {
+              util.setcookie('TOKEN', res.data.user.access_token);
+              this.$store.commit('setToken', res.data.user.access_token);
+              this.$store.dispatch('getInfo').then(() => {
+                this.closeDialog();
+              });
+            } else {
+              this.isOthers = true;
+              this.visible = true;
+              this.code = res.data.user.access_token;
+            }
+          }
+        })
+        .catch(() => {
+          this.isOthers = true;
+          this.visible = true;
+        });
+    },
+    calcTime() {
       timer && clearInterval(timer);
       timer = setInterval(() => {
         if (!this.second--) {
@@ -184,17 +189,25 @@ export default {
         }
       }, 1000);
     },
-    wechatLogin () {
-      // let uri = encodeURIComponent(window.location.href)
-      let uri = encodeURIComponent('https://www.ddxq.tech/community/index')
-      window.location.href = `https://open.weixin.qq.com/connect/qrconnect?appid=wxba4899f4541e74cb&redirect_uri=${uri}&response_type=code&scope=snsapi_login&state=wechat#wechat_redirect`
+    wechatLogin() {
+      let uri = encodeURIComponent(window.location.href);
+      // let uri = encodeURIComponent('https://www.ddxq.tech/community/index');
+      window.location.href = `https://open.weixin.qq.com/connect/qrconnect?appid=wxba4899f4541e74cb&redirect_uri=${uri}&response_type=code&scope=snsapi_login&state=wechat#wechat_redirect`;
     },
-
+    closeDialog() {
+      this.visible = false;
+      setTimeout(() => {
+        this.code = '';
+        this.phone = '';
+        this.verify = '';
+        this.isOthers = false;
+      }, 200);
+    }
   },
-  beforeDestroy () {
+  beforeDestroy() {
     timer && clearInterval(timer);
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

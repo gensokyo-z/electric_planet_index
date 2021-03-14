@@ -13,10 +13,12 @@ const service = axios.create({
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 10 * 1000 // request timeout
 });
-
 // request拦截器
 service.interceptors.request.use(
   config => {
+    if (store.state.token) {
+      config.headers['Authorization'] = `Bearer ${store.state.token}`;
+    }
     // ie浏览器缓存get请求数据
     if (config.method === 'get' && 'ActiveXObject' in window) {
       config.headers['Pragma'] = 'no-cache';
@@ -26,14 +28,16 @@ service.interceptors.request.use(
       config.data = qs.stringify({
         ...data
       });
+      if (config.data && config.data.token) {
+        config.headers['Authorization'] = `Bearer ${config.data.token}`;
+        delete config.data.token;
+      }
     } else {
       config.params = {
         ...config.params
       };
     }
-    if (store.state.token) {
-      config.headers['Authorization'] = `Bearer ${store.state.token}`;
-    }
+
     let url = config.url;
     // 设置cancelToken对象
     config.cancelToken = new axios.CancelToken(cancel => {
@@ -61,22 +65,23 @@ service.interceptors.response.use(
     let result = response.data;
     // 请求不成功处理
     if (response.status !== 200) {
-      Message({
-        message: result.msg,
-        duration,
-        type: 'error'
-      });
-      return Promise.reject('error');
+      // Message.closeAll();
+      // Message({
+      //   message: result.msg,
+      //   duration,
+      //   type: 'error'
+      // });
+      return Promise.reject(result.msg);
     } else {
       if (result.code === 200) {
         return Promise.resolve(result);
       } else if (result.code === 401) {
-        Message.closeAll();
-        Message({
-          message: '请登录后再操作',
-          duration,
-          type: 'error'
-        });
+        // Message.closeAll();
+        // Message({
+        //   message: '请登录后再操作',
+        //   duration,
+        //   type: 'error'
+        // });
         util.delcookie('TOKEN');
         Bus.$emit('login', true);
         // if (router.currentRoute.name !== 'login') {
@@ -84,12 +89,14 @@ service.interceptors.response.use(
         // }
         return Promise.reject(result);
       } else {
-        Message.closeAll();
-        Message({
-          message: result && result.msg ? result.msg : '无效的返回数据',
-          duration,
-          type: 'error'
-        });
+        if (response.config.url !== '/api/wechat/openplatlogin') {
+          Message.closeAll();
+          Message({
+            message: result && result.msg ? result.msg : '无效的返回数据',
+            duration,
+            type: 'error'
+          });
+        }
         return Promise.reject(result);
       }
     }
@@ -107,6 +114,7 @@ service.interceptors.response.use(
     //   });
     //   return Promise.reject(error);
     // }
+    console.log(error);
     if (response.code === 500 || response.code === 504) {
       Message({
         message: info.message || '后端服务异常，请联系管理员！',
@@ -139,11 +147,11 @@ service.interceptors.response.use(
       });
       return Promise.reject(error);
     }
-    Message({
-      message: info.message,
-      duration,
-      type: 'error'
-    });
+    // Message({
+    //   message: info.message,
+    //   duration,
+    //   type: 'error'
+    // });
     return Promise.reject(error);
   }
 );

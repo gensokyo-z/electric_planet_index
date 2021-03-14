@@ -3,42 +3,42 @@
   <header class="component-header is-fixed">
     <div class="component-header-content">
       <a class="header-logo"
-         @click="goUrl('/')">
+        @click="goUrl('/')">
         <img src="@/assets/images/logo.png"
-             alt="logo"><span>电动星球</span>
+          alt="logo"><span>电动星球</span>
       </a>
       <div class="header-nav">
         <div :class="['nav-item', {'selected':item.checked}]"
-             v-for="(item, index) in navList"
-             :key="index"
-             @click="handlerNav(item)">{{item.name}}</div>
+          v-for="(item, index) in navList"
+          :key="index"
+          @click="handlerNav(item)">{{item.name}}</div>
 
       </div>
       <Search @getSerch="getSerch"
-              v-show="$route.path ==='/'"
-              ref="search" />
+        v-show="$route.path ==='/index'"
+        ref="search" />
       <div class="header-write"
-           v-if="$state.token"
-           @click="goUrl('/post')"><i class="iconfont iconbiji"></i> 写文章</div>
+        v-if="$state.token"
+        @click="goUrl('/post')"><i class="iconfont iconbiji"></i> 写文章</div>
       <div class="header-login">
         <div v-if="$state.token"
-             class="user-info">
+          class="user-info">
           <span>{{$state.userInfo.username}}</span>
           <img :src="avatar">
           <div class="logout hide">
             <div class="user-panel">
               <ul class="user-menu">
                 <li class="user-menu-item"
-                    @click="goUrl('/mine')">个人中心</li>
+                  @click="goUrl('/mine')">个人中心</li>
                 <li class="user-menu-item"
-                    @click="logout">退出</li>
+                  @click="logout">退出</li>
               </ul>
             </div>
           </div>
         </div>
         <a class="login-item"
-           v-else
-           @click="showLogin">注册/登录</a>
+          v-else
+          @click="showLogin">注册/登录</a>
       </div>
     </div>
     <Login ref="login" />
@@ -46,74 +46,77 @@
 </template>
 
 <script type="text/babel">
-import util from '@/utils/util'
-import { logout } from '@/api/auth'
+import util from '@/utils/util';
+import { logout } from '@/api/auth';
 export default {
   name: 'BaseHeader',
-  data () {
+  data() {
     return {
       navList: [
         {
-          name: '资讯',
-          path: '/',
+          name: '星球资讯',
+          path: '/index',
           checked: false
-        }, {
-          name: '星球',
+        },
+        {
+          name: '星球社区',
           path: '/planet',
           checked: false
-        }, {
-          name: '消息',
-          path: '/message',
+        },
+        {
+          name: '星球视频',
+          path: '/video',
           checked: false
         }
+        // {
+        //   name: '消息',
+        //   path: '/message',
+        //   checked: false
+        // }
       ]
     };
   },
   computed: {
-    avatar () {
+    avatar() {
       if (this.$state.userInfo && this.$state.userInfo.avatar) {
-        return this.$state.userInfo.avatar
+        return this.$state.userInfo.avatar;
       } else {
-        return util.defaultAvatar('')
+        return util.defaultAvatar('');
       }
     }
   },
   methods: {
-    getSerch (kw) {
-      this.$emit('getSerch', kw)
+    getSerch(kw) {
+      this.$emit('getSerch', kw);
     },
-    showLogin () {
-      this.$refs.login.visible = true
+    showLogin() {
+      this.$refs.login.visible = true;
     },
-    goUrl (url) {
+    goUrl(url) {
       if (url === '/login') {
-        return this.$bus.$emit('login', true)
+        return this.$bus.$emit('login', true);
       }
-      this.$router.push(url)
+      this.$router.push(url);
     },
-    handlerNav (item) {
-      this.$router.push(item.path)
+    handlerNav(item) {
+      this.$router.push(item.path);
     },
-    logout () {
+    logout() {
       logout().then(() => {
         util.delcookie('TOKEN');
-        if (this.$route.query.code) {
-          window.location.href = window.location.href.replace(/\?code=.*/, '')
-        } else {
-          window.location.reload()
-        }
-      })
+        window.location.href = '//ddxq.tech';
+      });
     },
-    setSearch (kw) {
-      this.$refs.search.keyWord = kw
+    setSearch(kw) {
+      this.$refs.search.keyWord = kw;
     }
   },
-  mounted () {
+  mounted() {
     this.navList.forEach(e => {
       if (e.path === this.$route.path) {
-        e.checked = true
+        e.checked = true;
       }
-    })
+    });
   },
   components: {
     Search: () => import('../Search'),
@@ -129,6 +132,7 @@ export default {
   background-color: hsla(0, 0%, 100%, 0.95);
   color: #424242;
   border-bottom: 1px solid #f7f7fa;
+  background-color: #000;
   &.is-fixed {
     position: fixed;
     top: 0;
@@ -142,7 +146,6 @@ export default {
   padding: 0 50px;
   width: 1300px;
   display: flex;
-  cursor: pointer;
   .header-logo {
     margin: 10px 80px 10px 0;
     width: 120px;
@@ -156,6 +159,9 @@ export default {
       width: 30px;
       height: 30px;
     }
+    span {
+      color: #fff;
+    }
   }
   .header-nav {
     // width: 226px;
@@ -167,6 +173,7 @@ export default {
       margin: 0 15px;
       height: 50px;
       line-height: 50px;
+      color: #fff;
       cursor: pointer;
       &.selected {
         font-weight: 700;
@@ -190,6 +197,7 @@ export default {
     line-height: 26px;
     background-color: #ffe000;
     border-radius: 15px;
+    cursor: pointer;
     &:hover {
       background: #ffec5d;
       border-color: #ffec5d;
@@ -201,7 +209,8 @@ export default {
     .login-item {
       padding: 0 20px;
       line-height: 24px;
-      color: #2c2e3b;
+      // color: #2c2e3b;
+      color: #fff;
       display: block;
       border-radius: 15px;
       border: 1px solid #afb3ba;
@@ -212,7 +221,8 @@ export default {
       display: flex;
       align-items: center;
       font-size: 16px;
-      color: #2c2e3b;
+      // color: #2c2e3b;
+      color: #fff;
       border-radius: 8px;
       .hide {
         display: none;
@@ -245,6 +255,7 @@ export default {
             padding: 15px 20px;
             font-size: 14px;
             line-height: 20px;
+            color: #333;
             &:hover {
               background-color: #f5f5f5;
               color: #8a8a8a;

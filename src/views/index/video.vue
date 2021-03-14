@@ -98,7 +98,7 @@ export default {
               });
               let arr = [];
               res.data.forEach(e => {
-                if (e.type === 0 || e.type === 1) {
+                if (e.type === 2) {
                   arr.push(e);
                 }
               });
