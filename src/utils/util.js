@@ -80,7 +80,11 @@ let util = {
   },
   defaultAvatar(str) {
     let num = Math.floor(Math.random() * 6) + 1;
-    return !str ? require(`@/assets/images/def_avatar${num}.png`) : str;
+    if (str) {
+      return str;
+    } else {
+      return require(`@/assets/images/def_avatar${num}.png`);
+    }
   },
   getFirstImg(str) {
     let Reg = /<img/; // 第一张图片

@@ -90,15 +90,14 @@ export default {
             if (res.code === 200 && res.data) {
               this.last_page = res.last_page;
               res.data.forEach(e => {
-                e.user.avatar = util.defaultAvatar(e.user.avatar);
                 if (!e.thumb_pic) {
                   e.thumb_pic = util.getFirstImg(e.content);
                 }
                 e.content = util.changeHtml2Crad(e.content);
-                let year = new Date().getFullYear();
-                if (e.created_at.includes(year)) {
-                  e.created_at = e.created_at.substr(5, e.created_at.length - 1);
-                }
+                // let year = new Date().getFullYear();
+                // if (e.created_at.includes(year)) {
+                //   e.created_at = e.created_at.substr(5, e.created_at.length - 1);
+                // }
                 e.planetBg = this.$state.allPlanet.find(v => v.id === e.planet_id).avatar;
               });
               this.cardList = this.cardList.concat(res.data);
