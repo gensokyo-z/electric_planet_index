@@ -238,11 +238,11 @@ export default {
 </script>
 <style lang="less" scoped>
 .new-card {
-  // padding: 32px;
-  // border-bottom: 20px solid rgba(0, 0, 0, 0.04);
-  margin-bottom: 10px;
-  padding-bottom: 30px;
-  border-bottom: 1px solid #ebecf1;
+  padding: 30px;
+  box-sizing: border-box;
+  background: #fff;
+  width: 280px;
+  height: 455px;
   .header-title {
     // margin-bottom: 34px;
     // width: 686px;

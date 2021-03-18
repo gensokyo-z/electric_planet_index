@@ -3,6 +3,7 @@
     <el-dialog class="login-dialog"
       :visible.sync="visible"
       append-to-body
+      :lock-scroll="false"
       :close-on-click-modal="false"
       :before-close="closeDialog"
       width="390px">

@@ -5,8 +5,25 @@
         ref="header" />
       <div class="layout-main">
         <div class="community-container">
+          <div class="title">
+            <h1>星球资讯</h1>
+            <p>电动星球为你精心准备的实时资讯</p>
+          </div>
+          <div class="tag-list">
+            <div class="tag"></div>
+          </div>
           <div class="community-main">
             <div class="card-list">
+              <div class="card"
+                v-for="(item, index) in cardList"
+                :key="index">
+                <NewCard :type.sync="type"
+                  :content="item"
+                  @handlerTag="handlerTag"
+                  @getData="getData" />
+              </div>
+            </div>
+            <!-- <div class="card-list">
               <TabBar @bindTab="bindTab" />
               <div class="infinite-scroll"
                 style="overflow-y: auto">
@@ -26,11 +43,11 @@
                 <p v-show="finished"
                   id="footer">{{page===last_page?'没有更多了':''}}</p>
               </div>
-            </div>
+            </div> -->
           </div>
-          <div class="community-aside">
+          <!-- <div class="community-aside">
             <BannerCard />
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -45,10 +62,9 @@ export default {
   name: 'index',
   data() {
     return {
-      ajax: false,
       type: 'new',
       page: 1,
-      per_page: 10,
+      per_page: 12,
       last_page: 0,
       cardList: [],
       keyWord: '',
@@ -57,20 +73,12 @@ export default {
     };
   },
   mounted() {
-    // 保证在DOM渲染完毕后初始化, 20秒是经验值
-    setTimeout(() => {
-      this.listenerAction();
-    }, 20);
+    this.onLoad();
   },
   methods: {
-    onLoad(flag) {
-      if (flag) {
-        this.cardList = [];
-      }
+    onLoad() {
       this.loading = true;
-      setTimeout(() => {
-        this.getData(this.type);
-      }, 300);
+      this.getData(this.type);
     },
     getSerch(kw) {
       this.page = 1;
@@ -82,19 +90,17 @@ export default {
       if (this.ajax) {
         return;
       }
-      this.ajax = true;
-      this.finished = true;
       if (type === 'new') {
         getNewest({ page: this.page, per_page: this.per_page, keyword: this.keyWord })
           .then(res => {
             if (res.code === 200 && res.data) {
               this.last_page = res.last_page;
               res.data.forEach(e => {
-                if (!e.thumb_pic) {
-                  e.thumb_pic = util.getFirstImg(e.content);
-                }
+                // if (!e.thumb_pic) {
+                //   e.thumb_pic = util.getFirstImg(e.content);
+                // }
                 e.content = util.changeHtml2Crad(e.content);
-                e.planetBg = this.$state.allPlanet.find(v => v.id === e.planet_id).avatar;
+                // e.planetBg = this.$state.allPlanet.find(v => v.id === e.planet_id).avatar;
               });
               let arr = [];
               res.data.forEach(e => {
@@ -112,11 +118,8 @@ export default {
             } else {
               this.finished = true;
             }
-            this.ajax = false;
           })
-          .catch(() => {
-            this.ajax = false;
-          });
+          .catch(() => {});
       } else {
         getHotest({ page: this.page, per_page: this.per_page, keyword: this.keyWord })
           .then(res => {
@@ -159,10 +162,6 @@ export default {
     gotoDetail(item) {
       this.$router.push(`/docdetail?id=${item.id}`);
     },
-    listenerAction() {
-      window.addEventListener('scroll', this.scrollhandle);
-      document.documentElement.scrollTop = 0;
-    },
     scrollhandle(event) {
       if (this.page === this.last_page) {
         return;
@@ -191,10 +190,10 @@ export default {
     window.removeEventListener('scroll', this.scrollhandle, false);
   },
   components: {
-    TabBar: () => import('./components/TabBar'),
+    // TabBar: () => import('./components/TabBar'),
     // Search: () => import('@/components/Search/index.vue'),
-    NewCard,
-    BannerCard: () => import('@/components/banner')
+    NewCard
+    // BannerCard: () => import('@/components/banner')
   }
 };
 </script>
