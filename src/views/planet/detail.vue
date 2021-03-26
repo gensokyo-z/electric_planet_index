@@ -5,39 +5,61 @@
       <div class="layout-main">
         <div class="community-container">
           <div class="community-main">
-            <div class="planet-box"
-              :style="`background: url(${content.background}) no-repeat  center center; background-size: 750px 350px;`"
+            <article class="planet-box"
+              :style="`background: url(${content.background}) no-repeat  center center/1200px 350px ;`"
               v-show="content.id">
-              <div class="top">
-                <div class="name">{{content.name}}</div>
-                <div :class="['btn',{'joined':!content.joined}]"
-                  @click="addPlanet(content)">{{content.joined?'退出':'加入'}}</div>
+              <div class="info">
+                <div class="left">
+                  <img class="avatar"
+                    :src="content.avatar">
+                  <div class="name">{{content.name}}</div>
+                </div>
+                <div class="mid">
+                  <div class="desc">{{content.intro}}</div>
+                </div>
+                <div class="right">
+                  <div :class="['btn',{'joined':!content.joined}]"
+                    @click="addPlanet(content)">{{content.joined?'退出':'已加入'}}</div>
+                </div>
               </div>
-              <div class="buttom">
-                <div class="desc">{{content.intro}}</div>
+            </article>
+            <article class="main">
+              <div class="card-list"
+                v-loading="loading">
+                <div class="card-header">
+                  <h2>星球推荐</h2>
+                  <div class="tag-list">
+                    <div class="tag"
+                      v-for="(item,index) in tagList"
+                      :key="index">#{{item.name}}</div>
+                  </div>
+                </div>
+                <div v-for="(item, index) in cardList"
+                  :key="index"
+                  class="card">
+                  <PlanetCard :content="item" />
+                </div>
+                <div class="footer-btn"
+                  v-if="!loading">
+                  <el-button @click="loadMore">{{finished?'~~~到底了~~~':'加载更多'}}</el-button>
+                </div>
               </div>
-            </div>
-            <div class="card-list">
-              <div class="infinite-scroll"
-                style="overflow-y: auto">
-                <ul class="infinite-list"
-                  v-infinite-scroll="onLoad"
-                  :infinite-scroll-disabled="disabled"
-                  :infinite-scroll-distance="10">
-                  <li v-for="(item, index) in cardList"
-                    :key="index">
-                    <NewCard :type.sync="type"
-                      :content="item" />
-                  </li>
-                </ul>
-                <p v-show="loading">加载中...</p>
-                <p v-show="finished"
-                  id="footer">{{page===last_page?'没有更多了':''}}</p>
-              </div>
-            </div>
-          </div>
-          <div class="community-aside">
-            <BannerCard />
+              <aside class="aside">
+                <nav>
+                  <router-link tag="div"
+                    to="/post?type=0">发动态</router-link>
+                  <router-link tag="div"
+                    to="/post?type=1">
+                    发文章</router-link>
+                  <router-link tag="div"
+                    to="/post?type=2">
+                    发视频</router-link>
+                </nav>
+                <div class="Encyclopedias">
+                  <h2>星球百科</h2>
+                </div>
+              </aside>
+            </article>
           </div>
         </div>
       </div>
@@ -46,8 +68,8 @@
 </template>
 
 <script>
-import NewCard from '@/components/NewCard';
-import { joinPlanet, quitPlanet, getPlanetDetail, getPlanetPosts } from '@/api/planet';
+import PlanetCard from '@/components/PlanetCard';
+import { joinPlanet, quitPlanet, getPlanetDetail, getPlanetPosts, getPlanetTags } from '@/api/planet';
 import util from '@/utils/util';
 export default {
   name: 'index',
@@ -57,10 +79,11 @@ export default {
       id: this.$route.query.id || '',
       content: {},
       type: 'new',
-      page: 1,
+      page: 0,
       per_page: 10,
       last_page: 0,
       cardList: [],
+      tagList: [],
       keyWord: '',
       loading: false,
       finished: false
@@ -68,21 +91,19 @@ export default {
   },
   mounted() {
     this.getData();
-    this.getList();
-    // 保证在DOM渲染完毕后初始化, 20秒是经验值
-    setTimeout(() => {
-      this.listenerAction();
-    }, 20);
+    this.loadMore();
   },
   methods: {
-    onLoad(flag) {
-      if (flag) {
-        this.cardList = [];
-      }
-      this.loading = true;
-      setTimeout(() => {
-        this.getList();
-      }, 300);
+    loadMore() {
+      this.page++;
+      this.getList();
+    },
+    getPlanetTags() {
+      getPlanetTags(this.content.id).then(res => {
+        if (res.data) {
+          this.tagList = res.data;
+        }
+      });
     },
     getSerch(kw) {
       this.page = 1;
@@ -96,6 +117,7 @@ export default {
           let joined = this.$state.userPlanet.some(e => e.id === res.data.id);
           res.data.joined = joined;
           this.content = res.data;
+          this.getPlanetTags();
         }
       });
     },
@@ -109,11 +131,14 @@ export default {
           if (res.code === 200 && res.data) {
             this.last_page = res.last_page;
             res.data.forEach(e => {
-              e.user.avatar = util.defaultAvatar(e.user.avatar);
-              if (!e.thumb_pic) {
-                e.thumb_pic = util.getFirstImg(e.content);
+              if (e.type === 2) {
+                e.mediaType = 'video';
+              } else {
+                e.mediaType = 'pic';
               }
-              e.content = util.changeHtml2Crad(e.content);
+              if (e.type === 0 && !e.thumb_pic) {
+                if (e.media && e.media.length > 0 && e.media[0].media_link) e.thumb_pic = e.media[0].media_link;
+              }
             });
             this.cardList = this.cardList.concat(res.data);
             if (res.last_page === res.current_page) {
@@ -167,36 +192,10 @@ export default {
         //   // on cancel
         // });
       }
-    },
-    listenerAction() {
-      window.addEventListener('scroll', this.scrollhandle);
-      document.documentElement.scrollTop = 0;
-    },
-    scrollhandle(event) {
-      if (this.page === this.last_page) {
-        return;
-      }
-      const elOffsetTop = document.getElementById('footer').offsetTop;
-      const docScrollTop = document.documentElement.scrollTop;
-      if (elOffsetTop >= docScrollTop && elOffsetTop < docScrollTop + window.innerHeight && !this.loading) {
-        this.finished = false;
-        this.getData(this.type);
-      }
     }
-  },
-  computed: {
-    disabled() {
-      // eslint-disable-next-line
-      this.loading = false;
-      return this.finished;
-    }
-  },
-  beforeDestroy() {
-    window.removeEventListener('scroll', this.scrollhandle, false);
   },
   components: {
-    NewCard,
-    BannerCard: () => import('@/components/banner')
+    PlanetCard
   }
 };
 </script>

@@ -4,7 +4,7 @@ import request from '@/utils/request';
 
 export function getNewest(params = {}) {
   return request({
-    url: '/api/feed/index/newest',
+    url: '/api/feed/index/v2/newest',
     method: 'get',
     params
   });

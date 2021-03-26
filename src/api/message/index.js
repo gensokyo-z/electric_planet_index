@@ -9,7 +9,7 @@ export function getFollowers(params = {}) {
   });
 }
 
-// 粉丝列表
+// 点赞列表
 export function getLiked(params = {}) {
   return request({
     url: '/api/feed/messages/liked',

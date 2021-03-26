@@ -6,118 +6,241 @@
         <div class="tweet-container">
           <div class="tweet-main">
             <article class="tweet-article">
-              <h1 class="article-title">{{content.title}}</h1>
-              <div class="article-info">
-                <div class="article-avatar"
-                  v-show="content.source === 'user'">
-                  <img :src="content.user.avatar">
+              <!-- 文章封面 -->
+              <div class="pic"
+                v-if="content.thumb_pic && postType === 1">
+                <img :src="content.thumb_pic">
+              </div>
+              <!-- 视频 -->
+              <div class="video"
+                v-if="postType === 2">
+                <video :class="{'hidden':showPreview}"
+                  :src="content.media[0].media_link"
+                  controls="controls"
+                  preload='metadata'
+                  controlslist="nodownload"
+                  ref="video"
+                  x5-playsinline=""
+                  playsinline="true"
+                  webkit-playsinline="true"
+                  x-webkit-airplay="true"
+                  x5-video-player-type="h5"
+                  x5-video-player-fullscreen=""
+                  x5-video-orientation="portraint">
+                </video>
+                <div class="previwe-img"
+                  v-show="showPreview"
+                  ref="previewImg"
+                  @click.stop="playVideo">
+                  <img :src="videoPreviwe">
+                  <div v-if="videoPlayed"
+                    class="video-replay"></div>
+                  <div v-else
+                    class="video-ready"></div>
                 </div>
-                <div class="article-author"
-                  v-show="content.source === 'user'"> {{content.user.username}}· </div>
-                <div class="article-date">{{content.create_time||content.created_at}}</div>
-                <div class="article-date"
-                  v-show="content.url"> <a :href="content.url"
-                    target="_blank">查看原文</a></div>
               </div>
-              <div class="article-planet"
-                v-show="content.source !== 'user'">&nbsp;{{content.planet.name}}
-                <a v-for="(tag,idx) in content.tags"
-                  :key="idx">#{{tag.name}}</a>
+              <!-- 标题 -->
+              <div class="title"
+                v-if="postType === 1 || postType === 2">
+                <h1 class="article-title">{{content.title}}</h1>
               </div>
+              <!-- 作者信息 -->
+              <div class="auther">
+                <div class="top">
+                  <div class="planet">来自{{content.planet.name}}社区</div>
+                  <div class="tags">
+                    <div class="tag"
+                      v-for="(item,index) in content.tags"
+                      :key="index">#{{item.name}}</div>
+                  </div>
+                </div>
+                <div class="bottom">
+                  <div class="name">{{content.user.username}}</div>
+                  <div class="time">{{content.created_at}}</div>
+                  <div class="readed"></div>
+                </div>
+              </div>
+              <!-- 文章内容 -->
               <div class="article-content"
                 v-html="content.content"></div>
+              <!-- 动态多图 -->
+              <div class="media-img"
+                v-if="postType === 0 && content.media.length >0">
+                <div class="media-pic"
+                  v-for="(item,index) in content.media"
+                  :key="index">
+                  <el-image :src="item.media_link"
+                    style="width: 260px; height: 260px"
+                    fit="cover"
+                    :preview-src-list="srcList">
+                  </el-image>
+                </div>
+              </div>
+              <!-- 评论 -->
               <section class="comments-section"
                 id="comments-section"
                 ref="commentsSection"
                 v-show="commentList">
-                <h2 class="section-title">全部评论</h2>
+                <div class="comments-head">
+                  <div class="left">
+                    <div class="bottom"
+                      @click="checkAuth(handlerInputDialog(content))">
+                      <i class="iconfont iconpinglun"></i>
+                      <span class="data-number">评论</span>
+                      <span class="data-number">{{content.comments_count ||0}}</span>
+                    </div>
+                    <div class="bottom"
+                      @click="checkAuth(bindApproval(content))">
+                      <i class="iconfont iconzan"
+                        :class="{'has-liked':hasLiked}"></i>
+                      <span class="data-number">点赞</span>
+                      <span class="data-number">{{userLikedCount|| 0}}</span>
+                    </div>
+                  </div>
+                  <div class="right">
+                    <div class="bottom"
+                      @mouseenter="showShareCard(true)"
+                      @mouseleave="showShareCard(false)">
+                      <i class="iconfont icondenglu-weixin"></i>
+                      <span class="data-number">分享至微信</span>
+                    </div>
+                    <div class="bottom">
+                      <span class="data-number"
+                        @click="copyLink">复制链接</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="comments-user">
+                  <div class="avatar">
+                    <img :src="userAvatar">
+                  </div>
+                  <div class="input">
+                    <el-input v-model="postComment"
+                      type="textarea"
+                      :autosize="{minRows:1}"
+                      resize="none"
+                      placeholder="来吧！说两句，表达一下关键或看法吧~"></el-input>
+                  </div>
+                  <div class="send">
+                    <el-button @click="sendMessage">发布</el-button>
+                  </div>
+                </div>
                 <div class="comment-container">
+                  <h2 class="section-title">相关评论</h2>
                   <ul class="comments-list">
                     <li class="comment-item"
                       v-for="(item,index) in commentList"
                       :key="index">
-                      <div class="author-avatar">
-                        <img :src="item.user.avatar">
-                      </div>
                       <div class="comment-main">
                         <div class="comment-header">
-                          <span class="author-name">{{item.user.username}}</span> ·
-                          <span class="comment-time">{{item.created_at}}</span>
-                        </div>
-                        <div class="comment-content">
-                          {{item.content}}
-                        </div>
-                        <div class="comment-footer">
+                          <div class="left">
+                            <div class="author-avatar">
+                              <img :src="item.user.avatar">
+                            </div>
+                            <div class="col">
+                              <div class="author-name">{{item.user.username}}</div>
+                              <div class="comment-time">{{item.created_at}}</div>
+                              <div class="comment-content">
+                                {{item.content}}
+                              </div>
+                              <div class="footer-button"
+                                @click="checkAuth(handlerInputDialog(item))">
+                                <div class="data-number">
+                                  <i class="iconfont iconpinglun"
+                                    v-if="item.second_comments_count>0"></i>
+                                  <span>{{item.second_comments_count>0?item.second_comments_count:'回复'}}</span>
+                                </div>
+                                <div class="data-number">
+                                  <span class="del">删除</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                           <div class="footer-button"
                             @click="checkAuth(bindApproval(item))">
                             <div class="like-simple">
-                              <i class="iconfont iconzan"></i>
+                              <i class="iconfont iconzan"
+                                :class="{'has-liked':item.has_liked}"></i>
                               <span class="data-number">{{item.user_liked_count>0?item.user_liked_count:'点赞'}}</span>
                             </div>
                           </div>
-                          <div class="footer-button"
-                            @click="checkAuth(handlerInputDialog(item))">
-                            <i class="iconfont iconpinglun"></i>
-                            <span class="data-number">{{item.second_comments_count>0?item.second_comments_count:'评论'}}</span>
-                          </div>
                         </div>
-                        <ul class="reply-container">
-                          <li class="comment-item"
-                            v-for="(item1,index) in item.second_comments"
-                            :key="index">
-                            <div class="author-avatar">
-                              <img :src="item1.user.avatar">
-                            </div>
-                            <div class="comment-main">
-                              <div class="comment-header">
-                                <span class="author-name">{{item1.user.username}}</span> ·
-                                <span class="comment-time">{{item1.created_at}}</span>
-                              </div>
-                              <div class="comment-content">
-                                {{item1.content}}
-                              </div>
-                              <div class="comment-footer">
-                                <div class="footer-button"
-                                  @click="checkAuth(bindApproval(item1))">
-                                  <div class="like-simple">
-                                    <i class="iconfont iconzan"></i>
-                                    <span class="data-number">点赞</span>
+                        <!-- 二级评论 -->
+                        <div class="comment-footer"
+                          v-if="item.second_comments.length>0">
+                          <ul class="reply-container">
+                            <li class="reply-item"
+                              v-for="(item1,index) in item.second_comments"
+                              :key="index">
+                              <div class="reply-main">
+                                <div class="reply-header">
+                                  <span class="reply-name">{{item1.user.username}}</span>：<div class="reply-content">
+                                    {{item1.content}}
                                   </div>
                                 </div>
-                                <div class="footer-button"
-                                  @click="checkAuth(handlerInputDialog(item1))">
-                                  <i class="iconfont iconpinglun"></i>
-                                  <span class="data-number">评论</span>
+                                <div class="reply-footer">
+                                  <div class="footer-button"
+                                    @click="checkAuth(handlerInputDialog(item1))">
+                                    <div class="like-simple">
+                                      <span class="data-number">回复</span>
+                                    </div>
+                                  </div>
+                                  <div class="footer-button"
+                                    @click="checkAuth(handlerInputDialog(item1))">
+                                    <span class="data-number">删除</span>
+                                  </div>
                                 </div>
                               </div>
-                              <ul class="reply-container">
-                                <li></li>
-                              </ul>
-                            </div>
-                          </li>
-                        </ul>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
                     </li>
                   </ul>
                 </div>
               </section>
             </article>
-            <Footer :content="content" />
+            <!-- 侧边栏-作者信息 -->
+            <article class="tweet-user">
+              <div class="avatar"
+                v-if="avatar">
+                <img :src="avatar">
+              </div>
+              <div class="name">{{username}}</div>
+              <div class="sign">{{sign}}</div>
+              <div class="data">
+                <div class="item"
+                  v-for="(item,index) in dataList"
+                  :key="index">
+                  <span>{{item.count}}</span>
+                  <label>{{item.name}}</label>
+
+                </div>
+              </div>
+              <div class="btn-box">
+                <el-button>关注</el-button>
+              </div>
+            </article>
+            <!-- <Footer :content="content" /> -->
           </div>
         </div>
       </div>
+      <Share :content="content"
+        ref="share" />
     </div>
-    <el-dialog title="发表评论"
+
+    <el-dialog title="写回复"
       top="30vh"
       width="630px"
       :visible.sync="showInput"
+      :lock-scroll="false"
       custom-class="input-item"
       append-to-body>
       <div class="comment-editor">
         <div class="editor">
           <el-input type="textarea"
             :rows="4"
-            placeholder="请输入评论内容"
+            :placeholder="'回复：'+reUsername"
             maxlength="140"
             show-word-limit
             v-model="message">
@@ -126,18 +249,19 @@
         <div class="editor-function">
           <el-button :class="{'empty':message.length === 0}"
             :disabled="message.length === 0"
-            @click="sendMessage">评论</el-button>
+            @click="sendComment">发送</el-button>
         </div>
       </div>
     </el-dialog>
   </section>
 </template>
 <script>
-import { getPostsDetail, getPostsComments, comments, commentsLikes, commentsUnlikes } from '@/api/post';
+import { getPostsDetail, getPostsComments, postsComments, comments, postLike, postUnlike, commentsLikes, commentsUnlikes } from '@/api/post';
 import util from '@/utils/util';
 export default {
   data() {
     return {
+      postType: '',
       flash: true,
       loading: true,
       id: this.$route.query.id || '',
@@ -147,10 +271,23 @@ export default {
         tags: [],
         user: {}
       },
+      dataList: [
+        { name: '发布内容', count: 0 },
+        { name: '粉丝', count: 0 },
+        { name: '获赞', count: 0 }
+      ],
       commentList: null,
       showInput: false,
+      showPreview: true,
+      videoPlayed: false,
+      videoPreviwe: '',
       comment: {},
-      message: ''
+      postComment: '',
+      message: '',
+      srcList: [],
+      hasLiked: false,
+      userLikedCount: 0,
+      reUsername: ''
     };
   },
   mounted() {
@@ -183,9 +320,16 @@ export default {
             time = 1000;
             res.data.weiboAvatar = util.defaultAvatar('');
           }
-          res.data.thumb_pic = util.getFirstImg(res.data.content);
+          if (res.data.type === 0 && res.data.media.length > 0) {
+            for (let i of res.data.media) {
+              this.srcList.push(i.media_link);
+            }
+          }
+          this.dataList[2].conut = res.data.user_liked_count;
+          this.dataList[1].conut = res.data.comments_count;
+          this.dataList[0].conut = res.data.forwards_count;
+          this.postType = res.data.type;
           res.data.planetBg = this.$state.allPlanet.find(v => v.id === res.data.planet_id).avatar;
-          // res.data.content = res.data.content.replace('<table', '<table border="1"cellspacing="0" cellpadding="0"');
           this.content = res.data;
           if (this.content.url) {
             this.conutDown(time);
@@ -217,19 +361,32 @@ export default {
       });
     },
     bindApproval(item) {
-      if (item.has_liked) {
-        commentsUnlikes(item.id).then(res => {
+      let path1 = null;
+      let path2 = null;
+      if (item.id === this.content.id) {
+        path1 = postLike;
+        path2 = postUnlike;
+        item.hasLiked = this.hasLiked;
+      } else {
+        path1 = commentsUnlikes;
+        path2 = commentsLikes;
+        item.hasLiked = item.has_liked;
+      }
+      if (item.hasLiked) {
+        path1(item.id).then(res => {
           if (res.code === 200) {
-            // this.hasLiked = !this.hasLiked;
-            // this.userLikedCount--;
-            this.$message('取消评论点赞成功！');
+            item.has_liked = !this.hasLiked;
+            this.hasLiked = !this.hasLiked;
+            this.userLikedCount--;
+            this.$message('取消点赞成功！');
           }
         });
       } else {
-        commentsLikes(item.id).then(res => {
+        path2(item.id).then(res => {
           if (res.code === 200) {
-            // this.hasLiked = !this.hasLiked;
-            this.$message.success('点赞评论成功！');
+            item.has_liked = !this.hasLiked;
+            this.hasLiked = !this.hasLiked;
+            this.$message.success('点赞成功！');
             this.userLikedCount++;
           }
         });
@@ -237,22 +394,22 @@ export default {
     },
     handlerInputDialog(item) {
       this.comment = item;
+      this.reUsername = item.user.username;
       this.showInput = true;
     },
     sendMessage() {
-      let content = this.message;
+      let content = this.postComment;
       if (content.length > 140) {
         return this.$message('请限制评论在140个字以内');
       }
-      comments({
+      postsComments({
         content,
-        id: this.comment.id
+        id: this.content.id
       }).then(res => {
         if (res.code === 200) {
-          this.message = '';
-          this.showInput = false;
-          this.$bus.$emit('sendComment');
+          this.postComment = '';
           this.$message.success('评论成功！');
+          this.getDetail(true);
         } else {
           this.$message(res.msg);
         }
@@ -261,12 +418,94 @@ export default {
     goBack() {
       this.$router.back();
     },
-    sendComment() {}
+    sendComment() {
+      comments({
+        content: this.message,
+        id: this.comment.id
+      }).then(res => {
+        this.message = '';
+        this.showInput = false;
+        this.$message.success('评论成功！');
+        this.getDetail(true);
+      });
+    },
+    copyLink() {
+      this.$copyText(window.location.href).then(
+        () => {
+          this.$message.success('复制成功!内容已经拷贝至剪贴板.');
+        },
+        () => {
+          this.$message.error('复制失败');
+        }
+      );
+    },
+    showShareCard(flag) {
+      this.$refs.share.openShowShare(flag);
+    },
+    getVideoposter() {
+      let video = this.$refs.video;
+      video.setAttribute('crossOrigin', 'Anonymous');
+      video.currentTime = 0.001;
+      video.onloadeddata = e => {
+        console.log('videoPreviwe');
+        this.videoPreviwe = util.getVideoPre(video);
+      };
+      video.onended = e => {
+        this.videoPreviwe = util.getVideoPre(video);
+        this.videoPlayed = true;
+        this.showPreview = true;
+      };
+    },
+    playVideo() {
+      this.showPreview = false;
+      this.$refs.video.play();
+    }
+  },
+  watch: {
+    content: {
+      handler(val) {
+        this.hasLiked = val.has_liked;
+        this.userLikedCount = val.user_liked_count;
+      },
+      immediate: true
+    },
+    'content.media': {
+      handler(val) {
+        if (val && val.length > 0 && val[0].media_type === 'video') {
+          this.$nextTick(this.getVideoposter);
+        }
+      },
+      immediate: true
+    }
   },
   computed: {
-    btnName() {
-      return '加入';
+    userAvatar() {
+      return this.$state.userInfo.avatar ? this.$state.userInfo.avatar : util.defaultAvatar();
+    },
+    avatar() {
+      if (this.content.user && this.content.user.avatar) {
+        return this.content.user.avatar;
+      } else {
+        return '';
+      }
+    },
+    username() {
+      if (this.content.user && this.content.user.username) {
+        return this.content.user.username;
+      } else {
+        return '';
+      }
+    },
+    sign() {
+      if (this.content.user && this.content.user.username) {
+        return this.content.user.username;
+      } else {
+        return '';
+      }
     }
+  },
+  components: {
+    Share: () => import('@/components/ShareImg/index')
   }
 };
 </script>

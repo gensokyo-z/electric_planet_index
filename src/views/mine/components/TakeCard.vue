@@ -1,67 +1,9 @@
 <template>
   <section class="new-card">
-
-    <!-- 文章图片 -->
-    <template v-if="content.mediaType === 'pic'">
-      <div class="photo-box"
-        v-if="content.thumb_pic"
-        @click="goUrl(`/docdetail?id=${content.id}`)">
-        <div class="photo">
-          <img :src="content.thumb_pic">
-        </div>
-      </div>
-    </template>
-    <!-- 视频 -->
-    <template v-else>
-      <div class="video-box"
-        v-if="content.media.length>0&&content.media[0].media_type==='video'">
-        <video :class="{'hidden':showPreview}"
-          :src="content.media[0].media_link"
-          controls="controls"
-          preload='metadata'
-          controlslist="nodownload"
-          ref="video"
-          x5-playsinline=""
-          playsinline="true"
-          webkit-playsinline="true"
-          x-webkit-airplay="true"
-          x5-video-player-type="h5"
-          x5-video-player-fullscreen=""
-          x5-video-orientation="portraint">
-        </video>
-        <div class="previwe-img"
-          v-show="showPreview"
-          ref="previewImg"
-          @click.stop="playVideo">
-          <img :src="videoPreviwe">
-          <div v-if="videoPlayed"
-            class="video-replay"></div>
-          <div v-else
-            class="video-ready"></div>
-        </div>
-      </div>
-    </template>
     <!-- 标题 -->
     <div class="title"
       @click="goUrl(`/docdetail?id=${content.id}`)">
       <h2 v-if="content.source !== '微博'"> {{content.title}}</h2>
-    </div>
-    <!-- 标签 -->
-    <div class="tag-box">
-      <div v-for="(item, index) in content.tags"
-        :key="index"
-        class="tag"
-        v-show="index<4"
-        @click="handlerTag(item)">
-        <span>#{{item.name}}</span>
-      </div>
-    </div>
-    <!-- 文章预览 -->
-    <div class="desc">
-      <div class="info"
-        v-if="content.desc_content"
-        v-html="content.desc_content"
-        @click="goUrl(`/docdetail?id=${content.id}`)"></div>
     </div>
     <!-- 作者信息 -->
     <div>
@@ -77,7 +19,7 @@
         <TalkApprovalShare :content.sync="content" />
       </div>
       <div class="planet-box"
-        v-if="$route.path === '/index'||$route.path === '/planet'">
+        v-if="$router.path === 'index'">
         <div class="left"
           @click="$router.push(`/planetdetail?id=${content.planet.id}`);"
           v-if="$route.path !=='/planetdetail'">
@@ -108,6 +50,10 @@ export default {
     TalkApprovalShare
   },
   props: {
+    type: {
+      type: String,
+      default: ''
+    },
     content: {
       type: Object,
       default: () => {
@@ -229,7 +175,7 @@ export default {
   box-sizing: border-box;
   background: #fff;
   width: 280px;
-  height: 470px;
+  height: 455px;
   .photo-box {
     overflow: hidden;
     width: 220px;

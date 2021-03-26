@@ -1,13 +1,54 @@
 <template>
   <section class="new-card">
-
+    <!-- 作者信息 -->
+    <div>
+      <div class="auther">
+        <div class="user-info"
+          v-if="content.source==='user'"
+          @click="goUrl(`/docdetail?id=${content.id}`)">
+          <img class="avatar"
+            :src="avatar"
+            alt="头像">
+          <div class="flex-col">
+            <span class="name">{{username}}</span>
+            <time>{{content.created_at}}</time>
+          </div>
+        </div>
+        <div class="share">
+          <span>分享至微信</span>
+          <span>复制链接</span>
+        </div>
+      </div>
+    </div>
+    <!-- 标题 -->
+    <div class="title"
+      @click="goUrl(`/docdetail?id=${content.id}`)">
+      <h2 v-if="content.source !== '微博'"> {{content.title}}</h2>
+    </div>
+    <!-- 标签 -->
+    <div class="tag-box">
+      <div v-for="(item, index) in content.tags"
+        :key="index"
+        class="tag"
+        v-show="index<4"
+        @click="handlerTag(item)">
+        <span>#{{item.name}}</span>
+      </div>
+    </div>
+    <!-- 文章预览 -->
+    <div class="desc">
+      <div class="info"
+        v-if="content.desc_content"
+        v-html="content.desc_content"
+        @click="goUrl(`/docdetail?id=${content.id}`)"></div>
+    </div>
     <!-- 文章图片 -->
     <template v-if="content.mediaType === 'pic'">
       <div class="photo-box"
         v-if="content.thumb_pic"
         @click="goUrl(`/docdetail?id=${content.id}`)">
         <div class="photo">
-          <img :src="content.thumb_pic">
+          <img :src="content.thumb_pic" object-fil="cover">
         </div>
       </div>
     </template>
@@ -41,70 +82,17 @@
         </div>
       </div>
     </template>
-    <!-- 标题 -->
-    <div class="title"
-      @click="goUrl(`/docdetail?id=${content.id}`)">
-      <h2 v-if="content.source !== '微博'"> {{content.title}}</h2>
-    </div>
-    <!-- 标签 -->
-    <div class="tag-box">
-      <div v-for="(item, index) in content.tags"
-        :key="index"
-        class="tag"
-        v-show="index<4"
-        @click="handlerTag(item)">
-        <span>#{{item.name}}</span>
-      </div>
-    </div>
-    <!-- 文章预览 -->
-    <div class="desc">
-      <div class="info"
-        v-if="content.desc_content"
-        v-html="content.desc_content"
-        @click="goUrl(`/docdetail?id=${content.id}`)"></div>
-    </div>
-    <!-- 作者信息 -->
-    <div>
-      <div class="auther">
-        <div class="user-info"
-          v-if="content.source==='user'"
-          @click="goUrl(`/docdetail?id=${content.id}`)">
-          <img class="avatar"
-            :src="avatar"
-            alt="头像">
-          <span class="name">{{username}}</span>
-        </div>
-        <TalkApprovalShare :content.sync="content" />
-      </div>
-      <div class="planet-box"
-        v-if="$route.path === '/index'||$route.path === '/planet'">
-        <div class="left"
-          @click="$router.push(`/planetdetail?id=${content.planet.id}`);"
-          v-if="$route.path !=='/planetdetail'">
-          <span>来自</span><span class="planet">{{content.planet.name}}</span>
-        </div>
-        <div :class="['right',{'joined':joined}]"
-          @click.stop="addPlanet(content)"
-          v-if="$route.path !=='/planetdetail'">
-          <button class="add"
-            v-if="!joined">{{`加入`}}</button>
-          <button class="enter"
-            v-else>{{`进入`}}</button>
-        </div>
-      </div>
-    </div>
-    <!-- <InputItem ref="inputItem" /> -->
+    <TalkApprovalShare :content.sync="content" />
+
   </section>
 </template>
 <script>
-// import Vue from 'vue';
 import { joinPlanet } from '@/api/planet';
 import util from '@/utils/util';
 import TalkApprovalShare from '@/components/TalkApprovalShare';
 export default {
   name: 'NewCard',
   components: {
-    // InputItem: () => import('@/components/InputItem'),
     TalkApprovalShare
   },
   props: {
@@ -205,6 +193,7 @@ export default {
       video.setAttribute('crossOrigin', 'Anonymous');
       video.currentTime = 0.001;
       video.onloadeddata = e => {
+        console.log('videoPreviwe');
         this.videoPreviwe = util.getVideoPre(video);
       };
       video.onended = e => {
@@ -225,60 +214,41 @@ export default {
 </script>
 <style lang="less" scoped>
 .new-card {
-  padding: 30px;
+  margin: 30px;
+  padding: 10px 30px;
   box-sizing: border-box;
   background: #fff;
-  width: 280px;
+  width: 820px;
   height: 470px;
-  .photo-box {
-    overflow: hidden;
-    width: 220px;
-    height: 125px;
-    margin-bottom: 30px;
-    cursor: pointer;
-    .photo {
-      width: 220px;
-      height: 125px;
-      img {
-        position: relative;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        max-width: 100%;
-        max-height: 100%;
-        width: unset;
-        height: unset;
-      }
-    }
-  }
-  .video-box {
-    margin-bottom: 32px;
-    position: relative;
+  border: 1px solid #ccc;
+  .auther {
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 220px;
-    height: 125px;
-    background-color: #000;
-    video {
-      width: 220px;
-    }
-    .previwe-img {
-      position: relative;
-      width: 100%;
-      height: 100%;
+    justify-content: space-between;
+    .user-info {
       display: flex;
       align-items: center;
-      justify-content: center;
-      background-color: #000;
-      img {
-        width: 220px;
-        height: 125px;
+      cursor: pointer;
+      .avatar {
+        margin-right: 10px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+      }
+      .name {
+        font-size: 14px;
+        color: rgba(0, 0, 0, 0.45);
       }
     }
-    .hidden {
-      width: 0;
-      height: 0;
+    .share {
+      color: #ccc;
+      span{
+        cursor: pointer;
+      }
+      span + span {
+        padding-left: 20px;
+      }
     }
   }
   .title {
@@ -299,10 +269,10 @@ export default {
     margin: 10px 0;
     width: 100%;
     display: flex;
-    justify-content: space-between;
     flex-wrap: wrap;
     height: 20px;
     .tag {
+      margin-right: 20px;
       cursor: pointer;
       span {
         color: #02a7f0;
@@ -325,76 +295,56 @@ export default {
       cursor: pointer;
     }
   }
-  .auther {
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    .user-info {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      .avatar {
-        margin-right: 10px;
-        width: 25px;
-        height: 25px;
-        border-radius: 50%;
-      }
-      .name {
-        font-size: 14px;
-        color: rgba(0, 0, 0, 0.45);
+  .photo-box {
+    overflow: hidden;
+    width: 360px;
+    height: 200px;
+    margin-bottom: 30px;
+    cursor: pointer;
+    .photo {
+      width: 360px;
+      height: 200px;
+      img {
+        // height:  100%;
+        // position: relative;
+        // left: 50%;
+        // top: 50%;
+        // transform: translate(-50%, -50%);
+        // max-width: 100%;
+        // max-height: 100%;
+        // width: unset;
+        // height: unset;
       }
     }
   }
-  .planet-box {
-    width: 100%;
-    box-sizing: border-box;
+  .video-box {
+    margin-bottom: 32px;
+    position: relative;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    .left {
+    justify-content: center;
+    width: 360px;
+    height: 200px;
+    background-color: #000;
+    video {
+      width: 360px;
+    }
+    .previwe-img {
+      position: relative;
+      width: 100%;
+      height: 100%;
       display: flex;
       align-items: center;
-      cursor: pointer;
-      padding-right: 8px;
-      font-size: 14px;
-      color: rgba(0, 0, 0, 0.45);
-      .planet {
-        position: relative;
-        padding-right: 26px;
-        font-size: 14px;
-        color: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      background-color: #000;
+      img {
+        width: 360px;
+        height: 200px;
       }
     }
-    .right {
-      .add,
-      .enter {
-        padding: 5px 20px;
-        border-radius: 28px;
-        font-size: 14px;
-        color: rgba(0, 0, 0, 0.9);
-        cursor: pointer;
-      }
-      .add {
-        background: #ffdd27;
-      }
-      .enter {
-        position: relative;
-        background-color: #fff;
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        &::after {
-          position: absolute;
-          top: 50%;
-          right: 15px;
-          transform: translateY(-50%) rotateZ(-45deg);
-          width: 8px;
-          height: 8px;
-          content: '';
-          border-right: 1px solid #979797;
-          border-bottom: 1px solid #979797;
-          z-index: 1;
-        }
-      }
+    .hidden {
+      width: 0;
+      height: 0;
     }
   }
 }

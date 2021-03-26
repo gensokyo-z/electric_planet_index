@@ -42,11 +42,11 @@ export function getPostsDetail(id) {
 }
 
 // 评论文章
-export function postsComments(params = {}) {
+export function postsComments(data = {}) {
   return request({
-    url: `/api/feed/posts/${params.id}/comments`,
+    url: `/api/feed/posts/${data.id}/comments`,
     method: 'post',
-    params
+    data
   });
 }
 

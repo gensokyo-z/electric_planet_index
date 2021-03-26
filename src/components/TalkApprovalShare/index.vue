@@ -3,16 +3,18 @@
     <div class="tool-bar">
       <div class="talk"
         @click="bindTalk">
-        <i class="iconfont iconpinglun"></i>
-        <span>{{content.comments_count===0?'评论':content.comments_count}}</span>
+        <!-- <i class="iconfont iconpinglun"></i> -->
+        <span class="iconfont">评论</span>
+        <span>{{content.comments_count}}</span>
       </div>
       <div class="approval"
         @click="bindApproval">
-        <i class="iconfont iconzan"
-          :class="{active:hasLiked}"></i>
+        <!-- <i class="iconfont iconzan"
+          :class="{active:hasLiked}"></i> -->
         <!-- <img v-else
              class="icon"
              src="@/assets/images/zan.png"> -->
+        <span class="iconfont">点赞</span>
         <span>{{userLikedCount}}</span>
       </div>
       <!-- <div class="share"
@@ -92,7 +94,7 @@ export default {
           postLike(this.content.id).then(res => {
             if (res.code === 200) {
               this.hasLiked = !this.hasLiked;
-              this.$message('点赞文章成功！');
+              this.$message.success('点赞文章成功！');
               this.userLikedCount++;
             }
           });
@@ -125,23 +127,18 @@ export default {
   display: flex;
   align-items: center;
   .talk,
-  .approval,
-  .share {
-    margin-right: 30px;
+  .approval {
     display: flex;
     align-items: center;
     font-size: 14px;
-    line-height: 18px;
     cursor: pointer;
   }
-  .share {
-    margin-right: 0;
+  .talk {
+    margin-right: 10px;
   }
   .iconfont {
     color: #c9cacf;
-    margin-right: 12px;
-    width: 16px;
-    height: 16px;
+    margin-right: 8px;
   }
   .active {
     color: #ffdd27;

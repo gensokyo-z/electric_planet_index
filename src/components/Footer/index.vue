@@ -13,16 +13,7 @@
         :class="{'has-liked':hasLiked}"></i>
       <span class="data-number">{{userLikedCount|| 0}}</span>
     </div>
-    <!-- <div class="bottom-button">
-      <i class="iconfont"></i>
-      <span class="data-number">{{content}}</span>
-    </div> -->
     <div class="bottom-right">
-      <!-- <div class="bottom-button">
-        <i class="iconfont iconwenzhang-shoucang"></i>
-        <span class="data-number"
-              @click="checkAuth(goComment)">收藏</span>
-      </div> -->
       <div class="popover share-popover"
         @mouseenter="showShareCard(true)"
         @mouseleave="showShareCard(false)">
@@ -35,13 +26,6 @@
         <Share :content="content"
           ref="share" />
       </div>
-      <!-- <div class="popover">
-        <div class="popover-eleplanet">
-          <div class="more-button">
-            <i class="iconfont iconellipsis"></i>
-          </div>
-        </div>
-      </div> -->
     </div>
     <el-dialog title="发表评论"
       top="30vh"

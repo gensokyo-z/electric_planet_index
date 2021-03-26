@@ -1,21 +1,21 @@
 import request from '@/utils/request';
 
 // 个人信息
-export function getUserInfo(data = {}) {
+export function getUserInfo(params = {}) {
   return request({
     // url: '/api/feed/user',
     url: '/api/feed/user/openplatuser',
     method: 'get',
-    data
+    params
   });
 }
 
 // wx个人信息
-export function getWxUserInfo(data = {}) {
+export function getWxUserInfo(params = {}) {
   return request({
     url: '/api/feed/user/openplatuser',
     method: 'get',
-    data
+    params
   });
 }
 
@@ -29,19 +29,19 @@ export function setUserInfo(data = {}) {
 }
 
 // 我的动态
-export function getUserDynamic(data = {}) {
+export function getUserDynamic(params = {}) {
   return request({
-    url: '/api/feed/user/dynamic',
+    url: '/api/feed/user/v2/dynamic',
     method: 'get',
-    data
+    params
   });
 }
 
 // 我的动态
-export function getUserParticipation(data = {}) {
+export function getUserParticipation(params = {}) {
   return request({
     url: '/api/feed/user/participation',
     method: 'get',
-    data
+    params
   });
 }

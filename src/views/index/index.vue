@@ -3,51 +3,34 @@
     <div class="layout">
       <Header @getSerch="getSerch"
         ref="header" />
-      <div class="layout-main">
+      <div class="layout-main"
+        v-loading="loadFlag">
         <div class="community-container">
           <div class="title">
             <h1>星球资讯</h1>
-            <p>电动星球为你精心准备的实时资讯</p>
+            <span>电动星球为你精心准备的实时资讯</span>
           </div>
           <div class="tag-list">
-            <div class="tag"></div>
+            <div :class="['tag',{'checked':item.checked}]"
+              v-for="(item, index) in tagList"
+              :key="index"
+              @click="checkTags(item)">#{{item.name}}</div>
           </div>
           <div class="community-main">
             <div class="card-list">
               <div class="card"
                 v-for="(item, index) in cardList"
                 :key="index">
-                <NewCard :type.sync="type"
-                  :content="item"
+                <NewCard :content="item"
                   @handlerTag="handlerTag"
                   @getData="getData" />
               </div>
             </div>
-            <!-- <div class="card-list">
-              <TabBar @bindTab="bindTab" />
-              <div class="infinite-scroll"
-                style="overflow-y: auto">
-                <ul class="infinite-list"
-                  v-infinite-scroll="onLoad"
-                  :infinite-scroll-disabled="disabled"
-                  :infinite-scroll-distance="300">
-                  <li v-for="(item, index) in cardList"
-                    :key="index">
-                    <NewCard :type.sync="type"
-                      :content="item"
-                      @handlerTag="handlerTag"
-                      @getData="getData" />
-                  </li>
-                </ul>
-                <p v-show="loading">加载中...</p>
-                <p v-show="finished"
-                  id="footer">{{page===last_page?'没有更多了':''}}</p>
-              </div>
-            </div> -->
+            <div class="footer-btn"
+              v-if="!loadFlag">
+              <el-button @click="loadMore">{{finished?'~~~到底了~~~':'加载更多'}}</el-button>
+            </div>
           </div>
-          <!-- <div class="community-aside">
-            <BannerCard />
-          </div> -->
         </div>
       </div>
     </div>
@@ -56,144 +39,113 @@
 
 <script>
 import NewCard from '@/components/NewCard';
-import { getNewest, getHotest } from '@/api/index';
-import util from '@/utils/util';
+import { getNewest } from '@/api/index';
+import { getTags } from '@/api/tag';
+// import util from '@/utils/util';
 export default {
   name: 'index',
   data() {
     return {
-      type: 'new',
-      page: 1,
+      page: 0,
       per_page: 12,
       last_page: 0,
       cardList: [],
+      tagList: [],
       keyWord: '',
-      loading: false,
+      loadFlag: true,
       finished: false
     };
   },
+  created() {
+    this.getTags();
+  },
   mounted() {
-    this.onLoad();
+    this.loadMore();
   },
   methods: {
-    onLoad() {
-      this.loading = true;
-      this.getData(this.type);
+    getTags() {
+      getTags().then(res => {
+        if (res.data) {
+          if (res.data.length > 8) {
+            res.data.splice(8, res.data.length - 8);
+          }
+          res.data.forEach(e => {
+            e.checked = false;
+          });
+          this.tagList = res.data;
+        }
+      });
+    },
+    loadMore() {
+      if (this.finished) {
+        return;
+      }
+      this.page++;
+      this.getData();
     },
     getSerch(kw) {
       this.page = 1;
       this.cardList = [];
       this.keyWord = kw;
-      this.getData(this.type);
+      this.getData();
     },
-    getData(type) {
-      if (this.ajax) {
-        return;
-      }
-      if (type === 'new') {
-        getNewest({ page: this.page, per_page: this.per_page, keyword: this.keyWord })
-          .then(res => {
-            if (res.code === 200 && res.data) {
-              this.last_page = res.last_page;
-              res.data.forEach(e => {
-                // if (!e.thumb_pic) {
-                //   e.thumb_pic = util.getFirstImg(e.content);
-                // }
-                e.content = util.changeHtml2Crad(e.content);
-                // e.planetBg = this.$state.allPlanet.find(v => v.id === e.planet_id).avatar;
-              });
-              let arr = [];
-              res.data.forEach(e => {
-                if (e.type === 0 || e.type === 1) {
-                  arr.push(e);
-                }
-              });
-              this.cardList = this.cardList.concat(arr);
-              if (res.last_page === res.current_page) {
-                this.finished = true;
-              } else {
-                this.loading = false;
-                this.page++;
+    getData() {
+      this.loadFlag = true;
+      getNewest({ page: this.page, per_page: this.per_page, keyword: this.keyWord, type: ['0', '1'] })
+        .then(res => {
+          if (res.code === 200 && res.data) {
+            this.last_page = res.last_page;
+            let arr = [];
+            res.data.forEach(e => {
+              if (e.type === 0 && !e.thumb_pic) {
+                if (e.media && e.media.length > 0 && e.media[0].media_link) e.thumb_pic = e.media[0].media_link;
               }
-            } else {
+              // e.content = util.changeHtml2Crad(e.content);
+              e.planet = {
+                planet_id: e.planet_id,
+                name: this.$state.allPlanet.find(v => v.id === e.planet_id).name
+              };
+              if (e.tags.length > 4) {
+                e.tags.splice(4, e.tags.length - 4);
+              }
+              e.mediaType = 'pic';
+              arr.push(e);
+            });
+            this.cardList = this.cardList.concat(arr);
+            if (res.last_page === res.current_page) {
               this.finished = true;
             }
-          })
-          .catch(() => {});
-      } else {
-        getHotest({ page: this.page, per_page: this.per_page, keyword: this.keyWord })
-          .then(res => {
-            if (res.code === 200 && res.data) {
-              this.last_page = res.last_page;
-              res.data.forEach(e => {
-                e.user.avatar = util.defaultAvatar(e.user.avatar);
-                if (!e.thumb_pic) {
-                  e.thumb_pic = util.getFirstImg(e.content);
-                }
-                e.content = util.changeHtml2Crad(e.content);
-              });
-              this.cardList = this.cardList.concat(res.data);
-              if (res.last_page === res.current_page) {
-                this.finished = true;
-              } else {
-                this.loading = false;
-                this.page++;
-              }
-            } else {
-              this.finished = true;
-            }
-            this.ajax = false;
-          })
-          .catch(() => {
-            this.ajax = false;
-          });
-      }
+          } else {
+            this.finished = true;
+          }
+          this.loadFlag = false;
+        })
+        .catch(() => {
+          this.loadFlag = false;
+        });
     },
     getClear() {
       this.page = 1;
       this.cardList = [];
-      this.getData(this.type);
-    },
-    bindTab(type) {
-      this.finished = false;
-      this.type = type;
-      this.getClear();
+      this.getData();
     },
     gotoDetail(item) {
       this.$router.push(`/docdetail?id=${item.id}`);
-    },
-    scrollhandle(event) {
-      if (this.page === this.last_page) {
-        return;
-      }
-      const elOffsetTop = document.getElementById('footer').offsetTop;
-      const docScrollTop = document.documentElement.scrollTop;
-      if (elOffsetTop >= docScrollTop && elOffsetTop < docScrollTop + window.innerHeight && !this.loading) {
-        this.finished = false;
-        this.getData(this.type);
-      }
     },
     handlerTag(tag) {
       let tagName = '#' + tag.name;
       this.$refs.header.setSearch(tagName);
       this.getSerch(tagName);
+    },
+    checkTags(item) {
+      this.tagList.forEach(e => {
+        e.checked = e.id === item.id;
+      });
+      this.handlerTag(item);
     }
-  },
-  computed: {
-    disabled() {
-      // eslint-disable-next-line
-      this.loading = false;
-      return this.finished;
-    }
-  },
-  beforeDestroy() {
-    window.removeEventListener('scroll', this.scrollhandle, false);
   },
   components: {
-    // TabBar: () => import('./components/TabBar'),
-    // Search: () => import('@/components/Search/index.vue'),
     NewCard
-    // BannerCard: () => import('@/components/banner')
   }
 };
 </script>

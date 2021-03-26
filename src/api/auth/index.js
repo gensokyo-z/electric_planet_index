@@ -62,3 +62,12 @@ export function bindAndLogin(data = {}) {
     data
   });
 }
+
+// 绑定微信
+export function bindWx(data = {}) {
+  return request({
+    url: '/api/wechat/v2/bind',
+    method: 'post',
+    data
+  });
+}

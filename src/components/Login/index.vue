@@ -55,7 +55,7 @@
   </section>
 </template>
 <script>
-import { sendSms, wxLogin, bindAndLogin, wxRegister } from '@/api/auth';
+import { sendSms, wxLogin, bindAndLogin, wxRegister, bindWx } from '@/api/auth';
 import util from '@/utils/util';
 let timer = null;
 export default {
@@ -77,15 +77,25 @@ export default {
       util.setStorage('wxCode', this.$route.query.code);
       this.$router.push(this.$route.path);
     }
+    // 绑定微信
+    if (this.$route.query.code && this.$route.query.state === 'bind') {
+      util.setStorage('bindCode', this.$route.query.code);
+      this.$router.push(this.$route.path);
+    }
   },
+  create() {},
   mounted() {
     this.$bus.$on('login', flag => {
       this.visible = flag;
     });
-    this.code = util.getStorage('wxCode');
-    if (this.code) {
+    if (util.getStorage('wxCode')) {
+      this.code = util.getStorage('wxCode');
       util.setStorage('wxCode', '');
       this.wxLogin();
+    } else if (util.getStorage('bindCode')) {
+      this.code = util.getStorage('bindCode');
+      util.setStorage('bindCode', '');
+      this.bindWx();
     }
   },
   methods: {
@@ -156,7 +166,14 @@ export default {
           });
       }
     },
-    wxLogin() {
+    bindWx() {
+      bindWx({
+        code: this.code
+      }).then(res => {
+        this.$store.dispatch('getInfo');
+      });
+    },
+    wxLogin(type) {
       wxLogin({
         code: this.code
       })

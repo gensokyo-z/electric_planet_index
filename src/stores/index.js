@@ -58,14 +58,18 @@ export default new Vuex.Store({
       });
     },
     needAuth({ commit }, cb) {
-      this._actions.getInfo[0]()
-        .then(res => {
-          typeof cb === 'function' && cb();
-        })
-        .catch(() => {
-          Bus.$emit('login', true);
-          // router.push('/login?redirect=' + encodeURIComponent(location.href));
-        });
+      if (!this.state.token) {
+        this._actions.getInfo[0]()
+          .then(res => {
+            typeof cb === 'function' && cb();
+          })
+          .catch(() => {
+            Bus.$emit('login', true);
+            // router.push('/login?redirect=' + encodeURIComponent(location.href));
+          });
+      } else {
+        typeof cb === 'function' && cb();
+      }
     },
     getAllPlanetList({ commit }) {
       return new Promise((resolve, reject) => {
@@ -93,7 +97,7 @@ export default new Vuex.Store({
           .then(response => {
             if (response.code === 200) {
               commit('setUserPlanet', response.data);
-              resolve(response);
+              resolve(response.data);
             } else {
               reject();
             }

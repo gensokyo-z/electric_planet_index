@@ -3,7 +3,7 @@
   <header class="component-header is-fixed">
     <div class="component-header-content">
       <a class="header-logo"
-        @click="goUrl('/')">
+        @click="goUrl('/index')">
         <img src="@/assets/images/logo.png"
           alt="logo"><span>电动星球</span>
       </a>
@@ -12,14 +12,17 @@
           v-for="(item, index) in navList"
           :key="index"
           @click="handlerNav(item)">{{item.name}}</div>
-
       </div>
       <Search @getSerch="getSerch"
         v-show="$route.path ==='/index'"
         ref="search" />
       <div class="header-write"
         v-if="$state.token"
-        @click="goUrl('/post')"><i class="iconfont iconbiji"></i> 写文章</div>
+        @click="goUrl('/post')">写文章 <i class="iconfont iconbiji"></i></div>
+      <div class="flex-cc"
+        @click="goUrl('/message')">
+        <i class="iconfont icontongzhi"></i>
+      </div>
       <div class="header-login">
         <div v-if="$state.token"
           class="user-info">
@@ -30,6 +33,8 @@
               <ul class="user-menu">
                 <li class="user-menu-item"
                   @click="goUrl('/mine')">个人中心</li>
+                <li class="user-menu-item"
+                  @click="goUrl('/profile')">设置中心</li>
                 <li class="user-menu-item"
                   @click="logout">退出</li>
               </ul>
@@ -99,7 +104,7 @@ export default {
       this.$router.push(url);
     },
     handlerNav(item) {
-      this.$router.push(item.path);
+      this.$router.replace(item.path);
     },
     logout() {
       logout().then(() => {
@@ -138,7 +143,7 @@ export default {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 200;
+    z-index: 20000;
   }
 }
 .component-header-content {
@@ -203,6 +208,12 @@ export default {
       border-color: #ffec5d;
     }
   }
+  .icontongzhi {
+    color: #fff;
+    margin-right: 20px;
+    font-size: 20px;
+    cursor: pointer;
+  }
   .header-login {
     display: flex;
     align-items: center;
@@ -224,12 +235,13 @@ export default {
       // color: #2c2e3b;
       color: #fff;
       border-radius: 8px;
+
       .hide {
         display: none;
       }
       .logout {
         padding-top: 50px;
-        transform: translate(-70px, 42px);
+        transform: translate(-70px, 72px);
         position: absolute;
         z-index: 100;
         border-radius: 8px;

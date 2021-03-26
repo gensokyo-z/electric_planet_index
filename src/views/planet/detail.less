@@ -8,117 +8,154 @@
   background-color: #fff;
   .layout {
     padding-top: 50px;
+    background-color: #f2f2f2;
+    min-height: 100vh;
   }
   .community-container {
     display: flex;
     align-items: flex-start;
-    margin: 40px auto 60px;
+    margin: 0 auto 60px;
     width: 1200px;
-    background-color: #fff;
-    .planet-box {
-      padding: 30px 50px;
-      margin: 0 auto;
-      width: 750px;
-      height: 350px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      .top {
-        margin-bottom: 20px;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        .name {
-          font-size: 20px;
-          color: #fff;
-          font-weight: 700;
-        }
-        .btn {
-          padding: 5px 20px;
-          font-size: 18px;
-          line-height: 18px;
-          color: #888;
-          border: 1px solid #ccc;
-          background-color: #e4e4e4;
-          border-radius: 50px;
-          cursor: pointer;
-          &:hover {
-            background-color: #ececec;
-            border-color: #ececec;
-          }
-          &.joined {
-            color: #212529;
-            background-color: #ffe100;
-            border-color: #ffe100;
-            &:hover {
-              background-color: #d9bf00;
-              border-color: #ccb400;
-            }
-          }
-        }
-      }
-      .desc {
-        font-size: #333;
-        font-size: 16px;
-        line-height: 1.5em;
-      }
-    }
     .community-main {
       flex-shrink: 0;
-      width: 860px;
-      .card-list {
-        display: flex;
-        flex-wrap: wrap;
-      }
-      .planet-card {
-        padding: 22px;
-        width: 560px;
-        height: 150px;
-        margin-right: 30px;
-        margin-bottom: 30px;
-        border-radius: 8px;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        .top {
+      width: 100%;
+      .planet-box {
+        padding-top: 250px;
+        margin: 0 auto 60px;
+        width: 100%;
+        height: 350px;
+        .info {
           display: flex;
-          align-items: center;
+          justify-content: space-between;
+          background-color: #fff;
           .left {
-            font-size: 16px;
-            margin-right: 20px;
-            img {
-              width: 50px;
-              height: 50px;
-              border-radius: 50%;
-            }
-          }
-          .rigth {
+            margin-left: 90px;
             display: flex;
-            justify-content: space-between;
-            flex: 1;
-            font-size: 16px;
-            .btn {
-              height: 30px;
-              padding: 0 15px;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            transform: translateY(-45px);
+            .avatar {
+              width: 90px;
+              height: 90px;
+              border-radius: 50%;
+              box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.3);
+            }
+            .name {
+              margin-top: 10px;
+              font-size: 28px;
               color: #333;
-              border: 1px solid #ccc;
-              cursor: pointer;
-              border-radius: 50px;
-              line-height: 30px;
             }
           }
-        }
-        .buttom {
-          margin-top: 10px;
-          overflow: hidden;
-          height: 2.5em;
+          .mid {
+            padding: 20px 40px 0 20px;
+            flex: 1;
+            font-size: 18px;
+            color: #333;
+          }
+          .right {
+            margin-right: 50px;
+            display: flex;
+            align-items: center;
+            .btn {
+              padding: 10px 30px;
+              background-color: #f2f2f2;
+              border-radius: 50px;
+              font-size: 16px;
+              &.joined {
+                background-color: #efd109;
+                color: #333;
+              }
+            }
+          }
         }
       }
-    }
-    .community-aside {
-      flex-shrink: 0;
-      margin-left: auto;
-      width: 300px;
-      height: 200px;
+      .main {
+        display: flex;
+        .card-list {
+          display: flex;
+          flex-wrap: wrap;
+          flex-direction: column;
+          .card-header {
+            background-color: #fff;
+            padding-left: 30px;
+            h2 {
+              margin: 20px 0;
+              width: 4em;
+              font-size: 26px;
+              font-weight: 600;
+              border-bottom: 5px solid #efd109;
+            }
+            .tag-list {
+              width: 800px;
+              display: flex;
+              flex-wrap: wrap;
+              .tag {
+                color: #333;
+                margin-bottom: 10px;
+                margin-left: 30px;
+                &.active {
+                  color: #02a7f0;
+                }
+              }
+            }
+          }
+          .card {
+            background-color: #fff;
+          }
+          .card + .card {
+            margin-top: 30px;
+          }
+
+          .footer-btn {
+            margin: 80px auto 0;
+            display: flex;
+            justify-content: center;
+            .el-button {
+              background-color: #fff;
+              border: none;
+              font-size: 16px;
+              padding: 0 32px;
+              height: 50px;
+              border-radius: 50px;
+            }
+          }
+        }
+        .aside {
+          width: 280px;
+          margin-left: auto;
+          nav {
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+            div {
+              font-size: 14px;
+              color: #333;
+              padding: 5px 10px;
+              border-radius: 50px;
+              background-color: #efd109;
+              cursor: pointer;
+            }
+            div + div {
+              margin-left: 20px;
+            }
+          }
+          .Encyclopedias {
+            margin-top: 20px;
+            padding: 30px;
+            background-color: #fff;
+            min-height: 100vh;
+            h2 {
+              width: 4em;
+              font-size: 26px;
+              font-weight: 600;
+              border-bottom: 5px solid #efd109;
+            }
+          }
+        }
+      }
     }
   }
 }

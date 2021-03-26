@@ -2,33 +2,39 @@
   <section class="index">
     <div class="layout">
       <Header />
-      <div class="layout-main">
+      <div class="layout-main"
+        v-loading="loadFlag">
         <div class="community-container">
           <div class="community-main">
+            <div class="title">
+              <div :class="['planet-tab',{active:type==='planet'}]"
+                @click="changeTab('planet')">星球社区</div>
+              <div :class="['planet-tab',{active:type==='my'}]"
+                @click="changeTab('my')">我加入的</div>
+            </div>
             <div class="card-list">
+              <div @click="changePlanet"
+                class="planet-card all active"
+                v-show="type === 'planet'">
+                <div>全部</div>
+              </div>
               <div class="planet-card"
                 v-for="(item,index) in cardList"
                 :key="index"
-                @click="$router.push('/planetdetail?id='+item.id)">
-                <div class="top">
-                  <div class="left">
-                    <img :src="item.avatar">
-                  </div>
-                  <div class="rigth">
-                    <div class="info">
-                      <div class="name">{{item.name}}</div>
-                      <div class="desc">已有{{item.users_count}}人加入</div>
-                    </div>
-                    <div :class="['btn',{'joined':!item.joined}]"
-                      @click.stop="addPlanet(item)">
-                      {{item.joined?'退出':'加入'}}
-                    </div>
-                  </div>
-                </div>
-                <div class="buttom">
-                  {{item.intro}}
-                </div>
+                @click="changePlanet(item)">
+                <img :src="item.avatar">
               </div>
+            </div>
+            <div class="new-list">
+              <div class="new"
+                v-for="(item, index) in newList"
+                :key="index">
+                <NewCard :content="item" />
+              </div>
+            </div>
+            <div class="footer-btn"
+              v-if="!loadFlag">
+              <el-button @click="loadMore">{{finished?'~~~到底了~~~':'加载更多'}}</el-button>
             </div>
           </div>
         </div>
@@ -37,19 +43,58 @@
   </section>
 </template>
 <script>
-import { joinPlanet, quitPlanet } from '@/api/planet';
+import { joinPlanet, quitPlanet, getPlanetPosts } from '@/api/planet';
+import { getNewest } from '@/api/index';
 import util from '@/utils/util';
+import NewCard from '@/components/NewCard';
 export default {
   name: 'planet',
+  components: {
+    NewCard
+  },
   data() {
     return {
-      cardList: []
+      type: 'planet',
+      cardList: [],
+      id: 0,
+      page: 0,
+      per_page: 12,
+      last_page: 0,
+      newList: [],
+      keyWord: '',
+      loadFlag: true,
+      finished: false
     };
   },
   mounted() {
     this.getPlanetList();
+    this.loadMore();
   },
   methods: {
+    changeTab(type) {
+      this.finished = false;
+      this.newList = [];
+      this.type = type;
+      if (type === 'planet') {
+        this.getPlanetList();
+      } else {
+        this.getMyPlanetList();
+      }
+    },
+    changePlanet(item) {
+      this.finished = false;
+      this.newList = [];
+      this.id = item ? item.id : 0;
+      this.page = 0;
+      this.loadMore();
+    },
+    loadMore() {
+      if (this.finished) {
+        return;
+      }
+      this.page++;
+      this.getData();
+    },
     getPlanetList() {
       this.cardList = [];
       this.$store.dispatch('getAllPlanetList').then(list => {
@@ -57,7 +102,73 @@ export default {
           e.joined = this.$state.userPlanet.some(v => v.id === e.id);
         });
         this.cardList = list;
+        this.id = 0;
+        this.page = 0;
+        this.loadMore();
       });
+    },
+    getMyPlanetList() {
+      this.cardList = [];
+      this.$store.dispatch('getUserPlanetList').then(list => {
+        list.forEach(e => {
+          e.joined = true;
+        });
+        this.cardList = list;
+        this.id = list[0].id;
+        this.page = 0;
+        this.loadMore();
+      });
+    },
+    getData() {
+      this.loadFlag = true;
+      let path = null;
+      let obj = {};
+      if (!this.id) {
+        path = getNewest;
+        obj = { page: this.page, per_page: this.per_page, keyword: this.keyWord };
+      } else {
+        path = getPlanetPosts;
+        obj = {
+          id: this.id,
+          page: this.page,
+          per_page: this.per_page
+        };
+      }
+      path(obj)
+        .then(res => {
+          if (res.code === 200 && res.data) {
+            this.last_page = res.last_page;
+            let arr = [];
+            res.data.forEach(e => {
+              if (e.type === 0 && !e.thumb_pic) {
+                if (e.media && e.media.length > 0 && e.media[0].media_link) e.thumb_pic = e.media[0].media_link;
+              }
+              e.planet = {
+                planet_id: e.planet_id,
+                name: this.$state.allPlanet.find(v => v.id === e.planet_id).name
+              };
+              if (e.tags.length > 4) {
+                e.tags.splice(4, e.tags.length - 4);
+              }
+              if (e.type === 2) {
+                e.mediaType = 'video';
+              } else {
+                e.mediaType = 'pic';
+              }
+              arr.push(e);
+            });
+            this.newList = this.newList.concat(arr);
+            if (res.last_page === res.current_page) {
+              this.finished = true;
+            }
+          } else {
+            this.finished = true;
+          }
+          this.loadFlag = false;
+        })
+        .catch(() => {
+          this.loadFlag = false;
+        });
     },
     async addPlanet(content) {
       if (!util.getcookie('TOKEN')) {

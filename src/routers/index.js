@@ -23,18 +23,9 @@ const routes = [
   {
     path: '/video',
     name: 'video',
-    component: () => import(/* webpackChunkName: "index" */ '@/views/index/video'),
+    component: () => import(/* webpackChunkName: "video" */ '@/views/index/video'),
     meta: {
       title: '星球视频',
-      keepAlive: false
-    }
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: () => import(/* webpackChunkName: "login" */ '@/views/login'),
-    meta: {
-      title: '登录',
       keepAlive: false
     }
   },
