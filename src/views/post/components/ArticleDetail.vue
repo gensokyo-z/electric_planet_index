@@ -352,18 +352,18 @@ export default {
     async changeVideo() {
       const videoFile = { file: this.$refs.uploadFileVideo.files[0] };
       await this.uploadOSS(videoFile.file).then(path => {
-        this.editor.execCommand('insertHTML', `<video src="https:${path}"  controls="controls"></video>`); // 插入视频
+        this.editor.cmd.do('insertHTML', `<video src="https:${path}"  controls="controls"></video>`); // 插入视频
       });
     },
     initDate() {
       let now = new Date();
-      let year = now.getFullYear()
-      let month = now.getMonth() + 1
-      let date = now.getDate()
-      let hours = now.getHours() > 9 ? now.getHours() : '0' + now.getHours()
-      let minutes = now.getMinutes() > 9 ? now.getMinutes() : '0' + now.getMinutes()
-      let seconds = now.getSeconds() > 9 ? now.getSeconds() : '0' + now.getSeconds()
-      let create_time = year + '-' + month + '-' + date + ' ' + hours + ':' + minutes + ':' + seconds
+      let year = now.getFullYear();
+      let month = now.getMonth() + 1;
+      let date = now.getDate();
+      let hours = now.getHours() > 9 ? now.getHours() : '0' + now.getHours();
+      let minutes = now.getMinutes() > 9 ? now.getMinutes() : '0' + now.getMinutes();
+      let seconds = now.getSeconds() > 9 ? now.getSeconds() : '0' + now.getSeconds();
+      let create_time = year + '-' + month + '-' + date + ' ' + hours + ':' + minutes + ':' + seconds;
       return create_time;
     }
   }
