@@ -17,13 +17,12 @@
                   v-for="(item,index) in cardList"
                   :key="index">
                   <MsgCard :type.sync="type"
-                    :subType.sync="subType"
                     :content="item" />
                 </div>
-                <div class="footer-btn"
-                  v-if="!loadFlag">
-                  <el-button @click="loadMore">{{finished?'~~~到底了~~~':'加载更多'}}</el-button>
-                </div>
+              </div>
+              <div class="footer-btn"
+                v-if="!loadFlag">
+                <el-button @click="loadMore">{{finished?'~~~到底了~~~':'加载更多'}}</el-button>
               </div>
             </div>
           </div>
@@ -91,7 +90,22 @@ export default {
             if (res.last_page === res.current_page) {
               this.finished = true;
             }
-            this.cardList = this.cardList.concat(res.data);
+            res.data.data.forEach(e => {
+              switch (this.type) {
+                case 1:
+                  e.title = e.post.title;
+                  break;
+                case 2:
+                  e.title = e.likable.content;
+                  break;
+                case 3:
+                  break;
+                default:
+                  break;
+              }
+            });
+
+            this.cardList = this.cardList.concat(res.data.data);
           } else {
             this.finished = true;
           }

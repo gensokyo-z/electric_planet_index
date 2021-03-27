@@ -150,7 +150,8 @@
                                     v-if="item.second_comments_count>0"></i>
                                   <span>{{item.second_comments_count>0?item.second_comments_count:'回复'}}</span>
                                 </div>
-                                <div class="data-number">
+                                <div class="data-number"
+                                  v-if="item.canDel">
                                   <span class="del">删除</span>
                                 </div>
                               </div>
@@ -167,16 +168,23 @@
                         </div>
                         <!-- 二级评论 -->
                         <div class="comment-footer"
-                          v-if="item.second_comments.length>0">
+                          v-if="item.comments_count>0">
                           <ul class="reply-container">
                             <li class="reply-item"
-                              v-for="(item1,index) in item.second_comments"
+                              v-for="(item1,index) in item.childcomment"
                               :key="index">
                               <div class="reply-main">
                                 <div class="reply-header">
-                                  <span class="reply-name">{{item1.user.username}}</span>：<div class="reply-content">
-                                    {{item1.content}}
-                                  </div>
+                                  <template v-if="item1.parent_id === item.id">
+                                    <span class="reply-name">{{item1.user.username}}</span>：<div class="reply-content">
+                                      {{item1.content}}
+                                    </div>
+                                  </template>
+                                  <template v-else>
+                                    <span class="reply-name">{{item1.user.username}}</span>&emsp;回复&emsp;<span class="reply-name">{{item1.auther}}</span>：<div class="reply-content">
+                                      {{item1.content}}
+                                    </div>
+                                  </template>
                                 </div>
                                 <div class="reply-footer">
                                   <div class="footer-button"
@@ -186,6 +194,7 @@
                                     </div>
                                   </div>
                                   <div class="footer-button"
+                                     v-if="item1.canDel"
                                     @click="checkAuth(handlerInputDialog(item1))">
                                     <span class="data-number">删除</span>
                                   </div>
@@ -337,7 +346,7 @@ export default {
             this.flash = false;
             this.loading = false;
           }
-          getPostsComments({ id: this.id, page: 1 }).then(res => {
+          getPostsComments({ id: this.id, page: 1 }).then(commentRes => {
             if (flag) {
               const commentsSection = this.$refs.commentsSection;
               if (commentsSection) {
@@ -346,15 +355,19 @@ export default {
                 }, 100);
               }
             }
-            if (res.code === 200) {
-              res.data.forEach(e => {
-                e.comments_count = e.second_comments_count;
+            if (commentRes.code === 200) {
+              commentRes.data.forEach(e => {
+                e.comments_count = e.childcomment.length;
                 e.user.avatar = util.defaultAvatar(e.user.avatar);
-                e.second_comments.forEach(v => {
-                  v.user.avatar = util.defaultAvatar(v.user.avatar);
+                e.canDel = e.user_id === this.$state.userInfo.id;
+                e.childcomment.forEach(v => {
+                  if (v.parent_id !== e.id) {
+                    v.auther = e.childcomment.find(i => v.parent_id === i.id).user.username;
+                  }
+                  v.canDel = v.user_id === this.$state.userInfo.id;
                 });
               });
-              this.commentList = res.data;
+              this.commentList = commentRes.data;
             }
           });
         }

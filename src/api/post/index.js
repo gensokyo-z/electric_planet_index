@@ -27,7 +27,7 @@ export function postUnlike(id) {
 // 获取文章一级评论列表（分页）
 export function getPostsComments(params = {}) {
   return request({
-    url: `/api/feed/posts/${params.id}/comments`,
+    url: `/api/feed/posts/v2/${params.id}/comments`,
     method: 'get',
     params
   });
@@ -87,7 +87,7 @@ export function getComments(params = {}) {
 
 export function comments(params = {}) {
   return request({
-    url: `/api/feed/comments/${params.id}`,
+    url: `/api/feed/comments/v2/${params.id}`,
     method: 'post',
     params
   });

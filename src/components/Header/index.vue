@@ -59,7 +59,7 @@ export default {
     return {
       navList: [
         {
-          name: '星球资讯',
+          name: '星球首页',
           path: '/index',
           checked: false
         },
