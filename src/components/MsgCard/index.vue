@@ -1,12 +1,13 @@
 <template>
   <section class="msg-card">
     <div class="left">
-      <img :src="avatar">
+      <img :src="avatar"
+        @click="goUrl(`/other?id=${content.user_id}`)">
     </div>
     <div class="right">
       <div class="time">{{content.created_at}}</div>
       <div class="name">
-        <span>{{username}}</span>
+        <span v-if="type !== 4">{{username}}</span>
         <template v-if="type === 1">
           <span>评论了你的</span>
         </template>
@@ -16,14 +17,17 @@
         <template v-if="type === 3">
           <span>@了你的</span>
         </template>
-        <template v-if="type === 4">
-          <span>关注了你</span>
-        </template>
       </div>
-      <div class="comment">
-        <p class="title">&emsp;&emsp;{{content.title}}</p>
+      <div class="comment"
+        v-if="type !== 4">
+        <p class="title worldhidden"
+          @click="$router.push(`/docdetail?id=${content.post_id}`);">&emsp;&emsp;{{content.title}}</p>
         <p class="content">{{content.content}}</p>
       </div>
+      <template v-if="type === 4">
+        <span>{{username}}</span>
+        <span>关注了你</span>
+      </template>
     </div>
   </section>
 </template>

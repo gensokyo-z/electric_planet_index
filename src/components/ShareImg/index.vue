@@ -38,7 +38,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .input-item {
-  position: absolute;
+  position: fixed;
   right: 0;
   bottom: 30px;
 }

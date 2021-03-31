@@ -1,74 +1,62 @@
 .index {
-  width: 100%;
-  position: relative;
-  z-index: 1;
   display: flex;
   flex-direction: column;
-  min-height: 100%;
-  .layout {
-    padding-top: 50px;
-    background-color: #f9f9fa;
-    min-height: 100vh;
+  .title {
+    margin-bottom: 10px;
+    padding-top: 10px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    // h1 {
+    //   font-size: 26px;
+    //   border-bottom: 1px solid #f6f6f7;
+    //   font-weight: 700;
+    // }
+    .tab {
+      margin-bottom: 10px;
+      font-size: 20px;
+      padding: 5px 20px;
+      cursor: pointer;
+      font-weight: 600;
+      &.active {
+        background-color: #ffdd27;
+        border-radius: 20px;
+      }
+    }
+    .tab + .tab {
+      margin-left: 20px;
+    }
+    span {
+      margin-bottom: 10px;
+      color: #333;
+      font-size: 14px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #333;
+    }
   }
-  .community-container {
-    margin: 0 auto 140px;
-    width: 1180px;
-    .title {
-      margin-bottom: 30px;
-      padding-top: 10px;
-      height: 100px;
-      display: flex;
-      flex-direction: column;
-      h1 {
-        font-size: 26px;
-        border-bottom: 1px solid #f6f6f7;
-        font-weight: 700;
-      }
-      span {
-        margin-bottom: 10px;
-        color: #333;
-        font-size: 14px;
-        padding-bottom: 5px;
-        border-bottom: 1px solid #333;
-      }
-    }
 
-    .tag-list {
-      display: flex;
-      justify-content: space-between;
-      .tag {
-        margin-bottom: 30px;
-        padding: 5px 20px;
-        border-radius: 28px;
-        font-size: 18px;
-        line-height: 18px;
-        color: rgba(0, 0, 0, 0.9);
-        background-color: #fff;
-        cursor: pointer;
-        &.checked {
-          background-color: #ffdd27;
-        }
+  .tag-list {
+    display: flex;
+    justify-content: space-between;
+    .tag {
+      margin-bottom: 30px;
+      padding: 5px 20px;
+      border-radius: 28px;
+      font-size: 18px;
+      line-height: 18px;
+      color: rgba(0, 0, 0, 0.9);
+      background-color: #fff;
+      cursor: pointer;
+      &.checked {
+        background-color: #ffdd27;
       }
     }
-    .community-main {
-      .card-list {
-        display: grid;
-        gap: 20px;
-        grid-template-columns: repeat(4, 1fr);
-      }
-    }
-    .footer-btn {
-      margin: 80px auto 0;
-      display: flex;
-      justify-content: center;
-      .el-button {
-        background-color: #fff;
-        border: none;
-        font-size: 16px;
-        padding: 0 32px;
-        height: 50px;
-        border-radius: 50px;
-      }
+  }
+  .community-main {
+    .card-list {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(4, 1fr);
     }
   }
 }

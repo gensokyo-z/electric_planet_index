@@ -84,11 +84,18 @@ export function getComments(params = {}) {
 }
 
 // 进行二级评论
-
 export function comments(params = {}) {
   return request({
     url: `/api/feed/comments/v2/${params.id}`,
     method: 'post',
     params
+  });
+}
+
+// 删除评论
+export function delComment(id) {
+  return request({
+    url: `/api/feed/comments/v2/${id}`,
+    method: 'delete',
   });
 }

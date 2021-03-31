@@ -150,7 +150,7 @@ export default {
     async changeVideo() {
       const videoFile = { file: this.$refs.uploadFileVideo.files[0] };
       await this.uploadOSS(videoFile.file).then(obj => {
-        this.editor.execCommand('insertHTML', `<video src="https:${obj.path}"  controls="controls"></video>`); // 插入视频
+        this.editor.cmd.do('insertHTML', `<video src="https:${obj.path}"  controls="controls"></video>`); // 插入视频
       });
     }
   },

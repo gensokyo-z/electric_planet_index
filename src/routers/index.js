@@ -93,6 +93,15 @@ const routes = [
     }
   },
   {
+    path: '/other',
+    name: 'other',
+    component: () => import(/* webpackChunkName: "/other" */ '@/views/mine/index.vue'),
+    meta: {
+      title: '个人主页',
+      keepAlive: false
+    }
+  },
+  {
     path: '/profile',
     name: 'profile',
     component: () => import(/* webpackChunkName: "profile" */ '@/views/mine/profile.vue'),

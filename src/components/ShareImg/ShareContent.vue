@@ -58,7 +58,7 @@ export default {
     };
   },
   mounted() {
-    this.getCode();
+    // this.getCode();
   },
   methods: {
     dataURLToBlob(dataurl) {
@@ -100,9 +100,15 @@ export default {
       });
     },
     getCode() {
+      let url = '';
+      if (this.$route.path === '/planetdetail') {
+        url = `https://www.ddxq.tech/community/docdetail?id=${this.content.id}`;
+      } else {
+        url = location.href;
+      }
       // eslint-disable-next-line no-unused-vars
       this.qrCode = new QRCode(this.$refs.qrCode, {
-        text: location.href,
+        text: url,
         width: 180,
         height: 180,
         colorDark: '#000000',
@@ -115,7 +121,7 @@ export default {
     showShare: {
       handler(val) {
         if (val) {
-          // this.getCode();
+          this.getCode();
         } else {
           const codeHtml = this.$refs.qrCode; // document.getElementById("qrcode");
           codeHtml.innerHTML = '';

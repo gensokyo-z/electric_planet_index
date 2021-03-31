@@ -1,37 +1,33 @@
 <template>
   <section class="index">
-    <div class="layout">
-      <Header @getSerch="getSerch"
-        ref="header" />
-      <div class="layout-main"
-        v-loading="loadFlag">
-        <div class="community-container">
-          <div class="title">
-            <h1>星球资讯</h1>
-            <span>电动星球为你精心准备的实时资讯</span>
-          </div>
-          <div class="tag-list">
-            <div :class="['tag',{'checked':item.checked}]"
-              v-for="(item, index) in tagList"
-              :key="index"
-              @click="checkTags(item)">#{{item.name}}</div>
-          </div>
-          <div class="community-main">
-            <div class="card-list">
-              <div class="card"
-                v-for="(item, index) in cardList"
-                :key="index">
-                <NewCard :content="item"
-                  @handlerTag="handlerTag"
-                  @getData="getData" />
-              </div>
-            </div>
-            <div class="footer-btn"
-              v-if="!loadFlag">
-              <el-button @click="loadMore">{{finished?'~~~到底了~~~':'加载更多'}}</el-button>
-            </div>
-          </div>
+    <div class="title">
+      <div class="flex">
+        <div :class="['tab',{active:type === 'new'}]"
+          @click="changeTab('new')">最新</div>
+        <div :class="['tab',{active:type === 'hot'}]"
+          @click="changeTab('hot')">最热</div>
+      </div>
+      <span>电动星球为你精心准备的实时资讯</span>
+    </div>
+    <div class="tag-list">
+      <div :class="['tag',{'checked':item.checked}]"
+        v-for="(item, index) in tagList"
+        :key="index"
+        @click="checkTags(item)">#{{item.name}}</div>
+    </div>
+    <div class="community-main" v-loading="loadFlag">
+      <div class="card-list">
+        <div class="card"
+          v-for="(item, index) in cardList"
+          :key="index">
+          <NewCard :content="item"
+            @handlerTag="handlerTag"
+            @getData="getData" />
         </div>
+      </div>
+      <div class="footer-btn"
+        v-if="!loadFlag">
+        <el-button @click="loadMore">{{finished?'~~~到底了~~~':'加载更多'}}</el-button>
       </div>
     </div>
   </section>
@@ -39,13 +35,14 @@
 
 <script>
 import NewCard from '@/components/NewCard';
-import { getNewest } from '@/api/index';
+import { getNewest, getHotest } from '@/api/index';
 import { getTags } from '@/api/tag';
 // import util from '@/utils/util';
 export default {
   name: 'index',
   data() {
     return {
+      type: 'new',
       page: 0,
       per_page: 12,
       last_page: 0,
@@ -83,15 +80,26 @@ export default {
       this.page++;
       this.getData();
     },
+    changeTab(type) {
+      this.type = type;
+      this.getSerch('');
+    },
     getSerch(kw) {
       this.page = 1;
+      this.finished = false;
       this.cardList = [];
       this.keyWord = kw;
       this.getData();
     },
     getData() {
       this.loadFlag = true;
-      getNewest({ page: this.page, per_page: this.per_page, keyword: this.keyWord, type: ['0', '1'] })
+      let path = null;
+      if (this.type === 'new') {
+        path = getNewest;
+      } else {
+        path = getHotest;
+      }
+      path({ page: this.page, per_page: this.per_page, keyword: this.keyWord, type: ['0', '1', '2'] })
         .then(res => {
           if (res.code === 200 && res.data) {
             this.last_page = res.last_page;
@@ -101,14 +109,26 @@ export default {
                 if (e.media && e.media.length > 0 && e.media[0].media_link) e.thumb_pic = e.media[0].media_link;
               }
               // e.content = util.changeHtml2Crad(e.content);
-              e.planet = {
-                planet_id: e.planet_id,
-                name: this.$state.allPlanet.find(v => v.id === e.planet_id).name
-              };
+              let planet = this.$state.allPlanet.find(v => v.id === e.planet_id);
+              if (planet) {
+                e.planet = {
+                  planet_id: e.planet_id,
+                  name: planet.name
+                };
+              } else {
+                e.planet = {
+                  planet_id: 0,
+                  name: ''
+                };
+              }
               if (e.tags.length > 4) {
                 e.tags.splice(4, e.tags.length - 4);
               }
-              e.mediaType = 'pic';
+              if (e.type === 0 || e.type === 1) {
+                e.mediaType = 'pic';
+              } else {
+                e.mediaType = 'video';
+              }
               arr.push(e);
             });
             this.cardList = this.cardList.concat(arr);
@@ -120,7 +140,8 @@ export default {
           }
           this.loadFlag = false;
         })
-        .catch(() => {
+        .catch(err => {
+          console.log(err);
           this.loadFlag = false;
         });
     },

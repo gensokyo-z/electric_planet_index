@@ -3,7 +3,7 @@
   <header class="component-header is-fixed">
     <div class="component-header-content">
       <a class="header-logo"
-        @click="goUrl('/index')">
+        @click="goUrl('homePage')">
         <img src="@/assets/images/logo.png"
           alt="logo"><span>电动星球</span>
       </a>
@@ -16,13 +16,13 @@
       <Search @getSerch="getSerch"
         v-show="$route.path ==='/index'"
         ref="search" />
-      <div class="header-write"
-        v-if="$state.token"
-        @click="goUrl('/post')">写文章 <i class="iconfont iconbiji"></i></div>
       <div class="flex-cc"
         @click="goUrl('/message')">
         <i class="iconfont icontongzhi"></i>
       </div>
+      <div class="header-write"
+        v-if="$state.token"
+        @click="goUrl('/post')">写文章 <i class="iconfont iconbiji"></i></div>
       <div class="header-login">
         <div v-if="$state.token"
           class="user-info">
@@ -67,12 +67,12 @@ export default {
           name: '星球社区',
           path: '/planet',
           checked: false
-        },
-        {
-          name: '星球视频',
-          path: '/video',
-          checked: false
         }
+        // {
+        //   name: '星球视频',
+        //   path: '/video',
+        //   checked: false
+        // }
         // {
         //   name: '消息',
         //   path: '/message',
@@ -100,6 +100,8 @@ export default {
     goUrl(url) {
       if (url === '/login') {
         return this.$bus.$emit('login', true);
+      } else if (url === 'homePage') {
+        return (window.location.href = '//ddxq.tech');
       }
       this.$router.push(url);
     },
@@ -143,7 +145,7 @@ export default {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 20000;
+    z-index: 2001;
   }
 }
 .component-header-content {
@@ -167,6 +169,7 @@ export default {
     span {
       color: #fff;
     }
+    cursor: pointer;
   }
   .header-nav {
     // width: 226px;

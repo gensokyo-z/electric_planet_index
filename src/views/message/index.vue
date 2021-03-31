@@ -1,32 +1,23 @@
 <template>
   <section class="message">
-    <div class="layout">
-      <Header />
-      <div class="layout-main">
-        <div class="community-container">
-          <div class="community-main">
-            <div class="card-list">
-              <div class="title">
-                <div :class="['msg-tab',{active: item.active}]"
-                  @click="changeTab(item)"
-                  v-for="(item,index) in msgTypeList"
-                  :key="index">{{item.name}}</div>
-              </div>
-              <div class="card-list">
-                <div class="card"
-                  v-for="(item,index) in cardList"
-                  :key="index">
-                  <MsgCard :type.sync="type"
-                    :content="item" />
-                </div>
-              </div>
-              <div class="footer-btn"
-                v-if="!loadFlag">
-                <el-button @click="loadMore">{{finished?'~~~到底了~~~':'加载更多'}}</el-button>
-              </div>
-            </div>
-          </div>
+    <div class="card-list">
+      <div class="title">
+        <div :class="['msg-tab',{active: item.active}]"
+          @click="changeTab(item)"
+          v-for="(item,index) in msgTypeList"
+          :key="index">{{item.name}}</div>
+      </div>
+      <div class="card-list" v-loading="loadFlag">
+        <div class="card"
+          v-for="(item,index) in cardList"
+          :key="index">
+          <MsgCard :type.sync="type"
+            :content="item" />
         </div>
+      </div>
+      <div class="footer-btn"
+        v-if="!loadFlag">
+        <el-button @click="loadMore">{{finished?'~~~到底了~~~':'加载更多'}}</el-button>
       </div>
     </div>
   </section>
@@ -101,6 +92,11 @@ export default {
                 case 3:
                   break;
                 default:
+                  e.created_at = e.pivot.created_at;
+                  e.user = {
+                    avatar: e.avatar,
+                    username: e.username
+                  };
                   break;
               }
             });

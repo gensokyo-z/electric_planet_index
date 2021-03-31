@@ -1,14 +1,19 @@
 <template>
   <div id="app">
     <!-- <transition :name="direction"> -->
-    <router-view v-if="!$route.meta.keepAlive"
-                 class="page" />
+    <div class="layout">
+      <Header @getSerch="getSerch"
+        ref="header" />
+      <div class="layout-main"
+        :class="{bgcw:backGroundWhiteList.includes($route.path)}">
+        <div class="community-container">
+          <router-view class="page" />
+        </div>
+      </div>
+      <Footer />
+    </div>
     <!-- </transition> -->
     <!-- <transition :name="direction"> -->
-    <keep-alive>
-      <router-view v-if="$route.meta.keepAlive"
-                   class="page"></router-view>
-    </keep-alive>
     <!-- </transition> -->
   </div>
 </template>
@@ -18,9 +23,10 @@
 // import Vue from 'vue';
 export default {
   name: 'App',
-  data () {
+  data() {
     return {
-      isLogin: false
+      isLogin: false,
+      backGroundWhiteList: ['/docdetail', '/message', '/post', '/profile']
     };
   },
   computed: {
@@ -44,16 +50,17 @@ export default {
     }
   },
   watch: {
-    $route (to, from) {
+    $route(to, from) {
       this.isLogin = typeof to.meta.isFooter === 'boolean' && !to.meta.isFooter;
     }
   },
-  created () {
-    this.checkBrowser()
+  created() {
+    this.checkBrowser();
     this.$store.dispatch('getAllPlanetList');
   },
   methods: {
-    checkBrowser () {
+    getSerch() {},
+    checkBrowser() {
       let browser = {
         versions: (function () {
           let u = navigator.userAgent;
@@ -93,7 +100,7 @@ export default {
         // if (browser.versions.android) {
         //   // 是否在安卓浏览器打开
         // }
-        location.href = location.href.replace('community', 'h5')
+        location.href = location.href.replace('community', 'h5');
       }
     }
   }

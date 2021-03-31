@@ -1,37 +1,29 @@
 <template>
   <section class="index">
-    <div class="layout">
-      <Header @getSerch="getSerch"
-        ref="header" />
-      <div class="layout-main" v-loading="loadFlag">
-        <div class="community-container">
-          <div class="title">
-            <h1>星球资讯</h1>
-            <span>电动星球为你精心准备的实时资讯</span>
-          </div>
-          <div class="tag-list">
-            <div :class="['tag',{'checked':item.checked}]"
-              v-for="(item, index) in tagList"
-              :key="index"
-              @click="checkTags(item)">#{{item.name}}</div>
-          </div>
-          <div class="community-main">
-            <div class="card-list">
-              <div class="card"
-                v-for="(item, index) in cardList"
-                :key="index">
-                <NewCard :type.sync="type"
-                  :content="item"
-                  @handlerTag="handlerTag"
-                  @getData="getData" />
-              </div>
-            </div>
-            <div class="footer-btn"
-              v-if="!loadFlag">
-              <el-button @click="loadMore">{{finished?'~~~到底了~~~':'加载更多'}}</el-button>
-            </div>
-          </div>
+    <div class="title">
+      <h1>星球资讯</h1>
+      <span>电动星球为你精心准备的实时资讯</span>
+    </div>
+    <div class="tag-list">
+      <div :class="['tag',{'checked':item.checked}]"
+        v-for="(item, index) in tagList"
+        :key="index"
+        @click="checkTags(item)">#{{item.name}}</div>
+    </div>
+    <div class="community-main">
+      <div class="card-list">
+        <div class="card"
+          v-for="(item, index) in cardList"
+          :key="index">
+          <NewCard :type.sync="type"
+            :content="item"
+            @handlerTag="handlerTag"
+            @getData="getData" />
         </div>
+      </div>
+      <div class="footer-btn"
+        v-if="!loadFlag">
+        <el-button @click="loadMore">{{finished?'~~~到底了~~~':'加载更多'}}</el-button>
       </div>
     </div>
   </section>

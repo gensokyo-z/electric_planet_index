@@ -5,7 +5,7 @@
       <use xlink:href="#iconshouue-sousuo"></use>
     </svg> -->
     <input type="text"
-           placeholder="Tesal"
+           placeholder=""
            v-model="keyWord"
            @keyup.enter="getSerch">
     <i class="iconfont iconshouue-sousuo"

@@ -1,44 +1,33 @@
 <template>
   <section class="index">
-    <div class="layout">
-      <Header />
-      <div class="layout-main"
-        v-loading="loadFlag">
-        <div class="community-container">
-          <div class="community-main">
-            <div class="title">
-              <div :class="['planet-tab',{active:type==='planet'}]"
-                @click="changeTab('planet')">星球社区</div>
-              <div :class="['planet-tab',{active:type==='my'}]"
-                @click="changeTab('my')">我加入的</div>
-            </div>
-            <div class="card-list">
-              <div @click="changePlanet"
-                class="planet-card all active"
-                v-show="type === 'planet'">
-                <div>全部</div>
-              </div>
-              <div class="planet-card"
-                v-for="(item,index) in cardList"
-                :key="index"
-                @click="changePlanet(item)">
-                <img :src="item.avatar">
-              </div>
-            </div>
-            <div class="new-list">
-              <div class="new"
-                v-for="(item, index) in newList"
-                :key="index">
-                <NewCard :content="item" />
-              </div>
-            </div>
-            <div class="footer-btn"
-              v-if="!loadFlag">
-              <el-button @click="loadMore">{{finished?'~~~到底了~~~':'加载更多'}}</el-button>
-            </div>
-          </div>
-        </div>
+    <div class="title">
+      <div :class="['planet-tab',{active:type==='planet'}]"
+        @click="changeTab('planet')">星球社区</div>
+      <div :class="['planet-tab',{active:type==='my'}]"
+        @click="changeTab('my')">我加入的</div>
+    </div>
+    <div class="card-list">
+      <div class="planet-card"
+        v-for="(item,index) in cardList"
+        :key="index"
+        :class="[{all:item.name === '全部'},{active:item.checked}]"
+        @click="changePlanet(item)">
+        <div v-show="item.name === '全部'">全部</div>
+        <img :src="item.avatar"
+          v-show="item.name !== '全部'">
       </div>
+    </div>
+    <div class="new-list"
+      v-loading="loadFlag">
+      <div class="new"
+        v-for="(item, index) in newList"
+        :key="index">
+        <NewCard :content="item" />
+      </div>
+    </div>
+    <div class="footer-btn"
+      v-if="!loadFlag">
+      <el-button @click="loadMore">{{finished?'~~~到底了~~~':'加载更多'}}</el-button>
     </div>
   </section>
 </template>
@@ -82,6 +71,9 @@ export default {
       }
     },
     changePlanet(item) {
+      this.cardList.forEach(e => {
+        e.checked = e.id === item.id;
+      });
       this.finished = false;
       this.newList = [];
       this.id = item ? item.id : 0;
@@ -100,7 +92,9 @@ export default {
       this.$store.dispatch('getAllPlanetList').then(list => {
         list.forEach(e => {
           e.joined = this.$state.userPlanet.some(v => v.id === e.id);
+          e.checked = false;
         });
+        list = [{ name: '全部', id: 0, checked: true }, ...list];
         this.cardList = list;
         this.id = 0;
         this.page = 0;

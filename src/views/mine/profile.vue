@@ -1,102 +1,96 @@
 <template>
   <section class="profile">
-    <div class="layout">
-      <Header />
-      <main class="main"
-        style="padding-top:50px">
-        <div class="account-container">
-          <h2 class="section-title">设置</h2>
-          <div class="section-main">
-            <div class="left">
-              <div class="top">
-                <div class="avatar">
-                  <img class="user-avatar"
-                    :src="profile.avatar" />
-                  <div class="avatar-button">
-                    <el-upload action=""
-                      :http-request="upload"
-                      :show-file-list="false"
-                      :on-success="handleAvatarSuccess"
-                      :before-upload="beforeAvatarUpload">
-                      <div class="secondary-button">选择头像</div>
-                    </el-upload>
-                  </div>
-                </div>
-                <div class="dl">
-                  <div class="item">
-                    <label>头像</label>
-                    <div class="tip">照片上传规格要求：
-                      格式为JPG , JPEG , GIF 或者png. 大小 10MB以内.</div>
-                  </div>
-                  <div class="item">
-                    <label>昵称</label>
-                    <el-input type="text"
-                      v-model="profile.username"
-                      size="mini"></el-input>
-                    <!-- <div class="tip">最多不超过12个字符</div> -->
-                  </div>
-                  <div class="item">
-                    <label>性别</label>
-                    <el-radio-group v-model="profile.gender"
-                      size="mini">
-                      <el-radio :label="1">男</el-radio>
-                      <el-radio :label="2">女</el-radio>
-                      <el-radio :label="3">保密</el-radio>
-                    </el-radio-group>
-                  </div>
-                  <div class="item">
-                    <label>所在地</label>
-                    <Cascader @setRegions="setRegions"
-                      :regions="regions" />
-                  </div>
-                </div>
-              </div>
-              <div class="sign">
-                <label>签名</label>
-                <div class="tip">最多不超过20个字</div>
-                <el-input type="textarea"
-                  placeholder="请输入内容"
-                  v-model="profile.intro"
-                  maxlength="20"
-                  :rows="1"
-                  clearable
-                  resize="none"
-                  show-word-limit>
-                </el-input>
-              </div>
-              <div class="save">
-                <button class="primary-button"
-                  @click="savaProflie">保存</button>
+    <main class="main">
+      <h2 class="section-title">设置</h2>
+      <div class="section-main">
+        <div class="left">
+          <div class="top">
+            <div class="avatar">
+              <img class="user-avatar"
+                :src="profile.avatar" />
+              <div class="avatar-button">
+                <el-upload action=""
+                  :http-request="upload"
+                  :show-file-list="false"
+                  :on-success="handleAvatarSuccess"
+                  :before-upload="beforeAvatarUpload">
+                  <div class="secondary-button">选择头像</div>
+                </el-upload>
               </div>
             </div>
-            <div class="right">
-              <div class="phone">
-                <div class="l-side">
-                  <img src="../../assets/images/phone.png">
-                  <label>手机号码</label>
-                </div>
-                <div class="r-side">
-                  <span>{{$state.userInfo.phone}}</span>
-                </div>
+            <div class="dl">
+              <div class="item">
+                <label>头像</label>
+                <div class="tip">照片上传规格要求：
+                  格式为JPG , JPEG , GIF 或者png. 大小 10MB以内.</div>
               </div>
-              <div class="wx">
-                <div class="l-side">
-                  <img src="../../assets/images/wx.png">
-                  <label>{{$state.userInfo.unionid?$state.userInfo.username:'微信昵称'}}
-                    <span>{{$state.userInfo.unionid?'已':'未'}}绑定</span>
-                  </label>
-
-                </div>
-                <div class="r-side">
-                  <button class="wx-button"
-                    @click="bindWx">{{$state.userInfo.unionid?'解绑':'绑定'}}微信</button>
-                </div>
+              <div class="item">
+                <label>昵称</label>
+                <el-input type="text"
+                  v-model="profile.username"
+                  size="mini"></el-input>
+                <!-- <div class="tip">最多不超过12个字符</div> -->
+              </div>
+              <div class="item">
+                <label>性别</label>
+                <el-radio-group v-model="profile.gender"
+                  size="mini">
+                  <el-radio :label="1">男</el-radio>
+                  <el-radio :label="2">女</el-radio>
+                  <el-radio :label="3">保密</el-radio>
+                </el-radio-group>
+              </div>
+              <div class="item">
+                <label>所在地</label>
+                <Cascader @setRegions="setRegions"
+                  :regions="regions" />
               </div>
             </div>
           </div>
+          <div class="sign">
+            <label>签名</label>
+            <div class="tip">最多不超过20个字</div>
+            <el-input type="textarea"
+              placeholder="请输入内容"
+              v-model="profile.intro"
+              maxlength="20"
+              :rows="1"
+              clearable
+              resize="none"
+              show-word-limit>
+            </el-input>
+          </div>
+          <div class="save">
+            <button class="primary-button"
+              @click="savaProflie">保存</button>
+          </div>
         </div>
-      </main>
-    </div>
+        <div class="right">
+          <div class="phone">
+            <div class="l-side">
+              <img src="../../assets/images/phone.png">
+              <label>手机号码</label>
+            </div>
+            <div class="r-side">
+              <span>{{$state.userInfo.phone}}</span>
+            </div>
+          </div>
+          <div class="wx">
+            <div class="l-side">
+              <img src="../../assets/images/wx.png">
+              <label>{{$state.userInfo.unionid?$state.userInfo.username:'微信昵称'}}
+                <span>{{$state.userInfo.unionid?'已':'未'}}绑定</span>
+              </label>
+
+            </div>
+            <div class="r-side">
+              <button class="wx-button"
+                @click="bindWx">{{$state.userInfo.unionid?'解绑':'绑定'}}微信</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
     <el-dialog :visible="bindWxDialog"
       custom-class="bind-wx-dialog"
       width="390px"

@@ -1,161 +1,129 @@
 .planet {
+  flex-shrink: 0;
   width: 100%;
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
-  background-color: #fff;
-  .layout {
-    padding-top: 50px;
-    background-color: #f2f2f2;
-    min-height: 100vh;
-  }
-  .community-container {
-    display: flex;
-    align-items: flex-start;
+  .planet-box {
+    padding-top: 250px;
     margin: 0 auto 60px;
-    width: 1200px;
-    .community-main {
-      flex-shrink: 0;
-      width: 100%;
-      .planet-box {
-        padding-top: 250px;
-        margin: 0 auto 60px;
-        width: 100%;
-        height: 350px;
-        .info {
-          display: flex;
-          justify-content: space-between;
-          background-color: #fff;
-          .left {
-            margin-left: 90px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            transform: translateY(-45px);
-            .avatar {
-              width: 90px;
-              height: 90px;
-              border-radius: 50%;
-              box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.3);
-            }
-            .name {
-              margin-top: 10px;
-              font-size: 28px;
-              color: #333;
-            }
-          }
-          .mid {
-            padding: 20px 40px 0 20px;
-            flex: 1;
-            font-size: 18px;
-            color: #333;
-          }
-          .right {
-            margin-right: 50px;
-            display: flex;
-            align-items: center;
-            .btn {
-              padding: 10px 30px;
-              background-color: #f2f2f2;
-              border-radius: 50px;
-              font-size: 16px;
-              &.joined {
-                background-color: #efd109;
-                color: #333;
-              }
-            }
-          }
+    width: 100%;
+    height: 350px;
+    .info {
+      display: flex;
+      justify-content: space-between;
+      background-color: #fff;
+      .left {
+        margin-left: 90px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        transform: translateY(-45px);
+        .avatar {
+          width: 90px;
+          height: 90px;
+          border-radius: 50%;
+          box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.3);
+        }
+        .name {
+          margin-top: 10px;
+          font-size: 28px;
+          color: #333;
         }
       }
-      .main {
+      .mid {
+        padding: 20px 40px 0 20px;
+        flex: 1;
+        font-size: 18px;
+        color: #333;
+      }
+      .right {
+        margin-right: 50px;
         display: flex;
-        .card-list {
-          display: flex;
-          flex-wrap: wrap;
-          flex-direction: column;
-          .card-header {
-            background-color: #fff;
-            padding-left: 30px;
-            h2 {
-              margin: 20px 0;
-              width: 4em;
-              font-size: 26px;
-              font-weight: 600;
-              border-bottom: 5px solid #efd109;
-            }
-            .tag-list {
-              width: 800px;
-              display: flex;
-              flex-wrap: wrap;
-              .tag {
-                color: #333;
-                margin-bottom: 10px;
-                margin-left: 30px;
-                &.active {
-                  color: #02a7f0;
-                }
-              }
-            }
-          }
-          .card {
-            background-color: #fff;
-          }
-          .card + .card {
-            margin-top: 30px;
-          }
-
-          .footer-btn {
-            margin: 80px auto 0;
-            display: flex;
-            justify-content: center;
-            .el-button {
-              background-color: #fff;
-              border: none;
-              font-size: 16px;
-              padding: 0 32px;
-              height: 50px;
-              border-radius: 50px;
-            }
-          }
-        }
-        .aside {
-          width: 280px;
-          margin-left: auto;
-          nav {
-            height: 100px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #fff;
-            div {
-              font-size: 14px;
-              color: #333;
-              padding: 5px 10px;
-              border-radius: 50px;
-              background-color: #efd109;
-              cursor: pointer;
-            }
-            div + div {
-              margin-left: 20px;
-            }
-          }
-          .Encyclopedias {
-            margin-top: 20px;
-            padding: 30px;
-            background-color: #fff;
-            min-height: 100vh;
-            h2 {
-              width: 4em;
-              font-size: 26px;
-              font-weight: 600;
-              border-bottom: 5px solid #efd109;
-            }
+        align-items: center;
+        .btn {
+          padding: 10px 30px;
+          background-color: #f2f2f2;
+          border-radius: 50px;
+          font-size: 16px;
+          &.joined {
+            background-color: #efd109;
+            color: #333;
           }
         }
       }
     }
   }
+  .main {
+    display: flex;
+    .card-list {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: column;
+      .card-header {
+        background-color: #fff;
+        padding-left: 30px;
+        h2 {
+          margin: 20px 0;
+          width: 4em;
+          font-size: 26px;
+          font-weight: 600;
+          border-bottom: 5px solid #efd109;
+        }
+        .tag-list {
+          width: 800px;
+          display: flex;
+          flex-wrap: wrap;
+          .tag {
+            color: #333;
+            margin-bottom: 10px;
+            margin-left: 30px;
+            &.active {
+              color: #02a7f0;
+            }
+          }
+        }
+      }
+      .card {
+        background-color: #fff;
+      }
+      .card + .card {
+        margin-top: 30px;
+      }
+    }
+    .aside {
+      width: 280px;
+      margin-left: auto;
+      nav {
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #fff;
+        div {
+          font-size: 14px;
+          color: #333;
+          padding: 5px 10px;
+          border-radius: 50px;
+          background-color: #efd109;
+          cursor: pointer;
+        }
+        div + div {
+          margin-left: 20px;
+        }
+      }
+      .Encyclopedias {
+        margin-top: 20px;
+        padding: 30px;
+        background-color: #fff;
+        min-height: 100vh;
+        h2 {
+          width: 4em;
+          font-size: 26px;
+          font-weight: 600;
+          border-bottom: 5px solid #efd109;
+        }
+      }
+    }
+  }
 }
+//   }
+// }

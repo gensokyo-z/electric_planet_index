@@ -45,3 +45,31 @@ export function getUserParticipation(params = {}) {
     params
   });
 }
+
+// 获取他人信息
+
+export function getOtheruser(params = {}) {
+  return request({
+    url: '/api/feed/user/otheruser',
+    method: 'get',
+    params
+  });
+}
+
+// 获取用户动态
+export function getOthusernews(params = {}) {
+  return request({
+    url: '/api/feed/user/othusernews',
+    method: 'get',
+    params
+  });
+}
+
+// 关注某人
+
+export function followUser(id) {
+  return request({
+    url: `/api/feed/users/${id}/follow`,
+    method: 'post'
+  });
+}

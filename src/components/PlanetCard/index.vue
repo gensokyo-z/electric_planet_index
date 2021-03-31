@@ -8,6 +8,7 @@
           @click="goUrl(`/docdetail?id=${content.id}`)">
           <img class="avatar"
             :src="avatar"
+            @click="goUrl(`/other?id=${content.user_id}`)"
             alt="头像">
           <div class="flex-col">
             <span class="name">{{username}}</span>
@@ -15,8 +16,9 @@
           </div>
         </div>
         <div class="share">
-          <span>分享至微信</span>
-          <span>复制链接</span>
+          <span @mouseenter="showShareCard(true)"
+            @mouseleave="showShareCard(false)">分享至微信</span>
+          <span @click="copyLink(content)">复制链接</span>
         </div>
       </div>
     </div>
@@ -48,7 +50,8 @@
         v-if="content.thumb_pic"
         @click="goUrl(`/docdetail?id=${content.id}`)">
         <div class="photo">
-          <img :src="content.thumb_pic" object-fil="cover">
+          <img :src="content.thumb_pic"
+            object-fil="cover">
         </div>
       </div>
     </template>
@@ -83,7 +86,8 @@
       </div>
     </template>
     <TalkApprovalShare :content.sync="content" />
-
+    <Share :content="content"
+      ref="share" />
   </section>
 </template>
 <script>
@@ -93,7 +97,8 @@ import TalkApprovalShare from '@/components/TalkApprovalShare';
 export default {
   name: 'NewCard',
   components: {
-    TalkApprovalShare
+    TalkApprovalShare,
+    Share: () => import('@/components/ShareImg/index')
   },
   props: {
     content: {
@@ -193,7 +198,6 @@ export default {
       video.setAttribute('crossOrigin', 'Anonymous');
       video.currentTime = 0.001;
       video.onloadeddata = e => {
-        console.log('videoPreviwe');
         this.videoPreviwe = util.getVideoPre(video);
       };
       video.onended = e => {
@@ -208,6 +212,23 @@ export default {
     },
     handlerTag(tag) {
       this.$emit('handlerTag', tag);
+    },
+    showShareCard(flag) {
+      this.$refs.share.openShowShare(flag);
+    },
+    copyLink(item) {
+      this.$copyText(`https://www.ddxq.tech/community/docdetail?id=${item.id}`)
+        .then(
+          () => {
+            this.$message.success('复制成功!内容已经拷贝至剪贴板.');
+          },
+          () => {
+            this.$message.error('复制失败');
+          }
+        )
+        .catch(err => {
+          console.log(err);
+        });
     }
   }
 };
@@ -219,7 +240,6 @@ export default {
   box-sizing: border-box;
   background: #fff;
   width: 820px;
-  height: 470px;
   border: 1px solid #ccc;
   .auther {
     margin-bottom: 10px;
@@ -243,7 +263,7 @@ export default {
     }
     .share {
       color: #ccc;
-      span{
+      span {
         cursor: pointer;
       }
       span + span {

@@ -1,69 +1,60 @@
 <template>
   <section class="planet">
-    <div class="layout">
-      <Header @getSerch="getSerch" />
-      <div class="layout-main">
-        <div class="community-container">
-          <div class="community-main">
-            <article class="planet-box"
-              :style="`background: url(${content.background}) no-repeat  center center/1200px 350px ;`"
-              v-show="content.id">
-              <div class="info">
-                <div class="left">
-                  <img class="avatar"
-                    :src="content.avatar">
-                  <div class="name">{{content.name}}</div>
-                </div>
-                <div class="mid">
-                  <div class="desc">{{content.intro}}</div>
-                </div>
-                <div class="right">
-                  <div :class="['btn',{'joined':!content.joined}]"
-                    @click="addPlanet(content)">{{content.joined?'退出':'已加入'}}</div>
-                </div>
-              </div>
-            </article>
-            <article class="main">
-              <div class="card-list"
-                v-loading="loading">
-                <div class="card-header">
-                  <h2>星球推荐</h2>
-                  <div class="tag-list">
-                    <div class="tag"
-                      v-for="(item,index) in tagList"
-                      :key="index">#{{item.name}}</div>
-                  </div>
-                </div>
-                <div v-for="(item, index) in cardList"
-                  :key="index"
-                  class="card">
-                  <PlanetCard :content="item" />
-                </div>
-                <div class="footer-btn"
-                  v-if="!loading">
-                  <el-button @click="loadMore">{{finished?'~~~到底了~~~':'加载更多'}}</el-button>
-                </div>
-              </div>
-              <aside class="aside">
-                <nav>
-                  <router-link tag="div"
-                    to="/post?type=0">发动态</router-link>
-                  <router-link tag="div"
-                    to="/post?type=1">
-                    发文章</router-link>
-                  <router-link tag="div"
-                    to="/post?type=2">
-                    发视频</router-link>
-                </nav>
-                <div class="Encyclopedias">
-                  <h2>星球百科</h2>
-                </div>
-              </aside>
-            </article>
-          </div>
+    <article class="planet-box"
+      :style="`background: url(${content.background}) no-repeat  center center/1200px 350px ;`"
+      v-show="content.id">
+      <div class="info">
+        <div class="left">
+          <img class="avatar"
+            :src="content.avatar">
+          <div class="name">{{content.name}}</div>
+        </div>
+        <div class="mid">
+          <div class="desc">{{content.intro}}</div>
+        </div>
+        <div class="right">
+          <div :class="['btn',{'joined':!content.joined}]"
+            @click="addPlanet(content)">{{content.joined?'退出':'已加入'}}</div>
         </div>
       </div>
-    </div>
+    </article>
+    <article class="main">
+      <div class="card-list"
+        v-loading="loading">
+        <div class="card-header">
+          <h2>星球推荐</h2>
+          <div class="tag-list">
+            <div class="tag"
+              v-for="(item,index) in tagList"
+              :key="index">#{{item.name}}</div>
+          </div>
+        </div>
+        <div v-for="(item, index) in cardList"
+          :key="index"
+          class="card">
+          <PlanetCard :content="item" />
+        </div>
+        <div class="footer-btn"
+          v-if="!loading">
+          <el-button @click="loadMore">{{finished?'~~~到底了~~~':'加载更多'}}</el-button>
+        </div>
+      </div>
+      <aside class="aside">
+        <nav>
+          <router-link tag="div"
+            to="/post?type=0">发动态</router-link>
+          <router-link tag="div"
+            to="/post?type=1">
+            发文章</router-link>
+          <router-link tag="div"
+            to="/post?type=2">
+            发视频</router-link>
+        </nav>
+        <div class="Encyclopedias">
+          <h2>星球百科</h2>
+        </div>
+      </aside>
+    </article>
   </section>
 </template>
 
@@ -139,6 +130,7 @@ export default {
               if (e.type === 0 && !e.thumb_pic) {
                 if (e.media && e.media.length > 0 && e.media[0].media_link) e.thumb_pic = e.media[0].media_link;
               }
+              e.planetBg = this.$state.allPlanet.find(v => v.id === e.planet_id).avatar;
             });
             this.cardList = this.cardList.concat(res.data);
             if (res.last_page === res.current_page) {

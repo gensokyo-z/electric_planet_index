@@ -1,6 +1,5 @@
 <template>
   <section class="new-card">
-
     <!-- 文章图片 -->
     <template v-if="content.mediaType === 'pic'">
       <div class="photo-box"
@@ -68,18 +67,18 @@
       <div class="auther">
         <div class="user-info"
           v-if="content.source==='user'"
-          @click="goUrl(`/docdetail?id=${content.id}`)">
+          @click="goUrl(`/other?id=${content.user_id}`)">
           <img class="avatar"
             :src="avatar"
             alt="头像">
           <span class="name">{{username}}</span>
         </div>
-        <TalkApprovalShare :content.sync="content" />
       </div>
+      <TalkApprovalShare :content.sync="content" />
       <div class="planet-box"
-        v-if="$route.path === '/index'||$route.path === '/planet'">
+        v-if="($route.path === '/index'||$route.path === '/planet')&&content.planet.name">
         <div class="left"
-          @click="$router.push(`/planetdetail?id=${content.planet.id}`);"
+          @click="$router.push(`/planetdetail?id=${content.planet_id}`);"
           v-if="$route.path !=='/planetdetail'">
           <span>来自</span><span class="planet">{{content.planet.name}}</span>
         </div>
@@ -229,7 +228,7 @@ export default {
   box-sizing: border-box;
   background: #fff;
   width: 280px;
-  height: 470px;
+  height: 500px;
   .photo-box {
     overflow: hidden;
     width: 220px;
@@ -240,14 +239,15 @@ export default {
       width: 220px;
       height: 125px;
       img {
-        position: relative;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        max-width: 100%;
-        max-height: 100%;
-        width: unset;
-        height: unset;
+        // object-fit: contain;
+        // position: relative;
+        // left: 50%;
+        // top: 50%;
+        // transform: translate(-50%, -50%);
+        // max-width: 100%;
+        // max-height: 100%;
+        // width: unset;
+        // height: unset;
       }
     }
   }

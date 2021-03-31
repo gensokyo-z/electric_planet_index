@@ -7,7 +7,7 @@
         <span class="iconfont">评论</span>
         <span>{{content.comments_count}}</span>
       </div>
-      <div class="approval"
+      <div class="talk"
         @click="bindApproval">
         <!-- <i class="iconfont iconzan"
           :class="{active:hasLiked}"></i> -->
@@ -16,6 +16,11 @@
              src="@/assets/images/zan.png"> -->
         <span class="iconfont">点赞</span>
         <span>{{userLikedCount}}</span>
+      </div>
+      <div class="talk">
+        <!-- <i class="iconfont iconpinglun"></i> -->
+        <span class="iconfont">阅读数</span>
+        <span>{{content.reads}}</span>
       </div>
       <!-- <div class="share"
         v-if="showShare"
@@ -125,7 +130,8 @@ export default {
 <style lang="less" scoped>
 .tool-bar {
   display: flex;
-  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 10px;
   .talk,
   .approval {
     display: flex;
