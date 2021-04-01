@@ -174,7 +174,7 @@ export default {
     },
     async addPlanet(content) {
       if (!util.getcookie('TOKEN')) {
-        this.$store.dispatch('needAuth');
+        return this.$store.dispatch('needAuth');
       }
       if (this.joined) {
         this.goUrl(`/planetdetail?id=${content.planet_id}`);

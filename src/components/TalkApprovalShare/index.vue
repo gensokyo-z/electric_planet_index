@@ -84,7 +84,7 @@ export default {
     },
     bindApproval() {
       if (!util.getcookie('TOKEN')) {
-        this.$store.dispatch('needAuth');
+        return this.$store.dispatch('needAuth');
       }
       if (this.type === 'post') {
         if (this.hasLiked) {

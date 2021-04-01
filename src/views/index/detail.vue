@@ -81,13 +81,13 @@
           <div class="comments-head">
             <div class="left">
               <div class="bottom"
-                @click="checkAuth(handlerInputDialog(content))">
+                @click="handlerInputDialog(content)">
                 <i class="iconfont iconpinglun"></i>
                 <span class="data-number">评论</span>
                 <span class="data-number">{{content.comments_count ||0}}</span>
               </div>
               <div class="bottom"
-                @click="checkAuth(bindApproval(content))">
+                @click="bindApproval(content)">
                 <i class="iconfont iconzan"
                   :class="{'has-liked':hasLiked}"></i>
                 <span class="data-number">点赞</span>
@@ -142,7 +142,7 @@
                           {{item.content}}
                         </div>
                         <div class="footer-button"
-                          @click="checkAuth(handlerInputDialog(item))">
+                          @click="handlerInputDialog(item)">
                           <div class="data-number">
                             <i class="iconfont iconpinglun"
                               v-if="item.second_comments_count>0"></i>
@@ -156,7 +156,7 @@
                       </div>
                     </div>
                     <div class="footer-button"
-                      @click="checkAuth(bindApproval(item))">
+                      @click="bindApproval(item)">
                       <div class="like-simple">
                         <i class="iconfont iconzan"
                           :class="{'has-liked':item.has_liked}"></i>
@@ -186,14 +186,14 @@
                           </div>
                           <div class="reply-footer">
                             <div class="footer-button"
-                              @click="checkAuth(handlerInputDialog(item1))">
+                              @click="handlerInputDialog(item1)">
                               <div class="like-simple">
                                 <span class="data-number">回复</span>
                               </div>
                             </div>
                             <div class="footer-button"
                               v-if="item1.canDel"
-                              @click="checkAuth(delComment(item1))">
+                              @click="delComment(item1)">
                               <span class="data-number">删除</span>
                             </div>
                           </div>
@@ -308,8 +308,12 @@ export default {
     goUrl(url) {
       this.$router.push(url);
     },
-    checkAuth(cb) {
-      this.$store.dispatch('needAuth', cb);
+    checkAuth() {
+      return new Promise((resolve, reject) => {
+        this.$store.dispatch('needAuth').then(() => {
+          resolve();
+        });
+      });
     },
     conutDown(time = 700) {
       setTimeout(() => {
@@ -380,70 +384,73 @@ export default {
       });
     },
     bindApproval(item) {
-      // 点赞文章
-      let path = null;
-      if (item.id === this.content.id) {
-        if (this.hasLiked) {
-          path = postUnlike;
-        } else {
-          path = postLike;
-        }
-        path(item.id).then(res => {
+      this.checkAuth().then(() => {
+        // 点赞文章
+        let path = null;
+        if (item.id === this.content.id) {
           if (this.hasLiked) {
-            this.userLikedCount--;
-            this.$message('取消点赞成功！');
+            path = postUnlike;
           } else {
-            this.$message.success('点赞成功！');
-            this.userLikedCount++;
+            path = postLike;
           }
-          this.hasLiked = !this.hasLiked;
-        });
-      } else {
-        // 点赞评论
-        if (item.has_liked) {
-          path = commentsUnlikes;
+          path(item.id).then(res => {
+            if (this.hasLiked) {
+              this.userLikedCount--;
+              this.$message('取消点赞成功！');
+            } else {
+              this.$message.success('点赞成功！');
+              this.userLikedCount++;
+            }
+            this.hasLiked = !this.hasLiked;
+          });
         } else {
-          path = commentsLikes;
-        }
-        path(item.id).then(res => {
+          // 点赞评论
           if (item.has_liked) {
-            this.$message('取消点赞成功！');
-            item.user_liked_count--;
+            path = commentsUnlikes;
           } else {
-            this.$message.success('点赞成功！');
-            item.user_liked_count++;
+            path = commentsLikes;
           }
-          item.has_liked = !item.has_liked;
-        });
-      }
-    },
-    handlerInputDialog(item) {
-      this.comment = item;
-      this.reUsername = item.user.username;
-      this.showInput = true;
-    },
-    sendMessage() {
-      let content = this.postComment;
-      if (!content) {
-        return this.$message.warning('请输入评论');
-      } else if (content.length > 140) {
-        return this.$message.warning('请限制评论在140个字以内');
-      }
-      postsComments({
-        content,
-        id: this.content.id
-      }).then(res => {
-        if (res.code === 200) {
-          this.postComment = '';
-          this.$message.success('评论成功！');
-          this.getComments(true);
-        } else {
-          this.$message(res.msg);
+          path(item.id).then(res => {
+            if (item.has_liked) {
+              this.$message('取消点赞成功！');
+              item.user_liked_count--;
+            } else {
+              this.$message.success('点赞成功！');
+              item.user_liked_count++;
+            }
+            item.has_liked = !item.has_liked;
+          });
         }
       });
     },
-    goBack() {
-      this.$router.back();
+    handlerInputDialog(item) {
+      this.checkAuth().then(() => {
+        this.comment = item;
+        this.reUsername = item.user.username;
+        this.showInput = true;
+      });
+    },
+    sendMessage() {
+      this.checkAuth().then(() => {
+        let content = this.postComment;
+        if (!content) {
+          return this.$message.warning('请输入评论');
+        } else if (content.length > 140) {
+          return this.$message.warning('请限制评论在140个字以内');
+        }
+        postsComments({
+          content,
+          id: this.content.id
+        }).then(res => {
+          if (res.code === 200) {
+            this.postComment = '';
+            this.$message.success('评论成功！');
+            this.getComments(true);
+          } else {
+            this.$message(res.msg);
+          }
+        });
+      });
     },
     sendComment() {
       if (!this.message) {
@@ -492,17 +499,19 @@ export default {
       this.$refs.video.play();
     },
     folloed() {
-      return new Promise((resolve, reject) => {
-        if (this.content.user.has_liked === 1) {
-          // this.goUrl(`/other?id=${this.content.user_id}`);
-          resolve();
-        } else {
-          followUser(this.content.user_id).then(res => {
-            this.content.user.has_liked = true;
-            this.$message.success('关注成功！');
+      this.checkAuth().then(() => {
+        return new Promise((resolve, reject) => {
+          if (this.content.user.has_liked === 1) {
+            // this.goUrl(`/other?id=${this.content.user_id}`);
             resolve();
-          });
-        }
+          } else {
+            followUser(this.content.user_id).then(res => {
+              this.content.user.has_liked = true;
+              this.$message.success('关注成功！');
+              resolve();
+            });
+          }
+        });
       });
     },
     delComment(item) {

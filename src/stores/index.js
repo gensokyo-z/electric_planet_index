@@ -57,19 +57,24 @@ export default new Vuex.Store({
           });
       });
     },
-    needAuth({ commit }, cb) {
-      if (!this.state.token) {
-        this._actions.getInfo[0]()
-          .then(res => {
-            typeof cb === 'function' && cb();
-          })
-          .catch(() => {
-            Bus.$emit('login', true);
-            // router.push('/login?redirect=' + encodeURIComponent(location.href));
-          });
-      } else {
-        typeof cb === 'function' && cb();
-      }
+    needAuth() {
+      return new Promise((resolve, reject) => {
+        if (!this.state.token) {
+          this._actions.getInfo[0]()
+            .then(res => {
+              // typeof cb === 'function' && cb();
+              resolve();
+            })
+            .catch(e => {
+              Bus.$emit('login', true);
+              reject();
+              // router.push('/login?redirect=' + encodeURIComponent(location.href));
+            });
+        } else {
+          resolve();
+          // typeof cb === 'function' && cb();
+        }
+      });
     },
     getAllPlanetList({ commit }) {
       return new Promise((resolve, reject) => {

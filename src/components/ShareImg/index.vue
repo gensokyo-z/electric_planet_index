@@ -25,13 +25,8 @@ export default {
     };
   },
   methods: {
-    checkAuth(cb) {
-      this.$store.dispatch('needAuth', cb);
-    },
-    async openShowShare(flag) {
-      this.checkAuth(() => {
-        this.showShare = flag;
-      });
+    openShowShare(flag) {
+      this.showShare = flag;
     }
   }
 };

@@ -166,7 +166,7 @@ export default {
     },
     async addPlanet(content) {
       if (!util.getcookie('TOKEN')) {
-        this.$store.dispatch('needAuth');
+        return this.$store.dispatch('needAuth');
       }
       if (content.joined) {
         this.$confirm('是否退出该星球', '提示')

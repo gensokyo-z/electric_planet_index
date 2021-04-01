@@ -14,7 +14,7 @@
         </div>
         <div class="right">
           <div :class="['btn',{'joined':!content.joined}]"
-            @click="addPlanet(content)">{{content.joined?'退出':'已加入'}}</div>
+            @click="addPlanet(content)">{{content.joined?'退出':'加入'}}</div>
         </div>
       </div>
     </article>
@@ -40,7 +40,7 @@
         </div>
       </div>
       <aside class="aside">
-        <nav>
+        <nav v-if="$state.koken">
           <router-link tag="div"
             to="/post?type=0">发动态</router-link>
           <router-link tag="div"
@@ -155,7 +155,7 @@ export default {
     },
     async addPlanet(comtent) {
       if (!util.getcookie('TOKEN')) {
-        this.$store.dispatch('needAuth');
+        return this.$store.dispatch('needAuth');
       }
       if (this.content.joined) {
         this.$confirm('是否退出该星球', '提示')

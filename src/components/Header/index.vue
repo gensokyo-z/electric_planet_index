@@ -17,6 +17,7 @@
         v-show="showSearchList.includes($route.path)"
         ref="search" />
       <div class="flex-cc"
+        v-if="$state.token"
         @click="goUrl('/message')">
         <i class="iconfont icontongzhi"></i>
       </div>

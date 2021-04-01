@@ -83,7 +83,6 @@ export default {
       this.$router.push(this.$route.path);
     }
   },
-  create() {},
   mounted() {
     this.$bus.$on('login', flag => {
       this.visible = flag;
