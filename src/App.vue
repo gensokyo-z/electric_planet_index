@@ -59,7 +59,13 @@ export default {
     this.$store.dispatch('getAllPlanetList');
   },
   methods: {
-    getSerch() {},
+    getSerch(kw) {
+      if (this.$route.path === '/index') {
+        this.$bus.$emit('indexSearch', kw);
+      } else if (this.$route.path === '/video') {
+        this.$bus.$emit('videoSearch', kw);
+      }
+    },
     checkBrowser() {
       let browser = {
         versions: (function () {

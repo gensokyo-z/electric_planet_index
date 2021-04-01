@@ -93,6 +93,7 @@ export default {
                   break;
                 default:
                   e.created_at = e.pivot.created_at;
+                  e.user_id = e.pivot.user_id
                   e.user = {
                     avatar: e.avatar,
                     username: e.username

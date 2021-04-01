@@ -54,6 +54,9 @@ export default {
   },
   mounted() {
     this.loadMore();
+    this.$bus.$on('videoSearch', kw => {
+      this.getSerch(kw);
+    });
   },
   methods: {
     getTags() {
@@ -134,7 +137,6 @@ export default {
     },
     handlerTag(tag) {
       let tagName = '#' + tag.name;
-      this.$refs.header.setSearch(tagName);
       this.getSerch(tagName);
     },
     checkTags(item) {

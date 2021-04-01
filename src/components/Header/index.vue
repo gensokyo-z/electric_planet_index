@@ -14,7 +14,7 @@
           @click="handlerNav(item)">{{item.name}}</div>
       </div>
       <Search @getSerch="getSerch"
-        v-show="$route.path ==='/index'"
+        v-show="showSearchList.includes($route.path)"
         ref="search" />
       <div class="flex-cc"
         @click="goUrl('/message')">
@@ -57,6 +57,7 @@ export default {
   name: 'BaseHeader',
   data() {
     return {
+      showSearchList: ['/index'],
       navList: [
         {
           name: '星球首页',

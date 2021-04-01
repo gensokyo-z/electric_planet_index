@@ -15,7 +15,8 @@
         :key="index"
         @click="checkTags(item)">#{{item.name}}</div>
     </div>
-    <div class="community-main" v-loading="loadFlag">
+    <div class="community-main"
+      v-loading="loadFlag">
       <div class="card-list">
         <div class="card"
           v-for="(item, index) in cardList"
@@ -58,6 +59,9 @@ export default {
   },
   mounted() {
     this.loadMore();
+    this.$bus.$on('indexSearch', kw => {
+      this.getSerch(kw);
+    });
   },
   methods: {
     getTags() {
@@ -155,7 +159,6 @@ export default {
     },
     handlerTag(tag) {
       let tagName = '#' + tag.name;
-      this.$refs.header.setSearch(tagName);
       this.getSerch(tagName);
     },
     checkTags(item) {

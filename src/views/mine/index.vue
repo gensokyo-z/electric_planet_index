@@ -94,6 +94,9 @@ export default {
     }
   },
   created() {
+    if (Number(this.$route.query.id) === this.$state.userInfo.id) {
+      return this.$router.push('/mine');
+    }
     if (!this.isMy) {
       this.getOtheruser();
     } else {

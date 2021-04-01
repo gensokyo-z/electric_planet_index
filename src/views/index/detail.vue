@@ -493,7 +493,7 @@ export default {
     },
     folloed() {
       return new Promise((resolve, reject) => {
-        if (this.content.user.followers === 1) {
+        if (this.content.user.has_liked === 1) {
           // this.goUrl(`/other?id=${this.content.user_id}`);
           resolve();
         } else {
