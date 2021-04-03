@@ -34,7 +34,7 @@ export default {
   components: {},
   data() {
     return {
-      qrCode: '//ddxq.tech/community/gugugu.jpg'
+      qrCode: '//ddxq.tech/community/ddxq.jpg'
     };
   },
   methods: {
@@ -92,8 +92,8 @@ export default {
     }
     .right {
       img {
-        width: 68px;
-        height: 68px;
+        width: 80px;
+        height: 80px;
       }
     }
   }

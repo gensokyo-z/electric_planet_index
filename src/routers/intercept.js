@@ -37,7 +37,7 @@ router.beforeEach(async (to, from, next) => {
       try {
         // 检测是否有用户信息
         await store.dispatch('getInfo');
-        await store.dispatch('getUserPlanetList');
+        // await store.dispatch('getUserPlanetList');
         await store.dispatch('getAllPlanetList');
       } catch (error) {
         console.log(error);

@@ -21,6 +21,7 @@
           controlslist="nodownload"
           ref="video"
           x5-playsinline=""
+          disablePictureInPicture
           playsinline="true"
           webkit-playsinline="true"
           x-webkit-airplay="true"
@@ -80,7 +81,7 @@
         <div class="left"
           @click="$router.push(`/planetdetail?id=${content.planet_id}`);"
           v-if="$route.path !=='/planetdetail'">
-          <span>来自</span><span class="planet">{{content.planet.name}}</span>
+          <span>来自</span><span class="planet">{{content.planet.name}}｜星球社区</span>
         </div>
         <div :class="['right',{'joined':joined}]"
           @click.stop="addPlanet(content)"
@@ -239,15 +240,6 @@ export default {
       width: 220px;
       height: 125px;
       img {
-        // object-fit: contain;
-        // position: relative;
-        // left: 50%;
-        // top: 50%;
-        // transform: translate(-50%, -50%);
-        // max-width: 100%;
-        // max-height: 100%;
-        // width: unset;
-        // height: unset;
       }
     }
   }
@@ -262,6 +254,8 @@ export default {
     background-color: #000;
     video {
       width: 220px;
+      height: 125px;
+      object-fit: contain;
     }
     .previwe-img {
       position: relative;
@@ -274,6 +268,7 @@ export default {
       img {
         width: 220px;
         height: 125px;
+        object-fit: contain;
       }
     }
     .hidden {

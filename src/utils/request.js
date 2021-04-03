@@ -94,7 +94,8 @@ service.interceptors.response.use(
           Message({
             message: result && result.msg ? result.msg : '无效的返回数据',
             duration,
-            type: 'error'
+            type: 'error',
+            offset: 70
           });
         }
         return Promise.reject(result);
@@ -118,7 +119,8 @@ service.interceptors.response.use(
     if (response.code === 500 || response.code === 504) {
       Message({
         message: info.message || '后端服务异常，请联系管理员！',
-        duration
+        duration,
+        offset: 70
       });
       return Promise.reject(error);
     }
@@ -127,13 +129,15 @@ service.interceptors.response.use(
         Message({
           message: '用户名或密码错误！',
           duration,
-          type: 'error'
+          type: 'error',
+          offset: 70
         });
       } else {
         Message({
           message: '请求数据格式错误！',
           duration,
-          type: 'error'
+          type: 'error',
+          offset: 70
         });
       }
       return Promise.reject(error);
@@ -143,7 +147,8 @@ service.interceptors.response.use(
       Message({
         message: '未找到指定资源！',
         duration,
-        type: 'error'
+        type: 'error',
+        offset: 70
       });
       return Promise.reject(error);
     }

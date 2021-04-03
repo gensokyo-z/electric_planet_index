@@ -211,9 +211,11 @@
       <article class="tweet-user">
         <div class="avatar"
           v-if="avatar">
-          <img :src="avatar">
+          <img :src="avatar"
+            @click="goUrl(`/other?id=${content.user_id}`)">
         </div>
-        <div class="name">{{username}}</div>
+        <div class="name"
+          @click="goUrl(`/other?id=${content.user_id}`)">{{username}}</div>
         <div class="sign">{{sign}}</div>
         <div class="data">
           <div class="item"

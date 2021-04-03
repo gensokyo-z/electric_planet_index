@@ -46,7 +46,6 @@ export default {
       type: 'new',
       page: 0,
       per_page: 12,
-      last_page: 0,
       cardList: [],
       tagList: [],
       keyWord: '',
@@ -106,7 +105,6 @@ export default {
       path({ page: this.page, per_page: this.per_page, keyword: this.keyWord, type: ['0', '1', '2'] })
         .then(res => {
           if (res.code === 200 && res.data) {
-            this.last_page = res.last_page;
             let arr = [];
             res.data.forEach(e => {
               if (e.type === 0 && !e.thumb_pic) {
