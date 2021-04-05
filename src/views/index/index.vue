@@ -44,7 +44,7 @@ export default {
   data() {
     return {
       type: 'new',
-      page: 0,
+      page: 1,
       per_page: 12,
       cardList: [],
       tagList: [],
@@ -57,7 +57,7 @@ export default {
     this.getTags();
   },
   mounted() {
-    this.loadMore();
+    this.getData();
     this.$bus.$on('indexSearch', kw => {
       this.getSerch(kw);
     });
@@ -146,11 +146,6 @@ export default {
           console.log(err);
           this.loadFlag = false;
         });
-    },
-    getClear() {
-      this.page = 1;
-      this.cardList = [];
-      this.getData();
     },
     gotoDetail(item) {
       this.$router.push(`/docdetail?id=${item.id}`);

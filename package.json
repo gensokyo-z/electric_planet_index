@@ -23,7 +23,6 @@
     "analyz": "vue-cli-service build --mode analyz"
   },
   "dependencies": {
-    "ali-oss": "^6.13.2",
     "axios": "^0.21.1",
     "core-js": "^2.6.5",
     "element-ui": "^2.14.1",
@@ -37,6 +36,7 @@
     "wangeditor": "^4.5.2"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-optional-chaining": "^7.13.12",
     "@vue/cli-plugin-babel": "^3.10.0",
     "@vue/cli-plugin-eslint": "^3.10.0",
     "@vue/cli-service": "^3.10.0",

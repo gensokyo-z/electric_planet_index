@@ -122,6 +122,10 @@ export default {
           if (res.code === 200 && res.data) {
             this.last_page = res.last_page;
             res.data.forEach(e => {
+              let year = new Date().getFullYear();
+              if (e.created_at.includes(year)) {
+                e.created_at = e.created_at.substr(5, e.created_at.length - 1);
+              }
               if (e.type === 2) {
                 e.mediaType = 'video';
               } else {

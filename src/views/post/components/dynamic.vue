@@ -108,6 +108,13 @@ export default {
           this.postForm.media.push({ media_type: 'pic', media_link: e.url });
         });
       }
+    },
+    watch: {
+      'postForm.content'(val) {
+        if (val) {
+          this.postForm.desc_content = this.editor.txt.text().substring(0, 30);
+        }
+      }
     }
   }
 };

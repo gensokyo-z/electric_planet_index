@@ -39,9 +39,8 @@ export default {
   data() {
     return {
       type: 'new',
-      page: 0,
+      page: 1,
       per_page: 12,
-      last_page: 0,
       cardList: [],
       tagList: [],
       keyWord: '',
@@ -53,7 +52,7 @@ export default {
     this.getTags();
   },
   mounted() {
-    this.loadMore();
+    this.getData();
     this.$bus.$on('videoSearch', kw => {
       this.getSerch(kw);
     });
@@ -81,6 +80,7 @@ export default {
     },
     getSerch(kw) {
       this.page = 1;
+      this.finished = false;
       this.cardList = [];
       this.keyWord = kw;
       this.getData();
@@ -122,15 +122,9 @@ export default {
           loading.close();
         });
     },
-    getClear() {
-      this.page = 1;
-      this.cardList = [];
-      this.getData();
-    },
     bindTab(type) {
-      this.finished = false;
       this.type = type;
-      this.getClear();
+      this.getSerch('');
     },
     gotoDetail(item) {
       this.$router.push(`/docdetail?id=${item.id}`);

@@ -54,6 +54,7 @@ import SingleImage from '@/components/Upload/SingleImage2';
 const videoForm = {
   title: '',
   content: '', // 视频简介
+  desc_content: '',
   thumb_pic: '',
   media: [{ media_type: 'video', media_link: '' }]
 };
@@ -113,6 +114,13 @@ export default {
       this.uploadOSS(content).then(obj => {
         this.editor.cmd.do('insertHTML', `<img src="${obj.path}" width="100%"/>`);
       });
+    }
+  },
+  watch: {
+    'postForm.content'(val) {
+      if (val) {
+        this.postForm.desc_content = this.editor.txt.text().substring(0, 30);
+      }
     }
   }
 };

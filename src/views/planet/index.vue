@@ -6,9 +6,9 @@
       <div :class="['planet-tab',{active:type==='my'}]"
         @click="changeTab('my')">我加入的</div>
     </div>
-    <div class="card-list">
-      <div class="planet-card"
-        v-for="(item,index) in cardList"
+    <div class="planet-list">
+      <div class="planet"
+        v-for="(item,index) in planetList"
         :key="index"
         :class="[{all:item.name === '全部'},{active:item.checked}]"
         @click="changePlanet(item)">
@@ -18,23 +18,23 @@
       </div>
     </div>
     <div class="new-list"
-      v-loading="loadFlag">
+      v-loading="loading">
       <div class="new"
-        v-for="(item, index) in newList"
+        v-for="(item, index) in cardList"
         :key="index">
         <NewCard :content="item" />
       </div>
     </div>
     <div class="footer-btn"
-      v-if="!loadFlag">
+      v-if="!loading">
       <el-button @click="loadMore">{{finished?'~~~到底了~~~':'加载更多'}}</el-button>
     </div>
   </section>
 </template>
 <script>
-import { joinPlanet, quitPlanet, getPlanetPosts } from '@/api/planet';
+import { getPlanetPosts } from '@/api/planet';
 import { getNewest } from '@/api/index';
-import util from '@/utils/util';
+// import util from '@/utils/util';
 import NewCard from '@/components/NewCard';
 export default {
   name: 'planet',
@@ -44,41 +44,39 @@ export default {
   data() {
     return {
       type: 'planet',
-      cardList: [],
+      planetList: [],
       id: 0,
-      page: 0,
+      page: 1,
       per_page: 12,
-      last_page: 0,
-      newList: [],
-      keyWord: '',
-      loadFlag: true,
+      cardList: [],
+      loading: true,
       finished: false
     };
   },
-  mounted() {
+  created() {
     this.getPlanetList();
-    this.loadMore();
   },
   methods: {
     changeTab(type) {
-      this.finished = false;
-      this.newList = [];
       this.type = type;
-      if (type === 'planet') {
+      if (this.type === 'planet') {
         this.getPlanetList();
       } else {
         this.getMyPlanetList();
       }
     },
+    getClear() {
+      this.finished = false;
+      this.cardList = [];
+      this.page = 1;
+      this.getData();
+    },
     changePlanet(item) {
-      this.cardList.forEach(e => {
+      this.planetList.forEach(e => {
         e.checked = e.id === item.id;
       });
-      this.finished = false;
-      this.newList = [];
       this.id = item ? item.id : 0;
-      this.page = 0;
-      this.loadMore();
+      this.getClear();
     },
     loadMore() {
       if (this.finished) {
@@ -88,38 +86,37 @@ export default {
       this.getData();
     },
     getPlanetList() {
-      this.cardList = [];
+      this.planetList = [];
       this.$store.dispatch('getAllPlanetList').then(list => {
         list.forEach(e => {
           e.joined = this.$state.userPlanet.some(v => v.id === e.id);
           e.checked = false;
         });
         list = [{ name: '全部', id: 0, checked: true }, ...list];
-        this.cardList = list;
+        this.planetList = list;
         this.id = 0;
-        this.page = 0;
-        this.loadMore();
+        this.getClear();
       });
     },
     getMyPlanetList() {
-      this.cardList = [];
+      this.planetList = [];
       this.$store.dispatch('getUserPlanetList').then(list => {
-        list.forEach(e => {
+        list.forEach((e, i) => {
           e.joined = true;
+          e.checked = i === 0;
         });
-        this.cardList = list;
+        this.planetList = list;
         this.id = list[0].id;
-        this.page = 0;
-        this.loadMore();
+        this.getClear();
       });
     },
     getData() {
-      this.loadFlag = true;
+      this.loading = true;
       let path = null;
       let obj = {};
       if (!this.id) {
         path = getNewest;
-        obj = { page: this.page, per_page: this.per_page, keyword: this.keyWord };
+        obj = { page: this.page, per_page: this.per_page };
       } else {
         path = getPlanetPosts;
         obj = {
@@ -131,7 +128,6 @@ export default {
       path(obj)
         .then(res => {
           if (res.code === 200 && res.data) {
-            this.last_page = res.last_page;
             let arr = [];
             res.data.forEach(e => {
               if (e.type === 0 && !e.thumb_pic) {
@@ -151,50 +147,18 @@ export default {
               }
               arr.push(e);
             });
-            this.newList = this.newList.concat(arr);
+            this.cardList = this.cardList.concat(arr);
             if (res.last_page === res.current_page) {
               this.finished = true;
             }
           } else {
             this.finished = true;
           }
-          this.loadFlag = false;
+          this.loading = false;
         })
         .catch(() => {
-          this.loadFlag = false;
+          this.loading = false;
         });
-    },
-    async addPlanet(content) {
-      if (!util.getcookie('TOKEN')) {
-        return this.$store.dispatch('needAuth');
-      }
-      if (content.joined) {
-        this.$confirm('是否退出该星球', '提示')
-          .then(() => {
-            quitPlanet(content.id).then(async res => {
-              if (res.code === 200) {
-                this.$message.success('已退出星球');
-                this.$store.dispatch('getUserPlanetList').then(() => {
-                  this.getPlanetList();
-                });
-              }
-            });
-          })
-          .catch(() => {});
-      } else {
-        // this.$confirm('是否加入该星球', '提示')
-        //   .then(() => {
-        joinPlanet(content.id).then(async res => {
-          if (res.code === 200) {
-            this.$message.success('已成功加入星球');
-            this.$store.dispatch('getUserPlanetList').then(() => {
-              this.$router.push(`/planetdetail?id=${content.id}`);
-            });
-          }
-        });
-        // })
-        // .catch(() => {});
-      }
     }
   }
 };

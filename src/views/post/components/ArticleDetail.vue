@@ -161,64 +161,40 @@ export default {
     },
     submitForm() {
       if (this.planetList.length === 0) {
-        this.$message({
-          message: '未加入任何星球社区，请先关注星球社区',
-          type: 'warning'
-        });
+        this.$message.warning('未加入任何星球社区，请先关注星球社区');
         return;
       }
       switch (this.type) {
         case 0:
           this.postForm = this.$refs.dynamic.postForm;
           if (!this.postForm.content) {
-            this.$message({
-              message: '请输入动态',
-              type: 'warning'
-            });
+            this.$message.warning('请输入动态');
             return;
           }
           break;
         case 1:
           this.postForm = this.$refs.article.postForm;
           if (!this.postForm.title) {
-            this.$message({
-              message: '请文章标题',
-              type: 'warning'
-            });
+            this.$message.warning('请文章标题');
             return;
           } else if (!this.postForm.content) {
-            this.$message({
-              message: '请输入文章正文',
-              type: 'warning'
-            });
+            this.$message.warning('请输入文章正文');
             return;
           }
           break;
         case 2:
           this.postForm = this.$refs.video.postForm;
           if (!this.postForm.media[0].media_link) {
-            this.$message({
-              message: '请上传视频',
-              type: 'warning'
-            });
+            this.$message.warning('请上传视频');
             return;
           } else if (!this.postForm.thumb_pic) {
-            this.$message({
-              message: '请上传视频封面',
-              type: 'warning'
-            });
+            this.$message.warning('请上传视频封面');
             return;
           } else if (!this.postForm.title) {
-            this.$message({
-              message: '请输入视频标题',
-              type: 'warning'
-            });
+            this.$message.warning('请输入视频标题');
             return;
           } else if (!this.postForm.content) {
-            this.$message({
-              message: '请输入视频简介',
-              type: 'warning'
-            });
+            this.$message.warning('请输入视频简介');
             return;
           }
           break;
@@ -226,10 +202,7 @@ export default {
           break;
       }
       if (!this.planetId) {
-        this.$message({
-          message: '请选择星球',
-          type: 'warning'
-        });
+        this.$message.warning('请选择星球');
         return;
       }
       this.loading = true;
@@ -241,9 +214,6 @@ export default {
         desc_content: this.postForm.desc_content,
         source: 'user'
       };
-      if (!obj.desc_content) {
-        obj.desc_content = this.postForm.content.substr(0, 140);
-      }
       switch (this.type) {
         case 0:
           obj.media = this.postForm.media;

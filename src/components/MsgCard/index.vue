@@ -49,10 +49,6 @@ export default {
     return {};
   },
   methods: {
-    bindEvent() {
-      this.content.follow = !this.content.follow;
-      this.$refs.inputItem.showInput = true;
-    },
     goUrl(url) {
       this.$router.push(url);
     }

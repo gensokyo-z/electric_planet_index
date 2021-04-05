@@ -9,7 +9,8 @@
       accept="image/*"
       :http-request="upload">
       <div class="iconfont"
-        v-loading="imgFlag">
+        v-loading="imgFlag"
+        v-show="!imageUrl">
         <i class="el-icon-plus" />
         <div class="el-upload__text">
           拖拽<em>点击上传</em>题图

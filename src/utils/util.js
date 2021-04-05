@@ -79,11 +79,10 @@ let util = {
     return JSON.parse(JSON.stringify(obj));
   },
   defaultAvatar(str) {
-    let num = Math.floor(Math.random() * 6) + 1;
     if (str) {
       return str;
     } else {
-      return require(`@/assets/images/def_avatar${num}.png`);
+      return require(`@/assets/images/def_avatar.png`);
     }
   },
   getFirstImg(str) {

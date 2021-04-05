@@ -327,9 +327,7 @@ export default {
       getPostsDetail(this.id).then(res => {
         if (res.code === 200) {
           let time = 700;
-          if (res.data.source === 'user') {
-            res.data.user.avatar = util.defaultAvatar(res.data.user.avatar);
-          } else if (res.data.source === '微博') {
+          if (res.data.source === '微博') {
             time = 1000;
             res.data.weiboAvatar = util.defaultAvatar('');
           }
@@ -338,11 +336,18 @@ export default {
               this.srcList.push(i.media_link);
             }
           }
+          if (res.data.tags.length > 4) {
+            res.data.tags.splice(4, res.data.tags.length - 4);
+          }
           this.dataList[0].count = res.data.user.posts;
           this.dataList[1].count = res.data.user.followers;
           this.dataList[2].count = res.data.user.like_count;
           this.postType = res.data.type;
           res.data.planetBg = this.$state.allPlanet.find(v => v.id === res.data.planet_id).avatar;
+          let year = new Date().getFullYear();
+          if (res.data.created_at.includes(year)) {
+            res.data.created_at = res.data.created_at.substr(5, res.data.created_at.length - 1);
+          }
           this.content = res.data;
           if (this.content.url) {
             this.conutDown(time);
@@ -366,6 +371,10 @@ export default {
         }
         if (commentRes.code === 200) {
           commentRes.data.forEach(e => {
+            let year = new Date().getFullYear();
+            if (e.created_at.includes(year)) {
+              e.created_at = e.created_at.substr(5, e.created_at.length - 1);
+            }
             e.comments_count = e.childcomment.length;
             e.user.avatar = util.defaultAvatar(e.user.avatar);
             e.canDel = e.user_id === this.$state.userInfo.id;

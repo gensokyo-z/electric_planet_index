@@ -13,7 +13,7 @@
       </div>
       <div class="right">
         <ul>
-          <li><label>获赞</label><span>{{userInfo.all_likes_count || 0}}</span></li>
+          <li><label>获赞</label><span>{{userInfo.belikeds || 0}}</span></li>
           <li><label>粉丝</label><span>{{userInfo.followers_count || 0}}</span></li>
           <li><label>关注</label><span>{{userInfo.followed_count || 0}}</span></li>
         </ul>
@@ -30,8 +30,8 @@
       <div :class="['tab',{'active':type === 'dynamic'}]"
         @click="chnageTab('dynamic')">动态</div>
       <div v-if="isMy"
-        :class="['tab',{'active':type === 'participate'}]"
-        @click="chnageTab('participate')">评论</div>
+        :class="['tab',{'active':type === 'comment'}]"
+        @click="chnageTab('comment')">评论</div>
     </div>
     <template v-if="type === 'dynamic'">
       <div class="card-list"
@@ -39,19 +39,18 @@
         <div class="card"
           v-for="(item, index) in cardList"
           :key="index">
-          <NewCard :type.sync="type"
-            :content="item" />
+          <NewCard :content="item" />
         </div>
       </div>
     </template>
     <template v-else>
-      <div class="msg-list"
+      <div class="comment-list"
         v-loading="loading">
-        <div class="msg"
+        <div class="comment"
           v-for="(item, index) in cardList"
           :key="index">
-          <MsgCard :type="1"
-            :content="item" />
+          <CommentCard :content="item"
+            @getData="chnageTab('comment')" />
         </div>
       </div>
     </template>
@@ -64,7 +63,7 @@
 </template>
 <script>
 import NewCard from '@/components/NewCard';
-import { setUserInfo, getUserDynamic, getUserParticipation, getOtheruser, getOthusernews, followUser } from '@/api/user';
+import { getUserDynamic, getUserComments, getOtheruser, getOthusernews, followUser } from '@/api/user';
 import util from '@/utils/util';
 export default {
   name: 'mine',
@@ -73,18 +72,10 @@ export default {
       isMy: this.$route.path === '/mine',
       loading: true,
       finished: false,
-      accountType: 'me',
       type: 'dynamic',
-      intro: '',
-      showIntroductionPop: false,
-      tempObj: {},
       cardList: [],
-      dynamicCount: 0,
-      msgCount: 0,
       page: 1,
       per_page: 12,
-      current_page: 1,
-      last_page: 0,
       userInfo: {}
     };
   },
@@ -105,7 +96,7 @@ export default {
   },
   mounted() {
     if (this.isMy) {
-      this.getPosts('dynamic');
+      this.getPosts();
     } else {
       this.getOthusernews();
     }
@@ -113,30 +104,48 @@ export default {
   methods: {
     chnageTab(type) {
       this.type = type;
-      this.finished = false;
-      this.cardList = [];
-      this.page = 0;
-      this.loadMore(type);
+      this.getClear();
     },
-    loadMore(type) {
+    getOtheruser() {
+      return new Promise((resolve, reject) => {
+        getOtheruser({ id: this.$route.query.id }).then(res => {
+          this.userInfo = res.data;
+          resolve();
+        });
+      });
+    },
+    loadMore() {
       if (this.finished) {
         return;
       }
       this.page++;
-      this.getPosts(type);
+      if (this.isMy) {
+        this.getPosts();
+      } else {
+        this.getOthusernews();
+      }
+    },
+    getClear() {
+      this.finished = false;
+      this.cardList = [];
+      this.page = 1;
+      if (this.isMy) {
+        this.getPosts();
+      } else {
+        this.getOthusernews();
+      }
     },
     goto(path) {
       this.$router.push(path);
     },
-    getPosts(type) {
+    getPosts() {
       this.loading = true;
-      switch (type) {
+      let arr = [];
+      switch (this.type) {
         case 'dynamic':
           getUserDynamic({ page: this.page, per_page: this.per_page, type: ['0', '1', '2'] })
             .then(res => {
               if (res.code === 200 && res.data.length > 0) {
-                this.last_page = res.last_page;
-                let arr = [];
                 res.data.forEach(e => {
                   e.media = [];
                   if (e.type === 0 && !e.thumb_pic) {
@@ -157,7 +166,6 @@ export default {
                   arr.push(e);
                 });
                 this.cardList = this.cardList.concat(arr);
-                this.dynamicCount = res.total;
                 if (res.last_page === res.current_page) {
                   this.finished = true;
                 }
@@ -170,46 +178,22 @@ export default {
               console.log(err);
             });
           break;
-        case 'participate':
-          getUserParticipation({ page: 1 }).then(res => {
+        case 'comment':
+          getUserComments({ page: this.page, per_page: this.per_page }).then(res => {
             if (res.code === 200 && res.data.length > 0) {
-              this.last_page = res.last_page;
-              let arr = [];
               res.data.forEach(e => {
-                switch (e.related_type) {
-                  case 'likes':
-                    if (e.related.likable_type === 'posts') {
-                      e.content = e.related.likable.content;
-                      e.title = e.related.likable && e.related.likable.title;
-                    } else {
-                      // e.title = e.related.likable && e.related.likable.title;
-                      e.content = e.related.likable.content;
-                      if (e.related.likable && e.related.likable.post) {
-                        e.title = e.related.likable.post.title;
-                      } else {
-                        e.title = '';
-                      }
-                    }
-                    e.subType = 'awesome';
-                    break;
-                  case 'comments':
-                    e.content = e.related && e.related.content;
-                    e.title = e.related && e.related.post && e.related.post.title;
-                    e.subType = 'review';
-                    break;
-
-                  default:
-                    break;
+                let year = new Date().getFullYear();
+                if (e.created_at.includes(year)) {
+                  e.created_at = e.created_at.substr(5, e.created_at.length - 1);
                 }
-                // console.log(e);
-                e.user = {
-                  avatar: util.defaultAvatar(this.$state.userInfo.avatar),
-                  name: this.$state.userInfo.username
-                };
+                if (e.post) {
+                  e.title = e.post.title;
+                } else {
+                  e.title = e.parentcomments.content;
+                }
                 arr.push(e);
               });
               this.cardList = this.cardList.concat(arr);
-              this.dynamicCount = res.total;
               if (res.last_page === res.current_page) {
                 this.finished = true;
               }
@@ -223,53 +207,11 @@ export default {
           break;
       }
     },
-    bindTab(type) {
-      this.finished = false;
-      this.type = type;
-      this.cardList = [];
-      this.getPosts(type, true);
-    },
-    logout() {
-      this.$bus.$emit('login', true);
-    },
-    openIntroductionEdit() {
-      this.tempObj.intro = this.userInfo.intro;
-      this.showIntroductionPop = true;
-    },
-    handleConfirm(flag) {
-      this.showIntroductionPop = false;
-      if (flag) {
-        this.tempObj = {
-          username: this.userInfo.username,
-          avatar: this.userInfo.avatar,
-          intro: this.userInfo.intro,
-          birthday: this.userInfo.birthday,
-          gender: this.userInfo.gender
-        };
-        setUserInfo(this.tempObj).then(res => {
-          if (res.code === 200) {
-            this.$toast('修改简介成功');
-          } else {
-            this.$toast(res.msg);
-          }
-        });
-      } else {
-        this.tempObj.intro = '';
-      }
-    },
-    getOtheruser() {
-      return new Promise((resolve, reject) => {
-        getOtheruser({ id: this.$route.query.id }).then(res => {
-          this.userInfo = res.data;
-          resolve();
-        });
-      });
-    },
     getOthusernews() {
       return new Promise((resolve, reject) => {
-        getOthusernews({ id: this.$route.query.id }).then(res => {
+        this.loading = true;
+        getOthusernews({ page: this.page, per_page: this.per_page, id: this.$route.query.id }).then(res => {
           if (res.code === 200 && res.data.length > 0) {
-            this.last_page = res.last_page;
             let arr = [];
             res.data.forEach(e => {
               e.media = [];
@@ -280,7 +222,6 @@ export default {
               arr.push(e);
             });
             this.cardList = this.cardList.concat(arr);
-            this.dynamicCount = res.total;
             if (res.last_page === res.current_page) {
               this.finished = true;
             }
@@ -303,7 +244,7 @@ export default {
   },
   components: {
     NewCard,
-    MsgCard: () => import('@/components/MsgCard')
+    CommentCard: () => import('@/components/CommentCard')
   }
 };
 </script>

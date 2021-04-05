@@ -67,7 +67,13 @@ export default {
       this.createEditor();
     });
   },
-
+  watch: {
+    'postForm.content'(val) {
+      if (val) {
+        this.postForm.desc_content = this.editor.txt.text().substring(0, 30);
+      }
+    }
+  },
   methods: {
     createEditor() {
       // 创建编辑器

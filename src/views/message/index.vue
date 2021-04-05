@@ -1,24 +1,23 @@
 <template>
   <section class="message">
-    <div class="card-list">
-      <div class="title">
-        <div :class="['msg-tab',{active: item.active}]"
-          @click="changeTab(item)"
-          v-for="(item,index) in msgTypeList"
-          :key="index">{{item.name}}</div>
+    <div class="title">
+      <div :class="['msg-tab',{active: item.active}]"
+        @click="changeTab(item)"
+        v-for="(item,index) in msgTypeList"
+        :key="index">{{item.name}}</div>
+    </div>
+    <div class="card-list"
+      v-loading="loadFlag">
+      <div class="card"
+        v-for="(item,index) in cardList"
+        :key="index">
+        <MsgCard :type.sync="type"
+          :content="item" />
       </div>
-      <div class="card-list" v-loading="loadFlag">
-        <div class="card"
-          v-for="(item,index) in cardList"
-          :key="index">
-          <MsgCard :type.sync="type"
-            :content="item" />
-        </div>
-      </div>
-      <div class="footer-btn"
-        v-if="!loadFlag">
-        <el-button @click="loadMore">{{finished?'~~~到底了~~~':'加载更多'}}</el-button>
-      </div>
+    </div>
+    <div class="footer-btn"
+      v-if="!loadFlag">
+      <el-button @click="loadMore">{{finished?'~~~到底了~~~':'加载更多'}}</el-button>
     </div>
   </section>
 </template>
@@ -35,18 +34,15 @@ export default {
         { name: '@我的消息', value: 3, active: false },
         { name: '系统消息', value: 4, active: false }
       ],
-      page: 0,
+      page: 1,
       per_page: 12,
-      last_page: 0,
       cardList: [],
-      tagList: [],
-      keyWord: '',
       loadFlag: true,
       finished: false
     };
   },
   mounted() {
-    this.loadMore();
+    this.getData();
   },
   methods: {
     loadMore() {
@@ -75,13 +71,8 @@ export default {
       }
       path({ page: this.page, per_page: this.per_page })
         .then(res => {
-          if (res.code === 200 && res.data.data.length > 0) {
-            this.current_page = res.current_page;
-            this.last_page = res.last_page;
-            if (res.last_page === res.current_page) {
-              this.finished = true;
-            }
-            res.data.data.forEach(e => {
+          if (res.code === 200 && res.data.length > 0) {
+            res.data.forEach(e => {
               switch (this.type) {
                 case 1:
                   e.title = e.post.title;
@@ -93,16 +84,22 @@ export default {
                   break;
                 default:
                   e.created_at = e.pivot.created_at;
-                  e.user_id = e.pivot.user_id
+                  e.user_id = e.pivot.user_id;
                   e.user = {
                     avatar: e.avatar,
                     username: e.username
                   };
                   break;
               }
+              let year = new Date().getFullYear();
+              if (e.created_at.includes(year)) {
+                e.created_at = e.created_at.substr(5, e.created_at.length - 1);
+              }
             });
-
-            this.cardList = this.cardList.concat(res.data.data);
+            this.cardList = this.cardList.concat(res.data);
+            if (res.last_page === res.current_page) {
+              this.finished = true;
+            }
           } else {
             this.finished = true;
           }
@@ -112,14 +109,10 @@ export default {
           this.loadFlag = false;
         });
     },
-
-    bindTab(item) {
+    getClear() {
+      this.cardList = [];
+      this.page = 1;
       this.finished = false;
-      this.page = 0;
-      this.last_page = -1;
-      this.type = item.value;
-      this.msgList = [];
-      this.dynamicList = [];
       this.getData();
     },
     changeTab(item) {
@@ -127,10 +120,7 @@ export default {
         e.active = e.value === item.value;
       });
       this.type = item.value;
-      this.finished = false;
-      this.cardList = [];
-      this.page = 0;
-      this.loadMore();
+      this.getClear();
     }
   },
   components: {

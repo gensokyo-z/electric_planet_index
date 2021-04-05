@@ -81,7 +81,7 @@
         <div class="left"
           @click="$router.push(`/planetdetail?id=${content.planet_id}`);"
           v-if="$route.path !=='/planetdetail'">
-          <span>来自</span><span class="planet">{{content.planet.name}}｜星球社区</span>
+          <span>来自</span><span class="planet">{{content.planet.name}}</span>
         </div>
         <div :class="['right',{'joined':joined}]"
           @click.stop="addPlanet(content)"

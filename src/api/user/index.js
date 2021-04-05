@@ -37,7 +37,7 @@ export function getUserDynamic(params = {}) {
   });
 }
 
-// 我的评论
+// 我的参于
 export function getUserParticipation(params = {}) {
   return request({
     url: '/api/feed/user/participation',
@@ -46,8 +46,16 @@ export function getUserParticipation(params = {}) {
   });
 }
 
-// 获取他人信息
+// 我的评论
+export function getUserComments(params = {}) {
+  return request({
+    url: '/api/feed/user/comments',
+    method: 'get',
+    params
+  });
+}
 
+// 获取他人信息
 export function getOtheruser(params = {}) {
   return request({
     url: '/api/feed/user/otheruser',
@@ -66,6 +74,7 @@ export function getOthusernews(params = {}) {
 }
 
 // 关注某人
+
 export function followUser(id) {
   return request({
     url: `/api/feed/users/${id}/follow`,
