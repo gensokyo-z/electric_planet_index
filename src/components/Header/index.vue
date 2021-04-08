@@ -83,7 +83,8 @@ export default {
       this.$emit('getSerch', kw)
     },
     showLogin () {
-      this.$refs.login.visible = true
+      // this.$refs.login.visible = true
+      this.$router.push('/login')
     },
     goUrl (url) {
       if (url === '/login') {
