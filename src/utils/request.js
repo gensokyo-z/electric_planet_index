@@ -78,10 +78,10 @@ service.interceptors.response.use(
           type: 'error'
         });
         util.delcookie('TOKEN');
-        Bus.$emit('login', true);
-        // if (router.currentRoute.name !== 'login') {
-        //   router.push('/login');
-        // }
+        // Bus.$emit('login', true);
+        if (router.currentRoute.name !== 'login') {
+          router.push('/login');
+        }
         return Promise.reject(result);
       } else {
         Message.closeAll();

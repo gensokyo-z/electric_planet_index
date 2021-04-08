@@ -4,7 +4,6 @@
                :visible.sync="visible"
                append-to-body
                width="390px">
-      <div>132132</div>
     </el-dialog>
   </section>
 </template>
