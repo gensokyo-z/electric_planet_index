@@ -58,7 +58,7 @@ export default {
     };
   },
   mounted() {
-    this.getCode();
+    // this.getCode();
   },
   methods: {
     dataURLToBlob(dataurl) {
@@ -115,7 +115,7 @@ export default {
     showShare: {
       handler(val) {
         if (val) {
-          // this.getCode();
+          this.getCode();
         } else {
           const codeHtml = this.$refs.qrCode; // document.getElementById("qrcode");
           codeHtml.innerHTML = '';
