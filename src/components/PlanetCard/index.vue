@@ -95,7 +95,7 @@ import { joinPlanet } from '@/api/planet';
 import util from '@/utils/util';
 import TalkApprovalShare from '@/components/TalkApprovalShare';
 export default {
-  name: 'NewCard',
+  name: 'PlanetCard',
   components: {
     TalkApprovalShare,
     Share: () => import('@/components/ShareImg/index')

@@ -15,7 +15,8 @@ export default new Vuex.Store({
     userPlanet: [],
     allPlanet: [],
     endPoint: '//planetoss.oss-cn-hangzhou.aliyuncs.com',
-    _axiosPromiseCancel: []
+    _axiosPromiseCancel: [],
+    isWechat: false
   },
   mutations: {
     setToken(state, token) {
@@ -29,6 +30,9 @@ export default new Vuex.Store({
     },
     setUserInfo: (state, userInfo) => {
       state.userInfo = userInfo;
+    },
+    setIsWechat: (state, boolean) => {
+      state.isWechat = boolean;
     }
   },
   actions: {
@@ -161,6 +165,12 @@ export default new Vuex.Store({
             reject(err);
           });
       });
+    },
+    checkIsWechat({ commit }) {
+      const ua = window.navigator.userAgent.toLowerCase();
+      if (ua.includes('wechat')) {
+        commit('setIsWechat', true);
+      }
     }
   }
 });

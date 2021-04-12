@@ -35,6 +35,7 @@
     </div>
     <template v-if="type === 'dynamic'">
       <div class="card-list"
+        :class="{isWechat:$state.isWechat}"
         v-loading="loading">
         <div class="card"
           v-for="(item, index) in cardList"

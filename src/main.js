@@ -4,7 +4,7 @@ import 'lib-flexible';
 import global from '@/utils/global';
 import router from './routers/';
 import './routers/intercept';
-
+// import VConsole from 'vconsole';
 import store from './stores';
 import * as filters from './filters/';
 import ElementUI from 'element-ui';
@@ -14,7 +14,7 @@ import './styles/main.less';
 Vue.use(ElementUI);
 Vue.use(VueClipboard);
 Vue.use(global);
-
+// new VConsole();
 // import FastClick from 'fastclick';
 
 // FastClick.attach(document.body);

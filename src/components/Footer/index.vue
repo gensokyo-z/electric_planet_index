@@ -13,7 +13,12 @@
           </div>
         </div>
         <div class="middle">
-          <div class="title">{{$route.meta.title}}</div>
+          <div class="title">
+            <router-link to="/index"
+              tag="span">星球首页</router-link>
+            <router-link to="/planet"
+              tag="span">星球社区</router-link>
+          </div>
           <div class="addr">地址：广东省广州市番禺区南国奥园小资天堂小资5街106房</div>
         </div>
         <div class="right flex-col-cc">
@@ -23,7 +28,8 @@
         </div>
       </article>
       <article class="bottom w">
-        <p>网站备案号：粤ICP备2020101099号-1</p>
+        <a href="https://beian.miit.gov.cn/#/Integrated/index"
+          target="_blank">网站备案号：粤ICP备2020101099号-1</a>
       </article>
     </div>
   </footer>
@@ -88,6 +94,10 @@ export default {
       align-content: space-between;
       .title {
         padding-top: 20px;
+        span{
+          padding-right: 30px;
+          cursor: pointer;
+        }
       }
     }
     .right {
@@ -99,8 +109,9 @@ export default {
   }
   .bottom {
     padding-top: 40px;
-    p {
+    a {
       font-size: 14px;
+      color: #fff;
     }
   }
 }

@@ -81,7 +81,7 @@
           <div class="comments-head">
             <div class="left">
               <div class="bottom"
-                @click="handlerInputDialog(content)">
+                @click="focusToPostComment">
                 <i class="iconfont iconpinglun"></i>
                 <span class="data-number">评论</span>
                 <span class="data-number">{{content.comments_count ||0}}</span>
@@ -117,6 +117,7 @@
                 type="textarea"
                 :autosize="{minRows:1}"
                 resize="none"
+                ref="postComment"
                 placeholder="来吧！说两句，表达一下关键或看法吧~"></el-input>
             </div>
             <div class="send">
@@ -309,6 +310,9 @@ export default {
   methods: {
     goUrl(url) {
       this.$router.push(url);
+    },
+    focusToPostComment() {
+      this.$refs.postComment.focus()
     },
     checkAuth() {
       return new Promise((resolve, reject) => {

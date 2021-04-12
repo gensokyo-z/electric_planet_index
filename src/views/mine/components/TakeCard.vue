@@ -44,7 +44,7 @@ import { joinPlanet } from '@/api/planet';
 import util from '@/utils/util';
 import TalkApprovalShare from '@/components/TalkApprovalShare';
 export default {
-  name: 'NewCard',
+  name: 'TakeCard',
   components: {
     // InputItem: () => import('@/components/InputItem'),
     TalkApprovalShare

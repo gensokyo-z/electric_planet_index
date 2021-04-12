@@ -17,9 +17,10 @@
           v-show="item.name !== '全部'">
       </div>
     </div>
-    <div class="new-list"
+    <div class="card-list"
+    :class="{isWechat:$state.isWechat}"
       v-loading="loading">
-      <div class="new"
+      <div class="card"
         v-for="(item, index) in cardList"
         :key="index">
         <NewCard :content="item" />

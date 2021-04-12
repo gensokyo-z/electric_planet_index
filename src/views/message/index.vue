@@ -6,9 +6,9 @@
         v-for="(item,index) in msgTypeList"
         :key="index">{{item.name}}</div>
     </div>
-    <div class="card-list"
+    <div class="msg-list"
       v-loading="loadFlag">
-      <div class="card"
+      <div class="msg"
         v-for="(item,index) in cardList"
         :key="index">
         <MsgCard :type.sync="type"

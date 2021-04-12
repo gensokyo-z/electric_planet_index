@@ -440,3 +440,18 @@
     color: #fff;
   }
 }
+.card-list {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  &.isWechat {
+    display: flex;
+    flex-wrap: wrap;
+    .card {
+      margin-bottom: 20px;
+    }
+    .card:not(:nth-child(4n)) {
+      margin-right: 26px;
+    }
+  }
+}

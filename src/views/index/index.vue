@@ -17,7 +17,8 @@
     </div>
     <div class="community-main"
       v-loading="loadFlag">
-      <div class="card-list">
+      <div class="card-list"
+        :class="{isWechat:$state.isWechat}">
         <div class="card"
           v-for="(item, index) in cardList"
           :key="index">

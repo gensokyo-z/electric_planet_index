@@ -108,6 +108,7 @@ export default {
         // }
         location.href = location.href.replace('community', 'h5');
       }
+      this.$store.dispatch('checkIsWechat');
     }
   }
 };

@@ -19,7 +19,7 @@
       </div>
     </article>
     <article class="main">
-      <div class="card-list"
+      <div class="planet-card-list"
         v-loading="loading">
         <div class="card-header">
           <h2>星球推荐</h2>
