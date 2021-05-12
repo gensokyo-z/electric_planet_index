@@ -133,11 +133,11 @@
                 <div class="comment-main">
                   <div class="comment-header">
                     <div class="left">
-                      <div class="author-avatar">
+                      <div class="author-avatar" @click="goUrl(`/other?id=${item.user_id}`)">
                         <img :src="item.user.avatar">
                       </div>
                       <div class="col">
-                        <div class="author-name">{{item.user.username}}</div>
+                        <div class="author-name" @click="goUrl(`/other?id=${item.user_id}`)">{{item.user.username}}</div>
                         <div class="comment-time">{{item.created_at}}</div>
                         <div class="comment-content">
                           {{item.content}}
@@ -523,6 +523,7 @@ export default {
             followUser(this.content.user_id).then(res => {
               this.content.user.has_liked = true;
               this.$message.success('关注成功！');
+              this.$store.dispatch('getInfo')
               resolve();
             });
           }
@@ -539,7 +540,7 @@ export default {
   watch: {
     content: {
       handler(val) {
-        this.hasLiked = val.has_liked;
+        this.hasLiked = val.IsBeLiked;
         this.userLikedCount = val.user_liked_count;
       },
       immediate: true

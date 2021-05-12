@@ -138,7 +138,7 @@ export default {
       if (this.content.user && this.content.user.username) {
         return this.content.user.username;
       } else {
-        return '临时用户';
+        return '';
       }
     }
   },

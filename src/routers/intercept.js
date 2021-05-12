@@ -61,6 +61,7 @@ router.beforeEach(async (to, from, next) => {
 });
 
 router.afterEach((to, from) => {
+  window.document.documentElement.scrollTop = 0
   if (!(from.path === '/index' && from.name === null)) {
     setLocalRoute(to, from);
   }

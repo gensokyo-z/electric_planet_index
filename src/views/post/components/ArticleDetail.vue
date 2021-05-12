@@ -26,15 +26,9 @@
         </div>
       </div>
     </div>
-    <div v-show="type === 0">
-      <Dynamic ref="dynamic" />
-    </div>
-    <div v-show="type === 1">
-      <Article ref="article" />
-    </div>
-    <div v-show="type === 2">
-      <Video ref="video" />
-    </div>
+    <component :is="type"
+      :key="type"
+      :ref="type"></component>
     <div class="tag">
       <label>关联的标签({{tagId.length}}/6)：</label>
       <div class="tag-box">
@@ -72,11 +66,11 @@ export default {
       planetId: '',
       tagList: [],
       tagId: [],
-      type: 0,
+      type: 'Dynamic',
       typeList: [
-        { name: '动态', labal: 'dynamic', value: 0, checked: true },
-        { name: '文章', labal: 'article', value: 1, checked: false },
-        { name: '视频', labal: 'video', value: 2, checked: false }
+        { name: '动态', value: 'Dynamic', type: 0, checked: true },
+        { name: '文章', value: 'Article', type: 1, checked: false },
+        { name: '视频', value: 'Video', type: 2, checked: false }
       ]
     };
   },
@@ -164,16 +158,15 @@ export default {
         this.$message.warning('未加入任何星球社区，请先关注星球社区');
         return;
       }
+      this.postForm = this.$refs[this.type].postForm;
       switch (this.type) {
-        case 0:
-          this.postForm = this.$refs.dynamic.postForm;
+        case 'Dynamic':
           if (!this.postForm.content) {
             this.$message.warning('请输入动态');
             return;
           }
           break;
-        case 1:
-          this.postForm = this.$refs.article.postForm;
+        case 'Article':
           if (!this.postForm.title) {
             this.$message.warning('请文章标题');
             return;
@@ -182,8 +175,7 @@ export default {
             return;
           }
           break;
-        case 2:
-          this.postForm = this.$refs.video.postForm;
+        case 'Video':
           if (!this.postForm.media[0].media_link) {
             this.$message.warning('请上传视频');
             return;
@@ -207,7 +199,7 @@ export default {
       }
       this.loading = true;
       const obj = {
-        type: this.type,
+        type: this.typeList.find(e => e.value === this.type).type,
         content: this.postForm.content,
         planet_id: this.planetId,
         tag_id: this.tagId,
@@ -215,14 +207,14 @@ export default {
         source: 'user'
       };
       switch (this.type) {
-        case 0:
+        case 'Dynamic':
           obj.media = this.postForm.media;
           break;
-        case 1:
+        case 'Article':
           obj.title = this.postForm.title;
           obj.thumb_pic = this.postForm.thumb_pic;
           break;
-        case 2:
+        case 'Video':
           obj.media = this.postForm.media;
           if (!/planetoss.oss/.test(this.postForm.thumb_pic)) {
             let baseUrl = this.postForm.thumb_pic;
@@ -230,7 +222,6 @@ export default {
             this.uploadOSS(fileObj, 'pic').then(path => {
               obj.thumb_pic = path;
             });
-            // console.log(this.$refs.video.$refs.uploadImg.$children[0].$refs['upload-inner'].$refs.input);
           } else {
             obj.thumb_pic = this.postForm.thumb_pic;
           }
@@ -241,22 +232,8 @@ export default {
       }
       addPosts(obj).then(res => {
         if (res.code === 200) {
-          let str = '';
-          switch (this.type) {
-            case 0:
-              str = '动态';
-              break;
-            case 1:
-              str = '文章';
-              break;
-            case 2:
-              str = '视频';
-              break;
-            default:
-              break;
-          }
+          let str = this.typeList.find(e => e.value === this.type).name;
           this.$message.success(`发布${str}成功`);
-          // this.$store.dispatch('user/setCacha', []);
           this.loading = false;
           this.$router.push('/index');
         } else {

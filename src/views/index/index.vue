@@ -127,6 +127,9 @@ export default {
               if (e.tags.length > 4) {
                 e.tags.splice(4, e.tags.length - 4);
               }
+              if (e.type === 0 && !e.desc_content) {
+                e.desc_content = e.content;
+              }
               if (e.type === 0 || e.type === 1) {
                 e.mediaType = 'pic';
               } else {

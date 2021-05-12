@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="right">
-        <ul>
+        <ul @click="$router.push('/follow')">
           <li><label>获赞</label><span>{{userInfo.belikeds || 0}}</span></li>
           <li><label>粉丝</label><span>{{userInfo.followers_count || 0}}</span></li>
           <li><label>关注</label><span>{{userInfo.followed_count || 0}}</span></li>
@@ -96,11 +96,7 @@ export default {
     }
   },
   mounted() {
-    if (this.isMy) {
-      this.getPosts();
-    } else {
-      this.getOthusernews();
-    }
+    this.getPosts();
   },
   methods: {
     chnageTab(type) {
@@ -120,21 +116,13 @@ export default {
         return;
       }
       this.page++;
-      if (this.isMy) {
-        this.getPosts();
-      } else {
-        this.getOthusernews();
-      }
+      this.getPosts();
     },
     getClear() {
       this.finished = false;
       this.cardList = [];
       this.page = 1;
-      if (this.isMy) {
-        this.getPosts();
-      } else {
-        this.getOthusernews();
-      }
+      this.getPosts();
     },
     goto(path) {
       this.$router.push(path);
@@ -144,11 +132,20 @@ export default {
       let arr = [];
       switch (this.type) {
         case 'dynamic':
-          getUserDynamic({ page: this.page, per_page: this.per_page, type: ['0', '1', '2'] })
+          const path = this.isMy ? getUserDynamic : getOthusernews;
+          const obj = {
+            page: this.page,
+            per_page: this.per_page
+          };
+          if (this.isMy) {
+            obj.type = ['0', '1', '2'];
+          } else {
+            obj.id = this.$route.query.id;
+          }
+          path(obj)
             .then(res => {
               if (res.code === 200 && res.data.length > 0) {
                 res.data.forEach(e => {
-                  e.media = [];
                   if (e.type === 0 && !e.thumb_pic) {
                     if (e.media && e.media.length > 0 && e.media[0].media_link) e.thumb_pic = e.media[0].media_link;
                   }
@@ -158,6 +155,9 @@ export default {
                   };
                   if (e.tags && e.tags.length > 4) {
                     e.tags.splice(4, e.tags.length - 4);
+                  }
+                  if (e.type === 0 && !e.desc_content) {
+                    e.desc_content = e.content;
                   }
                   if (e.type === 0 || e.type === 1) {
                     e.mediaType = 'pic';
@@ -208,38 +208,17 @@ export default {
           break;
       }
     },
-    getOthusernews() {
-      return new Promise((resolve, reject) => {
-        this.loading = true;
-        getOthusernews({ page: this.page, per_page: this.per_page, id: this.$route.query.id }).then(res => {
-          if (res.code === 200 && res.data.length > 0) {
-            let arr = [];
-            res.data.forEach(e => {
-              e.media = [];
-              e.planet = {};
-              if (e.tags && e.tags.length > 4) {
-                e.tags.splice(4, e.tags.length - 4);
-              }
-              arr.push(e);
-            });
-            this.cardList = this.cardList.concat(arr);
-            if (res.last_page === res.current_page) {
-              this.finished = true;
-            }
-          } else {
-            this.finished = true;
-          }
-          this.loading = false;
-          resolve();
-        });
-      });
-    },
     folloed() {
       return new Promise((resolve, reject) => {
-        followUser(this.$route.query.id).then(res => {
-          this.getOtheruser();
+        if (this.userInfo.hasbefolloed) {
           resolve();
-        });
+        } else {
+          followUser(this.$route.query.id).then(res => {
+            this.getOtheruser();
+            this.$store.dispatch('getInfo');
+            resolve();
+          });
+        }
       });
     }
   },

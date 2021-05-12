@@ -10,15 +10,17 @@
     "@vue/CLI3",
     "vue",
     "webpack4",
-    "vue-h5-pro"
+    "vue-pro"
   ],
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "d": "vue-cli-service serve --https",
     "dev": "vue-cli-service serve --https",
     "build:prod": "vue-cli-service build",
+    "p": "vue-cli-service build",
     "build:test": "vue-cli-service build --mode test",
-    "build": "npm run build:test",
+    "t": "npm run build:test",
     "lint": "vue-cli-service lint",
     "analyz": "vue-cli-service build --mode analyz"
   },

@@ -1,0 +1,32 @@
+.follow {
+  flex-shrink: 0;
+  width: 1000px;
+  margin: 0 auto;
+  padding-top: 50px;
+  .title {
+    width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    .msg-tab {
+      margin-right: 50px;
+      font-size: 20px;
+      cursor: pointer;
+      &.active {
+        font-size: 26px;
+        font-weight: 600;
+        border-bottom: 5px solid #efd109;
+      }
+    }
+  }
+  .msg-list {
+    padding-top: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    min-height: 260px;
+    .msg:nth-child(odd) {
+      margin-left: 80px;
+    }
+  }
+}

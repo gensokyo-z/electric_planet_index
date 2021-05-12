@@ -75,6 +75,14 @@ const routes = [
   //   }
   // },
   {
+    path: '/follow',
+    name: 'follow',
+    component: () => import(/* webpackChunkName: "follow" */ '@/views/follow/index.vue'),
+    meta: {
+      title: '粉丝',
+    }
+  },
+  {
     path: '/message',
     name: 'message',
     component: () => import(/* webpackChunkName: "message" */ '@/views/message/index.vue'),

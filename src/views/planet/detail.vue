@@ -1,7 +1,7 @@
 <template>
   <section class="planet">
     <article class="planet-box"
-      :style="`background: url(${content.background}) no-repeat  center center/1200px 350px ;`"
+      :style="`background: url(${content.background}) no-repeat  center center/1200px  ;`"
       v-show="content.id">
       <div class="info">
         <div class="left">

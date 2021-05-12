@@ -81,3 +81,12 @@ export function followUser(id) {
     method: 'post'
   });
 }
+
+// 关注列表
+export function getFollower(params = {}) {
+  return request({
+    url: '/api/feed/user/follow',
+    method: 'get',
+    params
+  });
+}

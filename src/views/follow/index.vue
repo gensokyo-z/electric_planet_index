@@ -1,5 +1,5 @@
 <template>
-  <section class="message">
+  <section class="follow">
     <div class="title">
       <div :class="['msg-tab',{active: item.active}]"
         @click="changeTab(item)"
@@ -11,7 +11,7 @@
       <div class="msg"
         v-for="(item,index) in cardList"
         :key="index">
-        <MsgCard :type.sync="type"
+        <FansCard :type.sync="type"
           :content="item" />
       </div>
     </div>
@@ -22,17 +22,16 @@
   </section>
 </template>
 <script>
-import { getFollowers, getLiked, getComments, getAts } from '@/api/message';
+import { getFollowers } from '@/api/message';
+import { getFollower } from '@/api/user';
 // import util from '@/utils/util';
 export default {
   data() {
     return {
       type: 1,
       msgTypeList: [
-        { name: '评论消息', value: 1, active: true },
-        { name: '点赞消息', value: 2, active: false },
-        { name: '@我的消息', value: 3, active: false },
-        { name: '系统消息', value: 4, active: false }
+        { name: '我的关注', value: 1, active: true },
+        { name: '我的粉丝', value: 2, active: false }
       ],
       page: 1,
       per_page: 12,
@@ -54,51 +53,18 @@ export default {
     },
     getData() {
       this.loadFlag = true;
-      let path = null;
-      switch (this.type) {
-        case 1:
-          path = getComments;
-          break;
-        case 2:
-          path = getLiked;
-          break;
-        case 3:
-          path = getAts;
-          break;
-        default:
-          path = getFollowers;
-          break;
-      }
+      let path = this.type === 1 ? getFollower : getFollowers;
       path({ page: this.page, per_page: this.per_page })
         .then(res => {
           if (res.code === 200 && res.data.length > 0) {
             res.data.forEach(e => {
-              switch (this.type) {
-                case 1:
-                  e.title = e.post.title;
-                  break;
-                case 2:
-                  if (e.likable_type === 'comments') {
-                    e.title = e.likable.content;
-                  } else if (e.likable_type === 'post') {
-                    e.title = e.likable.title;
-                  }
-                  e.post_id = e.likable.post_id;
-                  break;
-                case 3:
-                  break;
-                default:
-                  e.created_at = e.pivot.created_at;
-                  e.user_id = e.pivot.user_id;
-                  e.user = {
-                    avatar: e.avatar,
-                    username: e.username
-                  };
-                  break;
-              }
-              let year = new Date().getFullYear();
-              if (e.created_at.includes(year)) {
-                e.created_at = e.created_at.substr(5, e.created_at.length - 1);
+              if (this.type !== 1) {
+                e.created_at = e.pivot.created_at;
+                e.user_id = e.pivot.user_id;
+                e.user = {
+                  avatar: e.avatar,
+                  username: e.username
+                };
               }
             });
             this.cardList = this.cardList.concat(res.data);
@@ -129,7 +95,7 @@ export default {
     }
   },
   components: {
-    MsgCard: () => import('@/components/MsgCard')
+    FansCard: () => import('@/components/FansCard')
   }
 };
 </script>

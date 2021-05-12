@@ -4,13 +4,9 @@
 
 <script>
 import ArticleDetail from './components/ArticleDetail'
-// import { getInfo } from '@/api/user'
 
 export default {
   name: 'CreateArticle',
   components: { ArticleDetail },
-  mounted () {
-    // getInfo()
-  }
 }
 </script>
