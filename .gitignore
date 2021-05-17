@@ -4,6 +4,7 @@ community
 /dist
 /h5
 /community
+community.zip
 # local env files
 .env.local
 .env.*.local
