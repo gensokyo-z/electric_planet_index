@@ -90,3 +90,19 @@ export function getFollower(params = {}) {
     params
   });
 }
+
+// 获取他人关注列表
+export function getOtherFollowed(params = {}) {
+  return request({
+    url: `/api/feed/user/other/${params.id}/followed`,
+    method: 'get'
+  });
+}
+
+//  获取他人粉丝列表
+export function getOtherFollowers(params = {}) {
+  return request({
+    url: `/api/feed/user/other/${params.id}/followers`,
+    method: 'get'
+  });
+}

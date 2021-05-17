@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="right">
-        <ul @click="$router.push('/follow')">
+        <ul @click="$router.push(`/follow${isMy?'':'?id='+userInfo.id}`)">
           <li><label>获赞</label><span>{{userInfo.belikeds || 0}}</span></li>
           <li><label>粉丝</label><span>{{userInfo.followers_count || 0}}</span></li>
           <li><label>关注</label><span>{{userInfo.followed_count || 0}}</span></li>

@@ -15,9 +15,9 @@
         <div class="middle">
           <div class="title">
             <router-link to="/index"
-              tag="span">星球首页</router-link>
+              tag="span">首页</router-link>
             <router-link to="/planet"
-              tag="span">星球社区</router-link>
+              tag="span">社区</router-link>
           </div>
           <div class="addr">地址：广东省广州市番禺区南国奥园小资天堂小资5街106房</div>
         </div>

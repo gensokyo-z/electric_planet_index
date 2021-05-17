@@ -61,12 +61,12 @@ export default {
       showSearchList: ['/index'],
       navList: [
         {
-          name: '星球首页',
+          name: '首页',
           path: '/index',
           checked: false
         },
         {
-          name: '星球社区',
+          name: '社区',
           path: '/planet',
           checked: false
         }
