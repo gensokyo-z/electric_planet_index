@@ -1,46 +1,50 @@
 <template>
-  <div class="createPost-container">
-    <div class="tab-bar">
-      <div class="title">发布</div>
-      <div class="post-layout">
-        <div class="left">
+  <div class='createPost-container'>
+    <div class='tab-bar'>
+      <div class='title'>发布</div>
+      <div class='post-layout'>
+        <div class='left'>
           <label>选择发布类型：</label>
-          <div class="type-box">
+          <div class='type-box'>
             <div :class="['item',{'active':item.checked}]"
-              v-for="(item,index) in typeList"
-              :key="index"
-              @click="selectType(item)">{{item.name}}</div>
+                 v-for='(item,index) in typeList'
+                 :key='index'
+                 @click='selectType(item)'>{{ item.name }}
+            </div>
           </div>
         </div>
-        <div class="right">
+        <div class='right'>
           <label>选择星球社区：</label>
-          <div class="type-box"
-            v-if="planetList.length>0">
+          <div class='type-box'
+               v-if='planetList.length>0'>
             <div :class="['item',{'active':item.checked}]"
-              v-for="(item,index) in planetList"
-              :key="index"
-              @click="selectPlant(item)">{{item.name}}</div>
+                 v-for='(item,index) in planetList'
+                 :key='index'
+                 @click='selectPlant(item)'>{{ item.name }}
+            </div>
           </div>
-          <p class="tips"
-            v-else>未加入任何星球，先去<span @click="$router.push('/planet')">星球社区逛逛&gt;&gt;&gt;</span></p>
+          <p class='tips'
+             v-else>未加入任何星球，先去<span @click="$router.push('/planet')">星球社区逛逛&gt;&gt;&gt;</span></p>
         </div>
       </div>
     </div>
-    <component :is="type"
-      :key="type"
-      :ref="type"></component>
-    <div class="tag">
-      <label>关联的标签({{tagId.length}}/6)：</label>
-      <div class="tag-box">
+    <component :is='type'
+               :key='type'
+               :ref='type'></component>
+    <div class='tag'>
+      <label>关联的标签({{ tagId.length }}/6)：</label>
+      <div class='tag-box'>
         <div :class="['item',{'active':item.checked}]"
-          v-for="(item,index) in tagList"
-          :key="index"
-          @click="selectTag(item)">#{{item.name}}</div>
+             v-for='(item,index) in tagList'
+             :key='index'
+             @click='selectTag(item)'>#{{ item.name }}
+        </div>
       </div>
     </div>
-    <el-button class="submit"
-      size="mini"
-      @click="submitForm">发布</el-button>
+    <el-button class='submit'
+               size='mini'
+               @click='submitForm'>发布
+    </el-button>
   </div>
 
 </template>
@@ -79,42 +83,34 @@ export default {
   },
   methods: {
     init() {
-      this.$store
-        .dispatch('getUserPlanetList')
-        .then(response => {
-          console.log(response.length);
-          if (response.length > 0) {
-            response.forEach(e => {
-              e.checked = false;
-            });
-            let fristPlant = response.findIndex(e => e.name === '星球总部');
+      this.$store.dispatch('getUserPlanetList').then(response => {
+        if (response.length > 0) {
+          let fristPlant = response.findIndex(e => e.name === '星球总部');
+          if (fristPlant !== -1) {
             let tempItem = [];
             tempItem.push(response[fristPlant]);
             response.splice(fristPlant, 1);
             response = [...tempItem, ...response];
-            response.forEach((e, i) => {
-              e.checked = i === 0;
-            });
-
-            this.planetList = response;
-            this.planetId = response[0].id;
-            getPlanetTags(response[0].id)
-              .then(response => {
-                if (response.code === 200) {
-                  response.data.forEach(e => {
-                    e.checked = false;
-                  });
-                  this.tagList = response.data;
-                }
-              })
-              .catch(error => {
-                console.log(error);
-              });
           }
-        })
-        .catch(error => {
-          console.log(error);
-        });
+          response.forEach((e, i) => {
+            e.checked = i === 0;
+          });
+          this.planetList = response;
+          this.planetId = response[0].id;
+          getPlanetTags(response[0].id).then(response => {
+            if (response.code === 200) {
+              response.data.forEach(e => {
+                e.checked = false;
+              });
+              this.tagList = response.data;
+            }
+          }).catch(error => {
+            console.log(error);
+          });
+        }
+      }).catch(error => {
+        console.log(error);
+      });
     },
     // initDate() {
     //   let now = new Date();
@@ -256,6 +252,7 @@ export default {
           type: mime
         });
       }
+
       return dataURLtoFile(dataurl);
     },
     async uploadOSS(content, type) {
@@ -279,7 +276,7 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang='less' scoped>
 .createPost-container {
   position: relative;
   // position: relative;
@@ -294,29 +291,35 @@ export default {
   //   min-height: 500px;
   // }
   padding-top: 20px;
+
   .tab-bar {
     display: flex;
     flex-direction: column;
     padding-bottom: 10px;
     border-bottom: 1px solid #e0e0e0;
+
     .title {
       margin-bottom: 20px;
       font-size: 26px;
       color: #333;
     }
+
     .post-layout {
       display: flex;
       justify-content: space-between;
       font-size: 20px;
       color: #333;
+
       .left,
       .right {
         display: flex;
         align-items: center;
       }
+
       .type-box {
         display: flex;
         align-items: center;
+
         .item {
           padding: 3px 20px;
           font-size: 15px;
@@ -325,21 +328,26 @@ export default {
           background-color: #f2f2f2;
           color: #333;
           cursor: pointer;
+
           &:not(:nth-last-child(1)) {
             margin-right: 20px;
           }
+
           &.active {
             background-color: #ffe000;
             border-color: #ffe000;
           }
+
           &:hover {
             background: #ffec5d;
             border-color: #ffec5d;
           }
         }
       }
+
       .tips {
         font-size: 16px;
+
         span {
           cursor: pointer;
           color: rgb(75, 120, 255);
@@ -347,6 +355,7 @@ export default {
       }
     }
   }
+
   .tag {
     margin-top: 15px;
     width: 80%;
@@ -354,24 +363,29 @@ export default {
     color: #333;
     display: flex;
     flex-direction: column;
+
     .tag-box {
       display: flex;
       flex-wrap: wrap;
       margin-top: 10px;
+
       .item {
         margin-bottom: 10px;
         line-height: 16px;
         color: #333;
         cursor: pointer;
+
         &:not(:nth-last-child(1)) {
           margin-right: 20px;
         }
+
         &.active {
           color: rgb(136, 165, 255);
         }
       }
     }
   }
+
   .submit {
     position: absolute;
     right: 0;
@@ -384,6 +398,7 @@ export default {
     background-color: #ffe000;
     border-color: #ffe000;
     color: #333;
+
     &:hover {
       background: #ffec5d;
       border-color: #ffec5d;

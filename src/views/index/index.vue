@@ -109,7 +109,9 @@ export default {
             let arr = [];
             res.data.forEach(e => {
               if (e.type === 0 && !e.thumb_pic) {
-                if (e.media && e.media.length > 0 && e.media[0].media_link) e.thumb_pic = e.media[0].media_link;
+                if (e.media && e.media.length > 0 && e.media[0].media_link) {
+                  e.thumb_pic = e.media[0].media_link;
+                }
               }
               // e.content = util.changeHtml2Crad(e.content);
               let planet = this.$state.allPlanet.find(v => v.id === e.planet_id);
