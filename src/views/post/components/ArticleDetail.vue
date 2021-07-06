@@ -46,7 +46,6 @@
                @click='submitForm'>发布
     </el-button>
   </div>
-
 </template>
 
 <script>

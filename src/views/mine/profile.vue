@@ -77,7 +77,7 @@
           </div>
           <div class="wx">
             <div class="l-side">
-              <img src="../../assets/images/wx.png">
+<!--              <img src="../../assets/images/wx.png">-->
               <label>{{$state.userInfo.unionid?$state.userInfo.username:'微信昵称'}}
                 <span>{{$state.userInfo.unionid?'已':'未'}}绑定</span>
               </label>
@@ -108,6 +108,7 @@
 </template>
 <script>
 import { setUserInfo } from '@/api/user';
+import util from '@/utils/util';
 export default {
   data() {
     return {

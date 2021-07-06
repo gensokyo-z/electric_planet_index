@@ -1,62 +1,72 @@
 <template>
-  <section class="login">
-    <el-dialog class="login-dialog"
-      :visible.sync="visible"
-      append-to-body
-      :lock-scroll="false"
-      :close-on-click-modal="false"
-      :before-close="closeDialog"
-      width="390px">
-      <div class="top"
-        v-if="!isOthers">
-        <p class="title">
-          <span>快捷登录注册</span>
+  <section class='login'>
+    <el-dialog class='login-dialog'
+               :visible.sync='visible'
+               append-to-body
+               :lock-scroll='false'
+               :close-on-click-modal='false'
+               :show-close="false"
+               :before-close='closeDialog'
+               width='422px'>
+      <div class='top relative'>
+        <span class='title-desc'>{{ isOthers ? '第三方' : '欢迎来到' }}</span>
+        <p class='title'>
+          <span>{{ isOthers ? '首次登录需绑定手机' : '电动星球' }}</span>
         </p>
-        <span class="title-desc">未注册的手机号码将自动注册并登录</span>
+        <img src="@/assets/images/Close_Square.png" alt="" class="close" @click="closeDialog">
       </div>
-      <div class="top"
-        v-else>
-        <p class="title">
-          <span>首次第三方登录需绑定手机</span>
-        </p>
-        <span class="title-desc">首次第三方登录需要验证手机号码</span>
-      </div>
-      <div class="input-box">
-        <el-input type="tel"
-          :maxlength="11"
-          placeholder="请输入手机号"
-          v-model="phone"
-          class="phone"></el-input>
-        <div class="flex relative">
-          <el-input type="tel"
-            :maxlength="6"
-            v-model="verify"
-            @keyup.native.enter="handleLogin"
-            placeholder="请输入验证码"
-            class="verify"></el-input>
-          <span class="get-verify"
-            @click="sendCode">{{second === 60 ? '获取验证码': `重新发送${second}s`}}</span>
+      <div class='input-box'>
+        <p class="label">手机号</p>
+        <el-input type='tel'
+                  :maxlength='11'
+                  placeholder='请输入手机号'
+                  v-model='phone'
+                  class='phone'></el-input>
+        <p class="label">验证码&emsp;<span class="err" v-show="inputErr">验证码输入有误</span></p>
+        <div class='flex relative'>
+          <el-input type='tel'
+                    :maxlength='6'
+                    v-model='verify'
+                    @keyup.native.enter='handleLogin'
+                    placeholder='请输入验证码'
+                    :class="['verify',{err:inputErr}]"></el-input>
+          <span :class="['get-verify' , {gary:second !== 60}]"
+                @click='sendCode'>{{ second === 60 ? '发送验证码' : `倒计时&nbsp;${second}s` }}</span>
         </div>
-        <button class="btn_r login_btn"
-          @click="handleLogin">登录</button>
+        <div class="protocol">
+          <div class="apply" @click="isApply=!isApply">
+            <img src="@/assets/images/Tick_Square.png" alt="" v-show="isApply">
+            <img src="@/assets/images/Square.png" alt="" v-show="!isApply">
+            <a>同意协议</a>
+          </div>
+          <a class="forget">忘记密码？</a>
+        </div>
+        <button class='btn_r login_btn'
+                @click='handleLogin'>登录/注册
+        </button>
       </div>
-      <div class="others-login flex flex-middle"
-        v-if="!isOthers">
-        <p>第三方账号登录:</p>
-        <a class="iconfont iconweixin"
-          @click="wechatLogin"></a>
+      <div class='others-login flex flex-cc'
+           v-if='!isOthers'>
+        <div @click='wechatLogin' class="wx" @mouseenter="hoverWx= true" @mouseleave="hoverWx = false">
+          <img src="@/assets/images/weixin.png" alt="" v-show="!hoverWx">
+          <img src="@/assets/images/weixin_hover.png" alt="" v-show="hoverWx">
+        </div>
         <!-- <a class="qq"
            href="/login/qqLogin"></a>
         <a class="weibo"
            href="/login/weiboLogin"></a> -->
       </div>
-      <!-- <div class="login-desc">登录和注册代表同意电动星球<a href="/about#privacy" target="_blank">《隐私政策》</a>和<a href="/about#user-agreement" target="_blank">《用户协议》</a></div> -->
+      <div class="login-desc">登录和注册代表同意电动星球 <br/>
+        <a href="#" target="_blank">《隐私政策》</a>和<a
+          href="#" target="_blank">《用户协议》</a>
+      </div>
     </el-dialog>
   </section>
 </template>
 <script>
 import { sendSms, wxLogin, bindAndLogin, wxRegister, bindWx } from '@/api/auth';
 import util from '@/utils/util';
+
 let timer = null;
 export default {
   name: 'Login',
@@ -68,19 +78,23 @@ export default {
       isOthers: false,
       mobileReg: /^1\d{10}$/,
       second: 60,
-      code: ''
+      code: '',
+      hoverWx: false,
+      isApply: true,
+      inputErr: false
     };
   },
-  beforeCreate() {
+  created() {
+    const url = location.href;
     // 微信跳转code
-    if (this.$route.query.code && this.$route.query.state === 'wechat') {
-      util.setStorage('wxCode', this.$route.query.code);
-      this.$router.push(this.$route.path);
+    if (url.indexOf('code=') !== -1 && url.indexOf('state=wechat') !== -1) {
+      util.setStorage('wxCode', url.match(/code=([0-9a-zA-z-_]+)/)[1]);
+      this.$router.push(url.match(/\/community\/([a-zA-Z]+)/)[1]);
     }
     // 绑定微信
-    if (this.$route.query.code && this.$route.query.state === 'bind') {
-      util.setStorage('bindCode', this.$route.query.code);
-      this.$router.push(this.$route.path);
+    if (url.indexOf('code=') !== -1 && url.indexOf('state=bind') !== -1) {
+      util.setStorage('bindCode', url.match(/code=([0-9a-zA-z-_]+)/)[1]);
+      this.$router.push(url.match(/\/community\/([a-zA-Z]+)/)[1]);
     }
   },
   mounted() {
@@ -107,18 +121,16 @@ export default {
       const obj = {
         phone: this.phone
       };
-      sendSms(obj)
-        .then(res => {
-          if (res.code === 200) {
-            this.$message('验证码已经发送到您的手机');
-            this.calcTime();
-          } else {
-            this.$message(res.msg);
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      sendSms(obj).then(res => {
+        if (res.code === 200) {
+          this.$message('验证码已经发送到您的手机');
+          this.calcTime();
+        } else {
+          this.$message(res.msg);
+        }
+      }).catch(err => {
+        console.log(err);
+      });
     },
     validcode() {
       if (!this.mobileReg.test(this.phone)) {
@@ -146,23 +158,21 @@ export default {
         } else {
           path = bindAndLogin;
         }
-        path(obj)
-          .then(res => {
-            if (res.code === 200) {
-              let token = this.isOthers ? this.code : res.data.access_token;
-              util.setcookie('TOKEN', token);
-              this.$store.commit('setToken', token);
-              this.$store.dispatch('getInfo');
-              this.closeDialog();
-              // window.location.reload();
-            }
-          })
-          .catch(err => {
-            if (err.code === 1012) {
-              this.isOthers = false;
-              this.verify = '';
-            }
-          });
+        path(obj).then(res => {
+          if (res.code === 200) {
+            let token = this.isOthers ? this.code : res.data.access_token;
+            util.setcookie('TOKEN', token);
+            this.$store.commit('setToken', token);
+            this.$store.dispatch('getInfo');
+            this.closeDialog();
+            // window.location.reload();
+          }
+        }).catch(err => {
+          if (err.code === 1012) {
+            this.isOthers = false;
+            this.verify = '';
+          }
+        });
       }
     },
     bindWx() {
@@ -175,26 +185,25 @@ export default {
     wxLogin(type) {
       wxLogin({
         code: this.code
-      })
-        .then(res => {
-          if (res.code === 200) {
-            if (res.data.haveuser === 0) {
-              util.setcookie('TOKEN', res.data.user.access_token);
-              this.$store.commit('setToken', res.data.user.access_token);
-              this.$store.dispatch('getInfo').then(() => {
-                this.closeDialog();
-              });
-            } else {
-              this.isOthers = true;
-              this.visible = true;
-              this.code = res.data.user.access_token;
-            }
+      }).then(res => {
+        if (res.code === 200) {
+          if (res.data.haveuser === 0) {
+            util.setcookie('TOKEN', res.data.user.access_token);
+            this.$store.commit('setToken', res.data.user.access_token);
+            this.$store.dispatch('getInfo').then(() => {
+              this.closeDialog();
+            });
+          } else {
+            this.isOthers = true;
+            this.visible = true;
+            this.code = res.data.user.access_token;
           }
-        })
-        .catch(() => {
-          this.isOthers = true;
-          this.visible = true;
-        });
+        }
+      }).catch(() => {
+        this.isOthers = true;
+        this.visible = true;
+        this.inputErr = true;
+      });
     },
     calcTime() {
       timer && clearInterval(timer);
@@ -218,6 +227,8 @@ export default {
         this.phone = '';
         this.verify = '';
         this.isOthers = false;
+        this.isApply = true;
+        this.inputErr = false;
       }, 200);
     }
   },
@@ -227,120 +238,216 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang='less' scoped>
 .login-dialog {
   .flex {
     display: flex;
   }
+
   .relative {
     position: relative;
   }
+
   /deep/ .el-dialog {
-    border-radius: 4px;
     .el-dialog__header {
       padding: 0;
-      .el-dialog__headerbtn {
-        top: 44px;
-        right: -54px;
-        font-size: 24px;
-        .el-dialog__close {
-          color: #fff;
-        }
-      }
     }
+
     .el-dialog__body {
       padding: 0;
-      height: 560px;
-      width: 310px;
+      height: 617px;
+      width: 422px;
       margin: 0 auto;
     }
   }
+
   .top {
-    padding-top: 50px;
-    width: 310px;
-    margin: 0 auto 50px;
+    padding-top: 35px;
+    width: 350px;
+    margin: 0 auto 18px;
+
     .title {
-      font-size: 22px;
-      font-family: PingFangSC-Medium;
-      font-weight: 500;
-      color: #333;
-      line-height: 30px;
+      font-family: PingFang SC;
+      font-style: normal;
+      color: #191919;
+      font-weight: 600;
+      font-size: 30px;
+      line-height: 42px;
     }
+
     .title-desc {
-      font-size: 12px;
-      color: #8c8e90;
+      margin-bottom: 4px;
+      font-size: 16px;
+      color: #5c6573;
+      line-height: 22px;
       text-align: left;
     }
+
+    .close {
+      position: absolute;
+      top: 42px;
+      right: 0;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
   }
+
   .input-box {
+    display: flex;
+    flex-direction: column;
+
     /deep/ .el-input {
       padding: 0;
       margin: 0;
       min-height: 50px;
       min-width: 100px;
+
       input {
-        min-height: 50px;
-        min-width: 100px;
-        color: #333;
+        color: #191919;
         font-size: 14px;
-        font-weight: 400;
-        line-height: 22px;
-        border: none;
-        width: 310px;
+        width: 350px;
         height: 50px;
-        border-radius: 10em;
-        background: #f9f9fa;
+        border: 1px solid #eaeaea;
+        box-sizing: border-box;
+        border-radius: 4px;
         display: block;
         margin: 0 auto;
-        text-indent: 20px;
+      }
+
+      &.err {
+        input {
+          border-color: #ed7656;
+        }
       }
     }
+
     .phone {
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
+
     .btn_r {
-      width: 310px;
+      width: 350px;
       height: 50px;
-      background: #ffe019;
       padding: 10px 20px;
-      border-radius: 10em;
       border: none;
       outline: unset;
       cursor: pointer;
       display: block;
-      margin: 30px auto;
+      margin: 24px auto;
       font-size: 16px;
-      font-weight: 500;
-      color: #333;
+      color: #929da5;
+      border-radius: 4px;
+
+      &:hover {
+        color: #fff;
+        background: #39393b
+      }
     }
+
     .get-verify {
       position: absolute;
       top: 14px;
-      right: 24px;
+      right: 64px;
       border: none;
       background: none;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 400;
-      color: #666;
+      color: #191919;
       line-height: 22px;
+
+      &.gary {
+        color: #929da5;
+        cursor: default;
+      }
+
+      &::before {
+        position: absolute;
+        top: -4px;
+        left: -26px;
+        content: '';
+        width: 1px;
+        height: 30px;
+        background: #eaeaea;
+      }
+    }
+
+    .label {
+      margin-left: 36px;
+      padding-bottom: 10px;
+      font-family: PingFang SC;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 16px;
+      line-height: 22px;
+      color: #5c6573;
+
+      .err {
+        color: #ed7656;
+      }
     }
   }
+
+  .protocol {
+    margin: 20px 36px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .apply {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+
+      > img {
+        margin-right: 5px;
+        width: 14px;
+        height: 14px;
+      }
+
+      > a {
+        font-size: 14px;
+        color: #929da5;
+      }
+    }
+
+    .forget {
+      color: #929da5;
+      cursor: pointer;
+    }
+  }
+
   .others-login {
-    margin: 50px auto 0;
+    margin: 0 auto;
     width: 310px;
     font-size: 14px;
     font-family: PingFangSC-Medium;
     font-weight: 500;
     color: #333;
     line-height: 20px;
-    .iconweixin {
-      color: #52b576;
-      font-size: 40px;
+
+    .wx {
+      border: 1px solid #eaeaea;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+
+      img {
+        width: 36px;
+        height: 36px;
+      }
+
       &:hover {
-        color: #7bf1a6;
+        border: none;
+        background: #39393b;
+
       }
     }
+
     a {
       width: 40px;
       height: 40px;
@@ -348,6 +455,11 @@ export default {
       cursor: pointer;
       border-radius: 50%;
     }
+  }
+
+  .login-desc {
+    margin: 24px 36px 0;
+    text-align: center;
   }
 }
 </style>

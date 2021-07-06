@@ -1,10 +1,25 @@
 <template>
   <section class="new-card">
+    <!-- 作者信息 -->
+    <div class="author">
+      <div class="user-info"
+           v-if="content.source==='user'"
+           @click="goUrl(`/other?id=${content.user_id}`)">
+        <img class="avatar"
+             :src="avatar"
+             alt="头像">
+        <div class="flex-col">
+          <span class="name">{{ username }}</span>
+          <div class="flex-v"><span class="time">{{ content.created_at }}</span>&ensp;<span>来自</span><span
+            class="planet">{{ content.planet.name }}</span></div>
+        </div>
+      </div>
+    </div>
     <!-- 文章图片 -->
     <template v-if="content.mediaType === 'pic'">
       <div class="photo-box"
-        v-if="content.thumb_pic"
-        @click="goUrl(`/docdetail?id=${content.id}`)">
+           v-if="content.thumb_pic"
+           @click="goUrl(`/docdetail?id=${content.id}`)">
         <div class="photo">
           <img :src="content.thumb_pic">
         </div>
@@ -13,86 +28,76 @@
     <!-- 视频 -->
     <template v-else>
       <div class="video-box"
-        v-if="content.media.length>0&&content.media[0].media_type==='video'">
+           v-if="content.media.length>0&&content.media[0].media_type==='video'">
         <video :class="{'hidden':showPreview}"
-          :src="content.media[0].media_link"
-          controls="controls"
-          preload='metadata'
-          controlslist="nodownload"
-          ref="video"
-          x5-playsinline=""
-          disablePictureInPicture
-          playsinline="true"
-          webkit-playsinline="true"
-          x-webkit-airplay="true"
-          x5-video-player-type="h5"
-          x5-video-player-fullscreen=""
-          x5-video-orientation="portraint">
+               :src="content.media[0].media_link"
+               controls="controls"
+               preload='metadata'
+               controlslist="nodownload"
+               ref="video"
+               x5-playsinline=""
+               disablePictureInPicture
+               playsinline="true"
+               webkit-playsinline="true"
+               x-webkit-airplay="true"
+               x5-video-player-type="h5"
+               x5-video-player-fullscreen=""
+               x5-video-orientation="portraint">
         </video>
         <div class="previwe-img"
-          v-show="showPreview"
-          ref="previewImg"
-          @click.stop="playVideo">
+             v-show="showPreview"
+             ref="previewImg"
+             @click.stop="playVideo">
           <img :src="videoPreviwe">
           <div v-if="videoPlayed"
-            class="video-replay"></div>
+               class="video-replay"></div>
           <div v-else
-            class="video-ready"></div>
+               class="video-ready"></div>
         </div>
       </div>
     </template>
     <!-- 标题 -->
     <div class="title"
-      @click="goUrl(`/docdetail?id=${content.id}`)">
-      <h2 v-if="content.source !== '微博'"> {{content.title}}</h2>
+         @click="goUrl(`/docdetail?id=${content.id}`)">
+      <h2 v-if="content.source !== '微博'"> {{ content.title }}</h2>
+    </div>
+
+    <!-- 文章预览 -->
+    <div class="desc">
+      <div class="info"
+           v-if="content.desc_content"
+           v-html="content.desc_content"
+           @click="goUrl(`/docdetail?id=${content.id}`)"></div>
     </div>
     <!-- 标签 -->
     <div class="tag-box">
       <div v-for="(item, index) in content.tags"
-        :key="index"
-        class="tag"
-        v-show="index<4"
-        @click="handlerTag(item)">
-        <span>#{{item.name}}</span>
+           :key="index"
+           class="tag"
+           v-show="index<4"
+           @click="handlerTag(item)">
+        <span>#{{ item.name }}</span>
       </div>
     </div>
-    <!-- 文章预览 -->
-    <div class="desc">
-      <div class="info"
-        v-if="content.desc_content"
-        v-html="content.desc_content"
-        @click="goUrl(`/docdetail?id=${content.id}`)"></div>
-    </div>
-    <!-- 作者信息 -->
-    <div>
-      <div class="auther">
-        <div class="user-info"
-          v-if="content.source==='user'"
-          @click="goUrl(`/other?id=${content.user_id}`)">
-          <img class="avatar"
-            :src="avatar"
-            alt="头像">
-          <span class="name">{{username}}</span>
-        </div>
-      </div>
-      <TalkApprovalShare :content.sync="content" />
-      <div class="planet-box"
-        v-if="($route.path === '/index'||$route.path === '/planet')&&content.planet.name">
-        <div class="left"
-          @click="$router.push(`/planetdetail?id=${content.planet_id}`);"
-          v-if="$route.path !=='/planetdetail'">
-          <span>来自</span><span class="planet">{{content.planet.name}}</span>
-        </div>
-        <div :class="['right',{'joined':joined}]"
-          @click.stop="addPlanet(content)"
-          v-if="$route.path !=='/planetdetail'">
-          <button class="add"
-            v-if="!joined">{{`加入`}}</button>
-          <button class="enter"
-            v-else>{{`进入`}}</button>
-        </div>
-      </div>
-    </div>
+    <TalkApprovalShare :content.sync="content"/>
+    <!--    <div class="planet-box"-->
+    <!--         v-if="($route.path === '/index'||$route.path === '/planet')&&content.planet.name">-->
+    <!--      <div class="left"-->
+    <!--           @click="$router.push(`/planetdetail?id=${content.planet_id}`);"-->
+    <!--           v-if="$route.path !=='/planetdetail'">-->
+    <!--        <span>来自</span><span class="planet">{{ content.planet.name }}</span>-->
+    <!--      </div>-->
+    <!--      <div :class="['right',{'joined':joined}]"-->
+    <!--           @click.stop="addPlanet(content)"-->
+    <!--           v-if="$route.path !=='/planetdetail'">-->
+    <!--        <button class="add"-->
+    <!--                v-if="!joined">{{ `加入` }}-->
+    <!--        </button>-->
+    <!--        <button class="enter"-->
+    <!--                v-else>{{ `进入` }}-->
+    <!--        </button>-->
+    <!--      </div>-->
+    <!--    </div>-->
     <!-- <InputItem ref="inputItem" /> -->
   </section>
 </template>
@@ -101,6 +106,7 @@
 import { joinPlanet } from '@/api/planet';
 import util from '@/utils/util';
 import TalkApprovalShare from '@/components/TalkApprovalShare';
+
 export default {
   name: 'NewCard',
   components: {
@@ -225,24 +231,63 @@ export default {
 </script>
 <style lang="less" scoped>
 .new-card {
-  padding: 30px;
+  padding: 28px 32px;
   box-sizing: border-box;
   background: #fff;
-  width: 280px;
-  height: 500px;
-  .photo-box {
-    overflow: hidden;
-    width: 220px;
-    height: 125px;
-    margin-bottom: 30px;
-    cursor: pointer;
-    .photo {
-      width: 220px;
-      height: 125px;
-      img {
+  width: 808px;
+  box-shadow: inset 0px -1px 0px rgba(0, 0, 0, 0.1);
+
+  .author {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+
+      .avatar {
+        margin-right: 16px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+      }
+
+      .name {
+        font-size: 14px;
+        color: #141b29;
+      }
+
+      .time {
+        color: #929da5;
+      }
+
+      .planet {
+        color: #39393b;
       }
     }
   }
+
+  .photo-box {
+    overflow: hidden;
+    width: 150px;
+    height: 90px;
+    margin-bottom: 30px;
+    cursor: pointer;
+
+    .photo {
+      width: 150px;
+      height: 90px;
+
+      img {
+        object-fit: cover;
+        border-radius: 5px;
+      }
+    }
+  }
+
   .video-box {
     margin-bottom: 32px;
     position: relative;
@@ -252,11 +297,13 @@ export default {
     width: 220px;
     height: 125px;
     background-color: #000;
+
     video {
       width: 220px;
       height: 125px;
       object-fit: contain;
     }
+
     .previwe-img {
       position: relative;
       width: 100%;
@@ -265,17 +312,20 @@ export default {
       align-items: center;
       justify-content: center;
       background-color: #000;
+
       img {
         width: 220px;
         height: 125px;
         object-fit: contain;
       }
     }
+
     .hidden {
       width: 0;
       height: 0;
     }
   }
+
   .title {
     h2 {
       font-weight: 700;
@@ -290,6 +340,7 @@ export default {
       cursor: pointer;
     }
   }
+
   .tag-box {
     margin: 10px 0;
     width: 100%;
@@ -297,16 +348,20 @@ export default {
     justify-content: space-between;
     flex-wrap: wrap;
     height: 20px;
+
     .tag {
       cursor: pointer;
+
       span {
         color: #02a7f0;
         font-size: 14px;
       }
     }
   }
+
   .desc {
     margin-bottom: 10px;
+
     .info {
       font-size: 14px;
       color: rgba(0, 0, 0, 0.45);
@@ -320,33 +375,15 @@ export default {
       cursor: pointer;
     }
   }
-  .auther {
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    .user-info {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      .avatar {
-        margin-right: 10px;
-        width: 25px;
-        height: 25px;
-        border-radius: 50%;
-      }
-      .name {
-        font-size: 14px;
-        color: rgba(0, 0, 0, 0.45);
-      }
-    }
-  }
+
+
   .planet-box {
     width: 100%;
     box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     .left {
       display: flex;
       align-items: center;
@@ -354,6 +391,7 @@ export default {
       padding-right: 8px;
       font-size: 14px;
       color: rgba(0, 0, 0, 0.45);
+
       .planet {
         position: relative;
         padding-right: 26px;
@@ -361,6 +399,7 @@ export default {
         color: rgba(0, 0, 0, 0.9);
       }
     }
+
     .right {
       .add,
       .enter {
@@ -370,13 +409,16 @@ export default {
         color: rgba(0, 0, 0, 0.9);
         cursor: pointer;
       }
+
       .add {
         background: #ffdd27;
       }
+
       .enter {
         position: relative;
         background-color: #fff;
         border: 1px solid rgba(0, 0, 0, 0.08);
+
         &::after {
           position: absolute;
           top: 50%;

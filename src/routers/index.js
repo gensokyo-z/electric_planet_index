@@ -17,7 +17,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "index" */ '@/views/index'),
     meta: {
       title: '星球资讯',
-      keepAlive: false
+      keepAlive: true
     }
   },
   {

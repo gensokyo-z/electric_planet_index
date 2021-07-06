@@ -2,15 +2,18 @@
   <div id="app">
     <!-- <transition :name="direction"> -->
     <div class="layout">
-      <Header @getSerch="getSerch"
+      <Header @getSearch="getSearch"
         ref="header" />
       <div class="layout-main"
         :class="{bgcw:backGroundWhiteList.includes($route.path)}">
         <div class="community-container">
-          <router-view class="page" />
+          <keep-alive>
+            <router-view v-if='$route.meta.keepAlive' class='page'></router-view>
+          </keep-alive>
+          <router-view v-if='!$route.meta.keepAlive' class='page' />
         </div>
       </div>
-      <Footer />
+<!--      <Footer />-->
     </div>
     <!-- </transition> -->
     <!-- <transition :name="direction"> -->
@@ -59,7 +62,7 @@ export default {
     this.$store.dispatch('getAllPlanetList');
   },
   methods: {
-    getSerch(kw) {
+    getSearch(kw) {
       if (this.$route.path === '/index') {
         this.$bus.$emit('indexSearch', kw);
       } else if (this.$route.path === '/video') {

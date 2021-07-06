@@ -1,11 +1,7 @@
 <template>
   <section class="search">
-    <!-- <svg class="icon keyWord"
-         aria-hidden="true">
-      <use xlink:href="#iconshouue-sousuo"></use>
-    </svg> -->
     <input type="text"
-           placeholder=""
+           placeholder="搜索关键字"
            v-model="keyWord"
            @keyup.enter="getSerch">
     <i class="iconfont iconshouue-sousuo"
@@ -39,7 +35,10 @@ export default {
 <style lang="less" scoped >
 .search {
   position: relative;
-  margin: 12px 30px 12px 0;
+  margin-right: 32px;
+  padding: 7px 12px;
+  background: #EFF3F7;
+  border-radius: 18px;
   // width: 686px;
   // height: 30px;
   .iconfont {
@@ -55,15 +54,12 @@ export default {
     display: none;
   }
   input {
-    padding: 0 35px 0 20px;
-    width: 320px;
-    height: 100%;
+    width: 210px;
     font-size: 14px;
-    line-height: 26px;
+    line-height: 18px;
     color: #a6a9b6;
     background-color: #f7f7fa;
     border: none;
-    border-radius: 15px;
     outline: none;
     box-sizing: border-box;
   }

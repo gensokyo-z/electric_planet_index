@@ -1,42 +1,50 @@
 <template>
   <section class="index">
-    <div class="title">
-      <div class="flex">
-        <div :class="['tab',{active:type === 'new'}]"
-          @click="changeTab('new')">最新</div>
-        <div :class="['tab',{active:type === 'hot'}]"
-          @click="changeTab('hot')">最热</div>
+    <div class="left flex-col">
+      <Banner/>
+      <div class="tag-list">
+        <div :class="['tag',{'checked':item.checked}]"
+             v-for="(item, index) in tagList"
+             :key="index"
+             @click="checkTags(item)">#{{item.name}}</div>
       </div>
-      <span>电动星球为你精心准备的实时资讯</span>
-    </div>
-    <div class="tag-list">
-      <div :class="['tag',{'checked':item.checked}]"
-        v-for="(item, index) in tagList"
-        :key="index"
-        @click="checkTags(item)">#{{item.name}}</div>
-    </div>
-    <div class="community-main"
-      v-loading="loadFlag">
-      <div class="card-list"
-        :class="{isWechat:$state.isWechat}">
-        <div class="card"
-          v-for="(item, index) in cardList"
-          :key="index">
-          <NewCard :content="item"
-            @handlerTag="handlerTag"
-            @getData="getData" />
+      <div class="community-main"
+           v-loading="loadFlag">
+        <div class="card-list"
+             :class="{isWechat:$state.isWechat}">
+          <div class="card"
+               v-for="(item, index) in cardList"
+               :key="index">
+            <NewCard :content="item"
+                     @handlerTag="handlerTag"
+                     @getData="getData" />
+          </div>
+        </div>
+        <div class="footer-btn"
+             v-if="!loadFlag">
+          <el-button @click="loadMore">{{finished?'~~~到底了~~~':'加载更多'}}</el-button>
         </div>
       </div>
-      <div class="footer-btn"
-        v-if="!loadFlag">
-        <el-button @click="loadMore">{{finished?'~~~到底了~~~':'加载更多'}}</el-button>
-      </div>
     </div>
+    <div class="right flex-col"></div>
+
+<!--    <div class="title">-->
+<!--      <div class="flex">-->
+<!--        <div :class="['tab',{active:type === 'new'}]"-->
+<!--          @click="changeTab('new')">最新</div>-->
+<!--        <div :class="['tab',{active:type === 'hot'}]"-->
+<!--          @click="changeTab('hot')">最热</div>-->
+<!--      </div>-->
+<!--      <span>电动星球为你精心准备的实时资讯</span>-->
+<!--    </div>-->
+
+
   </section>
 </template>
 
 <script>
 import NewCard from '@/components/NewCard';
+import Banner from '@/components/Banner'
 import { getNewest, getHotest } from '@/api/index';
 import { getTags } from '@/api/tag';
 // import util from '@/utils/util';
@@ -168,7 +176,8 @@ export default {
     }
   },
   components: {
-    NewCard
+    NewCard,
+    Banner
   }
 };
 </script>

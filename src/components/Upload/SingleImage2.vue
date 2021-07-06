@@ -145,6 +145,7 @@ export default {
         border-radius: 8px;
         width: 100%;
         height: 100%;
+        object-fit: cover;
       }
     }
     .image-preview-action {
@@ -153,8 +154,6 @@ export default {
       height: 100%;
       left: 0;
       top: 0;
-      cursor: default;
-      text-align: center;
       color: #fff;
       opacity: 0;
       font-size: 20px;

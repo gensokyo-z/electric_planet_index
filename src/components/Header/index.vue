@@ -3,62 +3,83 @@
   <header class="component-header is-fixed">
     <div class="component-header-content">
       <a class="header-logo"
-        @click="goUrl('homePage')">
+         @click="goUrl('homePage')">
         <img src="@/assets/images/logo.png"
-          alt="logo"><span>电动星球</span>
+             alt="logo" class="logo-img">
+        <img src="@/assets/images/logo_text.png" alt="logo_text" class="logo-text">
       </a>
       <div class="header-nav">
         <div :class="['nav-item', {'selected':item.checked}]"
-          v-for="(item, index) in navList"
-          :key="index"
-          @click="handlerNav(item)">{{item.name}}</div>
+             v-for="(item, index) in navList"
+             :key="index"
+             @click="handlerNav(item)">{{ item.name }}
+        </div>
       </div>
-      <Search @getSerch="getSerch"
-        v-show="showSearchList.includes($route.path)"
-        ref="search" />
-      <div class="flex-cc"
-        v-if="$state.token"
-        @click="goUrl('/message')">
-        <i class="iconfont icontongzhi"></i>
-      </div>
+      <Search @getSearch="getSearch"
+              v-show="showSearchList.includes($route.path)"
+              ref="search"/>
       <div class="header-write"
-        v-if="$state.token"
-        @click="goUrl('/post')">写文章 <i class="iconfont iconbiji"></i></div>
+           @mouseenter="postVisible = true"
+           v-if="$state.token">发布<img src="@/assets/images/post.png" alt="">
+        <ul class="post-menu" v-show="postVisible" @mouseleave="postVisible = false">
+          <li @click="goUrl('/post')">发布动态</li>
+          <li @click="goUrl('/post')">发布文章</li>
+          <li @click="goUrl('/post')">发布视频</li>
+        </ul>
+      </div>
+      <div class="flex-cc msg"
+           v-if="$state.token"
+           @click="goUrl('/message')">
+        <img src="@/assets/images/alert.png" alt="" class="ico-alert">
+        <div class="badeg" v-if="msgCount>0">{{ msgCount }}</div>
+      </div>
       <div class="header-login">
         <div v-if="$state.token"
-          class="user-info">
-          <span>{{$state.userInfo.username}}</span>
-          <img :src="avatar">
-          <div class="logout hide">
-            <div class="user-panel">
+             class="user-info">
+          <img :src="avatar" class="avatar">
+          <span class="user-name">{{ $state.userInfo.username }}</span>
+          <div class="logout hidden">
+            <div class="user-panel ">
               <ul class="user-menu">
                 <li class="user-menu-item"
-                  @click="goUrl('/mine')">个人中心</li>
+                    @click="goUrl('/mine')">个人中心
+                </li>
                 <li class="user-menu-item"
-                  @click="goUrl('/profile')">设置中心</li>
+                    @click="goUrl('/profile')">发布信息管理
+                </li>
                 <li class="user-menu-item"
-                  @click="logout">退出</li>
+                    @click="goUrl('/fl')"
+                >粉丝/关注管理
+                </li>
               </ul>
+              <div class="logout-btn" >
+                <button  @click="logout">退出登录</button>
+              </div>
             </div>
           </div>
         </div>
-        <a class="login-item"
-          v-else
-          @click="showLogin">注册/登录</a>
+        <div class="unLogin" v-else>
+          <img :src="avatar" class="avatar">
+          <a class="login-item"
+             @click="showLogin">登录/注册</a>
+        </div>
+
       </div>
     </div>
-    <Login ref="login" />
+    <Login ref="login"/>
   </header>
 </template>
 
 <script type="text/babel">
 import util from '@/utils/util';
 import { logout } from '@/api/auth';
+
 export default {
   name: 'BaseHeader',
   data() {
     return {
       showSearchList: ['/index'],
+      postVisible: false,
       navList: [
         {
           name: '首页',
@@ -66,7 +87,7 @@ export default {
           checked: false
         },
         {
-          name: '社区',
+          name: '关注',
           path: '/planet',
           checked: false
         }
@@ -80,7 +101,8 @@ export default {
         //   path: '/message',
         //   checked: false
         // }
-      ]
+      ],
+      msgCount: 23
     };
   },
   computed: {
@@ -93,8 +115,8 @@ export default {
     }
   },
   methods: {
-    getSerch(kw) {
-      this.$emit('getSerch', kw);
+    getSearch(kw) {
+      this.$emit('getSearch', kw);
     },
     showLogin() {
       this.$refs.login.visible = true;
@@ -105,6 +127,7 @@ export default {
       } else if (url === 'homePage') {
         return (window.location.href = '//ddxq.tech');
       }
+      this.postVisible = false;
       this.$router.push(url);
     },
     handlerNav(item) {
@@ -120,16 +143,18 @@ export default {
       this.$refs.search.keyWord = kw;
     }
   },
-  mounted() {
-    this.navList.forEach(e => {
-      if (e.path === this.$route.path) {
-        e.checked = true;
-      }
-    });
-  },
   components: {
     Search: () => import('../Search'),
     Login: () => import('../Login')
+  },
+  watch: {
+    $route(val) {
+      if (val.path) {
+        this.navList.forEach(e => {
+          e.checked = e.path === this.$route.path;
+        });
+      }
+    }
   }
 };
 </script>
@@ -137,11 +162,10 @@ export default {
 <style lang="less" rel="stylesheet/less" scoped>
 .component-header {
   display: flex;
-  height: 50px;
-  background-color: hsla(0, 0%, 100%, 0.95);
+  height: 64px;
+  background-color: #39393b;
   color: #424242;
-  border-bottom: 1px solid #f7f7fa;
-  background-color: #000;
+
   &.is-fixed {
     position: fixed;
     top: 0;
@@ -150,88 +174,156 @@ export default {
     z-index: 2001;
   }
 }
+
 .component-header-content {
   margin: 0 auto;
-  padding: 0 50px;
+  padding-right: 50px;
   width: 1300px;
   display: flex;
+  align-items: center;
+
   .header-logo {
-    margin: 10px 80px 10px 0;
+    margin-right: 56px;
     width: 120px;
     height: 30px;
     display: flex;
     align-items: center;
     font-size: 16px;
     font-weight: 600;
-    img {
-      margin-right: 5px;
+
+    .logo-img {
+      margin-right: 10px;
       width: 30px;
       height: 30px;
     }
-    span {
-      color: #fff;
+
+    .logo-text {
+      width: 80px;
+      height: 20px;
     }
+
     cursor: pointer;
   }
+
   .header-nav {
     // width: 226px;
     display: flex;
     margin-right: auto;
+
     .nav-item {
       position: relative;
       display: block;
-      margin: 0 15px;
-      height: 50px;
-      line-height: 50px;
+      margin-right: 40px;
+      line-height: 36px;
+      font-size: 16px;
+
       color: #fff;
       cursor: pointer;
+
       &.selected {
         font-weight: 700;
+
         &::after {
           content: '';
           position: absolute;
           bottom: 0;
           display: block;
           width: 100%;
-          height: 3px;
-          background-color: #ffe000;
-          border-radius: 5px;
+          height: 5px;
+          background: #ed7656;
+          border-radius: 20px;
         }
       }
     }
   }
+
   .header-write {
-    display: block;
-    margin: 12px 20px;
-    padding: 0 15px;
-    line-height: 26px;
-    background-color: #ffe000;
-    border-radius: 15px;
+    position: relative;
+    margin-right: 109px;
+    padding: 7px 46px;
+    font-size: 14px;
+    color: #fff;
+    line-height: 20px;
+    background: #ed7656;
+    border-radius: 17px;
     cursor: pointer;
-    &:hover {
-      background: #ffec5d;
-      border-color: #ffec5d;
+
+    > img {
+      width: 8px;
+      height: 8px;
+    }
+
+    .post-menu {
+      position: absolute;
+      top: 56px;
+      left: 6px;
+      background: #fff;
+
+      > li {
+        width: 120px;
+        padding: 7px 32px;
+        color: #5c6573;
+
+        &:hover {
+          background: #f5f5f5;
+          color: #191919;
+          font-weight: 600;
+        }
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: -10px;
+        right: 50px;
+        width: 0;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 10px solid #fff;
+      }
     }
   }
-  .icontongzhi {
-    color: #fff;
-    margin-right: 20px;
-    font-size: 20px;
+
+  .msg {
+    position: relative;
     cursor: pointer;
   }
+
+  .ico-alert {
+    color: #fff;
+    margin-right: 20px;
+    width: 24px;
+    height: 24px;
+  }
+
+  .badeg {
+    position: absolute;
+    top: -6px;
+    right: 4px;
+    padding: 1px 5px;
+    font-size: 12px;
+    border-radius: 9.5px;
+    background: #ed7656;
+    border: 2px solid #39393b;
+    color: #fff;
+
+  }
+
   .header-login {
     display: flex;
     align-items: center;
-    .login-item {
+
+    .unLogin {
+      display: flex;
+      align-items: center;
       padding: 0 20px;
       line-height: 24px;
       // color: #2c2e3b;
       color: #fff;
-      display: block;
-      border-radius: 15px;
-      border: 1px solid #afb3ba;
       cursor: pointer;
     }
+
     .user-info {
       position: relative;
       display: flex;
@@ -241,51 +333,76 @@ export default {
       color: #fff;
       border-radius: 8px;
 
-      .hide {
-        display: none;
-      }
       .logout {
         padding-top: 50px;
         transform: translate(-70px, 72px);
         position: absolute;
+        top: -65px;
+        right: -50px;
         z-index: 100;
         border-radius: 8px;
+        filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.25));
+
         .user-panel {
           position: relative;
-          width: 150px;
+          width: 275px;
           background-color: #fff;
           box-shadow: 0 0 4px 0 rgba(8, 15, 19, 0.06);
+
           &::before {
             content: '';
             position: absolute;
-            top: -6px;
-            right: 18px;
+            top: -10px;
+            right: 20px;
             width: 0;
             height: 0;
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            border-bottom: 6px solid #fff;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid #fff;
           }
-          .user-menu-item {
-            border-bottom: 1px solid #f2f2f2;
-            display: block;
-            padding: 15px 20px;
-            font-size: 14px;
-            line-height: 20px;
-            color: #333;
-            &:hover {
-              background-color: #f5f5f5;
-              color: #8a8a8a;
+
+          .user-menu {
+            padding-top: 21px;
+
+            .user-menu-item {
+              display: block;
+              padding: 15px 20px;
+              font-size: 14px;
+              line-height: 20px;
+              color: #333;
+
+              &:hover {
+                background-color: #f5f5f5;
+                color: #8a8a8a;
+              }
             }
           }
         }
+
+        .logout-btn {
+          margin: 0 20px;
+          text-align: center;
+          border-top: 1px solid #EAEAEA;
+          button{
+            margin: 18px 0 28px 0;
+            background: #fff;
+            padding: 8px 90px;
+            font-size: 13px;
+            border: 1px solid #39393B;
+            box-sizing: border-box;
+            border-radius: 17px;
+            cursor: pointer;
+          }
+        }
       }
+
       &:hover .logout {
         display: block;
       }
     }
-    img {
-      margin: 10px 0 10px 20px;
+
+    .avatar {
+      margin: 10px 5px 10px 30px;
       width: 30px;
       height: 30px;
       background-size: cover;
@@ -293,6 +410,12 @@ export default {
       border-radius: 15px;
       cursor: pointer;
       overflow: hidden;
+    }
+
+    .user-name {
+      color: #fff;
+      font-size: 12px;
+      line-height: 17px;
     }
   }
 }

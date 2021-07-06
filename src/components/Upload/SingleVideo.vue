@@ -1,18 +1,18 @@
 <template>
   <div class="singleImageUpload2 upload-container">
     <el-upload :multiple="false"
-      :show-file-list="false"
-      class="video-uploader"
-      drag
-      action=""
-      :before-upload="beforeUploadVideo"
-      accept="video/*"
-      :disabled="videoFlag"
-      :http-request="upload">
+               :show-file-list="false"
+               class="video-uploader"
+               drag
+               action=""
+               :before-upload="beforeUploadVideo"
+               accept="video/*"
+               :disabled="videoFlag"
+               :http-request="upload">
       <div class="iconfont"
-        v-loading="videoFlag"
-        element-loading-text="视频文件上传中">
-        <i class="el-icon-plus" />
+           v-loading="videoFlag"
+           element-loading-text="视频文件上传中">
+        <i class="el-icon-plus"/>
         <div class="el-upload__text">
           添加视频
         </div>
@@ -22,30 +22,30 @@
         :percentage="videoUploadPercent"></el-progress> -->
     </el-upload>
     <div v-show="videoUrl.length>0"
-      class="video-preview">
+         class="video-preview">
       <div v-show="videoUrl.length>1"
-        class="video-preview-wrapper">
+           class="video-preview-wrapper">
         <video :class="{'hidden':showPreview}"
-          :src="videoUrl"
-          controls="controls"
-          preload='metadata'
-          controlslist="nodownload"
-          ref="video"
-          x5-playsinline=""
-          playsinline="true"
-          webkit-playsinline="true"
-          x-webkit-airplay="true"
-          x5-video-player-type="h5"
-          x5-video-player-fullscreen=""
-          x5-video-orientation="portraint"></video>
+               :src="videoUrl"
+               controls="controls"
+               preload='metadata'
+               controlslist="nodownload"
+               ref="video"
+               x5-playsinline=""
+               playsinline="true"
+               webkit-playsinline="true"
+               x-webkit-airplay="true"
+               x5-video-player-type="h5"
+               x5-video-player-fullscreen=""
+               x5-video-orientation="portraint"></video>
         <div class="previwe-img"
-          v-show="showPreview"
-          @click.stop="playVideo">
+             v-show="showPreview"
+             @click.stop="playVideo">
           <img :src="videoPreviwe">
           <div v-if="videoPlayed"
-            class="video-replay"></div>
+               class="video-replay"></div>
           <div v-else
-            class="video-ready"></div>
+               class="video-ready"></div>
         </div>
       </div>
     </div>
@@ -54,6 +54,7 @@
 
 <script>
 import util from '@/utils/util';
+
 export default {
   name: 'SingleVideoUpload',
   props: {
@@ -126,6 +127,18 @@ export default {
       this.showPreview = false;
       this.$refs.video.play();
     },
+    someApiPromise() {
+      return new Promise((resolve, reject) => {
+        someApi(
+          data => {
+            resolve(data);
+          },
+          e => {
+            reject(e);
+          }
+        );
+      });
+    },
     getVideoposter() {
       return new Promise((resolve, reject) => {
         let video = this.$refs.video;
@@ -152,9 +165,11 @@ export default {
   height: 100%;
   position: relative;
   border-radius: 8px;
+
   .video-uploader {
     height: 100%;
   }
+
   .video-preview {
     width: 100%;
     height: 100%;
@@ -168,12 +183,14 @@ export default {
       position: relative;
       width: 100%;
       height: 100%;
+
       video {
         border-radius: 8px;
         width: 100%;
         height: 100%;
       }
     }
+
     .previwe-img {
       width: 100%;
       height: 100%;
@@ -181,18 +198,22 @@ export default {
       align-items: center;
       justify-content: center;
       background-color: #000;
+
       img {
         height: 100%;
       }
     }
+
     .hidden {
       width: 0;
       height: 0;
     }
   }
 }
+
 .el-upload-dragger {
   border-color: #000;
+
   .iconfont {
     height: 100%;
     display: flex;
@@ -200,6 +221,7 @@ export default {
     align-items: center;
     flex-direction: column;
   }
+
   .el-icon-plus {
     font-size: 28px;
     color: #8c939d;

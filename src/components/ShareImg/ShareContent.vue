@@ -121,7 +121,7 @@ export default {
     showShare: {
       handler(val) {
         if (val) {
-          this.getCode();
+          // this.getCode();
         } else {
           const codeHtml = this.$refs.qrCode; // document.getElementById("qrcode");
           codeHtml.innerHTML = '';
