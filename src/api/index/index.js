@@ -19,3 +19,13 @@ export function getHotest(params = {}) {
     params
   });
 }
+
+// 获取热门文章
+
+export function getBanners(params = {}) {
+  return request({
+    url: '/api/admin/banners',
+    method: 'get',
+    params
+  });
+}

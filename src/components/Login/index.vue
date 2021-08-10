@@ -5,25 +5,25 @@
                append-to-body
                :lock-scroll='false'
                :close-on-click-modal='false'
-               :show-close="false"
+               :show-close='false'
                :before-close='closeDialog'
                width='422px'>
-      <div class='top relative'>
+      <div class='top por'>
         <span class='title-desc'>{{ isOthers ? '第三方' : '欢迎来到' }}</span>
         <p class='title'>
           <span>{{ isOthers ? '首次登录需绑定手机' : '电动星球' }}</span>
         </p>
-        <img src="@/assets/images/Close_Square.png" alt="" class="close" @click="closeDialog">
+        <img src='@/assets/images/Close_Square.png' alt='' class='close' @click='closeDialog'>
       </div>
       <div class='input-box'>
-        <p class="label">手机号</p>
+        <p class='label'>手机号</p>
         <el-input type='tel'
                   :maxlength='11'
                   placeholder='请输入手机号'
                   v-model='phone'
                   class='phone'></el-input>
-        <p class="label">验证码&emsp;<span class="err" v-show="inputErr">验证码输入有误</span></p>
-        <div class='flex relative'>
+        <p class='label'>验证码&emsp;<span class='err' v-show='inputErr'>验证码输入有误</span></p>
+        <div class='flex por'>
           <el-input type='tel'
                     :maxlength='6'
                     v-model='verify'
@@ -33,13 +33,13 @@
           <span :class="['get-verify' , {gary:second !== 60}]"
                 @click='sendCode'>{{ second === 60 ? '发送验证码' : `倒计时&nbsp;${second}s` }}</span>
         </div>
-        <div class="protocol">
-          <div class="apply" @click="isApply=!isApply">
-            <img src="@/assets/images/Tick_Square.png" alt="" v-show="isApply">
-            <img src="@/assets/images/Square.png" alt="" v-show="!isApply">
+        <div class='protocol'>
+          <div class='apply' @click='isApply=!isApply'>
+            <img src='@/assets/images/Tick_Square.png' alt='' v-show='isApply'>
+            <img src='@/assets/images/Square.png' alt='' v-show='!isApply'>
             <a>同意协议</a>
           </div>
-          <a class="forget">忘记密码？</a>
+          <a class='forget'>忘记密码？</a>
         </div>
         <button class='btn_r login_btn'
                 @click='handleLogin'>登录/注册
@@ -47,18 +47,18 @@
       </div>
       <div class='others-login flex flex-cc'
            v-if='!isOthers'>
-        <div @click='wechatLogin' class="wx" @mouseenter="hoverWx= true" @mouseleave="hoverWx = false">
-          <img src="@/assets/images/weixin.png" alt="" v-show="!hoverWx">
-          <img src="@/assets/images/weixin_hover.png" alt="" v-show="hoverWx">
+        <div @click='wechatLogin' class='wx' @mouseenter='hoverWx= true' @mouseleave='hoverWx = false'>
+          <img src='@/assets/images/weixin.png' alt='' v-show='!hoverWx'>
+          <img src='@/assets/images/weixin_hover.png' alt='' v-show='hoverWx'>
         </div>
         <!-- <a class="qq"
            href="/login/qqLogin"></a>
         <a class="weibo"
            href="/login/weiboLogin"></a> -->
       </div>
-      <div class="login-desc">登录和注册代表同意电动星球 <br/>
-        <a href="#" target="_blank">《隐私政策》</a>和<a
-          href="#" target="_blank">《用户协议》</a>
+      <div class='login-desc'>登录和注册代表同意电动星球 <br />
+        <a href='#' target='_blank'>《隐私政策》</a>和<a
+          href='#' target='_blank'>《用户协议》</a>
       </div>
     </el-dialog>
   </section>
@@ -240,13 +240,6 @@ export default {
 
 <style lang='less' scoped>
 .login-dialog {
-  .flex {
-    display: flex;
-  }
-
-  .relative {
-    position: relative;
-  }
 
   /deep/ .el-dialog {
     .el-dialog__header {
@@ -338,10 +331,11 @@ export default {
       font-size: 16px;
       color: #929da5;
       border-radius: 4px;
+      background: #39393b;
 
       &:hover {
         color: #fff;
-        background: #39393b
+        background: #d5d5d5;
       }
     }
 
@@ -354,11 +348,11 @@ export default {
       cursor: pointer;
       font-size: 14px;
       font-weight: 400;
-      color: #191919;
-      line-height: 22px;
 
+      line-height: 22px;
+      color: #929da5;
       &.gary {
-        color: #929da5;
+        color: #191919;
         cursor: default;
       }
 
@@ -435,6 +429,8 @@ export default {
       align-items: center;
       justify-content: center;
       border-radius: 50%;
+      background: #39393b;
+      color: #929da5;
 
       img {
         width: 36px;
@@ -443,8 +439,8 @@ export default {
 
       &:hover {
         border: none;
-        background: #39393b;
-
+        color: #fff;
+        background: #d5d5d5;
       }
     }
 

@@ -44,7 +44,7 @@
         <div class='auther'>
           <div class='top'>
             <div class='planet'
-                 @click='$router.push(`/planetdetail?id=${content.planet_id}`);'>来自{{ content.planet.name }}社区
+                 @click='$router.push(`/planetdetail/${content.planet_id}`);'>来自{{ content.planet.name }}社区
             </div>
             <div class='tags'>
               <div class='tag'
@@ -112,7 +112,7 @@
           <div class='comments-user'>
             <div class='avatar'>
               <img :src='userAvatar'
-                   @click='goUrl(`/other?id=${content.user_id}`)'>
+                   @click='goUrl(`/author/${content.user_id}`)'>
             </div>
             <div class='input'>
               <el-input v-model='postComment'
@@ -135,11 +135,11 @@
                 <div class='comment-main'>
                   <div class='comment-header'>
                     <div class='left'>
-                      <div class='author-avatar' @click='goUrl(`/other?id=${item.user_id}`)'>
+                      <div class='author-avatar' @click='goUrl(`/author/${item.user_id}`)'>
                         <img :src='item.user.avatar'>
                       </div>
                       <div class='col'>
-                        <div class='author-name' @click='goUrl(`/other?id=${item.user_id}`)'>{{ item.user.username }}
+                        <div class='author-name' @click='goUrl(`/author/${item.user_id}`)'>{{ item.user.username }}
                         </div>
                         <div class='comment-time'>{{ item.created_at }}</div>
                         <div class='comment-content'>
@@ -219,10 +219,10 @@
         <div class='avatar'
              v-if='avatar'>
           <img :src='avatar'
-               @click='goUrl(`/other?id=${content.user_id}`)'>
+               @click='goUrl(`/author/${content.user_id}`)'>
         </div>
         <div class='name'
-             @click='goUrl(`/other?id=${content.user_id}`)'>{{ username }}
+             @click='goUrl(`/author/${content.user_id}`)'>{{ username }}
         </div>
         <div class='sign'>{{ sign }}</div>
         <div class='data'>
@@ -538,7 +538,7 @@ export default {
       this.checkAuth().then(() => {
         return new Promise((resolve, reject) => {
           if (this.content.user.has_liked === 1) {
-            // this.goUrl(`/other?id=${this.content.user_id}`);
+            // this.goUrl(`/author/${this.content.user_id}`);
             resolve();
           } else {
             followUser(this.content.user_id).then(res => {

@@ -1,209 +1,396 @@
 .profile {
-  padding-top: 20px;
-  .section-title {
-    display: block;
-    font-size: 1.5em;
-    margin-block-end: 0.83em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    font-weight: bold;
-    padding-bottom: 10px;
-    margin-bottom: 40px;
-    border-bottom: 1px solid #ebecf1;
-  }
-  .section-main {
-    display: flex;
-    .left {
-      display: flex;
-      flex-direction: column;
-      border-right: 1px solid #ebecf1;
-    }
-    .right {
-      padding-left: 100px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      .phone {
-        margin-bottom: 100px;
-      }
-      .phone,
-      .wx {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        .l-side {
-          display: flex;
-          align-items: center;
-          label {
-            display: flex;
-            flex-direction: column;
+  margin-top: 20px;
+  padding: 40px 80px;
+  background: #fff;
+  width: 1200px;
 
-            span {
-              padding-top: 10px;
-              color: #adadad;
-            }
-          }
-          img {
-            margin-right: 20px;
-            width: 50px;
-            height: 50px;
-          }
-        }
-        .r-side {
-          .wx-button {
-            padding: 5px 20px;
-            border: none;
-            border-radius: 40px;
-            cursor: pointer;
-          }
-        }
-      }
+  .profile-head {
+    border-bottom: 4px solid #39393B;
+    padding-bottom: 30px;
+
+    .title {
+      padding: 0 28px;
+      font-weight: 600;
+      font-size: 24px;
+      line-height: 34px;
+      color: #191919;
     }
-    .top {
-      display: flex;
-      .avatar {
-        display: flex;
-        flex-direction: column;
-        .user-avatar {
-          float: left;
-          margin-right: 100px;
-          width: 100px;
-          height: 100px;
-          background-size: cover;
-          background-position: 50%;
-          border-radius: 50px;
-          overflow: hidden;
-        }
-        .avatar-button {
-          margin-top: 20px;
-        }
-        .secondary-button {
-          height: 30px;
-          line-height: 30px;
-          font-size: 14px;
-          background-color: #fff;
-          border: 1px solid #a6a9b6;
-          min-width: 100px;
-          display: inline-block;
-          text-align: center;
-          vertical-align: middle;
-          outline: none;
-          box-sizing: border-box;
-          cursor: pointer;
-          color: #2c2e3b;
-          border-radius: 20px;
-          &:hover {
-            background-color: #ebecf1;
-          }
-        }
-      }
-      .dl {
-        padding-right: 100px;
-        width: 400px;
-        display: flex;
-        flex-direction: column;
-        .item {
-          margin-bottom: 30px;
-          display: flex;
-          flex-direction: column;
-        }
-        .tip {
-          margin-top: 10px;
-          color: #7e869d;
-        }
-        label {
-          margin: 0 0 10px;
-          width: 80px;
-          line-height: 24px;
-          font-size: 18px;
-          color: #333;
-          font-weight: 600;
-        }
-      }
+
+    .save {
+      color: #fff;
+      padding: 10px 42px;
+      background: #39393B;
+      border-radius: 17px;
+      cursor: pointer;
     }
-    .sign {
+  }
+
+  .profile-main {
+    .avatar {
+      padding: 30px 28px;
+    }
+
+    .avatar-img {
+      margin-right: 20px;
       position: relative;
-      width: 500px;
-      label {
-        margin: 0 0 10px;
-        width: 80px;
-        line-height: 24px;
-        font-size: 18px;
-        color: #333;
-        font-weight: 600;
-        display: block;
+
+      > img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
       }
-      .tip {
+
+      .avatar-mask {
+        width: 100px;
+        height: 100px;
         position: absolute;
         top: 0;
-        right: 0;
+        left: 0;
+        background: rgba(0, 0, 0, .2);
+        border-radius: 50%;
+        cursor: pointer;
+
+        .flex-col-cc {
+          width: 100px;
+          height: 100px;
+
+          > img {
+            width: 24px;
+            height: 24px;
+          }
+
+          > span {
+            font-size: 14px;
+            line-height: 180%;
+            color: #FFFFFF;
+          }
+        }
+      }
+
+      &:hover {
+        .avatar-mask {
+          display: block;
+        }
       }
     }
-    .save {
-      margin-top: 50px;
-      .primary-button {
-        margin-left: 160px;
-        line-height: 40px;
-        background-color: #ffe000;
-        border: none;
-        min-width: 100px;
-        height: 40px;
-        font-size: 16px;
-        color: #2c2e3b;
-        border-radius: 20px;
-        display: inline-block;
-        text-align: center;
-        vertical-align: middle;
-        outline: none;
-        box-sizing: border-box;
-        cursor: pointer;
-        &:hover {
-          background-color: #f7b705;
+
+    .avatar-info {
+
+      > p {
+        margin-bottom: 10px;
+
+        label {
+          margin-right: 10px;
+          font-weight: 600;
+          font-size: 16px;
+          line-height: 22px;
+          color: #191919;
         }
+
+        .desc {
+          font-size: 14px;
+          line-height: 180%;
+          color: #929DA5;
+        }
+      }
+    }
+
+    .item {
+      padding-left: 148px;
+      margin-bottom: 30px;
+
+      > p {
+        margin-bottom: 10px;
+
+        label {
+          margin-right: 10px;
+          font-weight: 600;
+          font-size: 16px;
+          line-height: 22px;
+          color: #191919;
+        }
+      }
+
+
+      .desc {
+        font-size: 14px;
+        line-height: 20px;
+        color: #929DA5;
+      }
+    }
+
+    .nickname {
+      /deep/ .nick-input {
+        width: 420px;
+
+        .el-input__inner {
+          padding: 0 10px;
+          font-size: 14px;
+          line-height: 20px;
+          color: #929DA5;
+        }
+      }
+    }
+
+    .gender {
+      /deep/ .el-radio-group {
+        .el-radio-button {
+          margin-right: 20px;
+
+          .el-radio-button__inner {
+            background: #fff;
+            border: 1px solid #F5F5F5;
+            border-radius: 4px;
+            color: #929DA5;
+          }
+
+          .el-radio-button__orig-radio:checked + .el-radio-button__inner {
+            background: #39393B;
+            color: #fff;
+            box-shadow: none
+          }
+
+
+        }
+      }
+    }
+
+    .regions {
+      width: 568px;
+    }
+
+    .sign {
+      margin-bottom: 20px;
+      width: 900px;
+    }
+
+    .wx {
+      > p {
+        border-top: 1px solid #EAEAEA;
+        padding-top: 20px;
+      }
+
+      .flex-c-b {
+        padding-top: 30px;
+      }
+
+      .key {
+        margin-right: 10px;
+        font-size: 14px;
+        line-height: 20px;
+        color: #191919;
+      }
+
+      .value {
+        font-size: 14px;
+        line-height: 20px;
+        color: #929DA5;
+      }
+
+      .btn {
+        font-size: 14px;
+        line-height: 20px;
+        color: #0065FF;
+        cursor: pointer;
       }
     }
   }
 }
+
 /deep/ .bind-wx-dialog {
   .el-dialog__header {
     padding: 0;
   }
+
   .el-dialog__body {
     padding: 50px 40px;
     display: flex;
     flex-direction: column;
+
     .title {
       margin-bottom: 10px;
       font-size: 24px;
-      color: #333;
+      color: #191919;
       font-weight: 700;
     }
+
     .desc {
       margin-bottom: 20px;
       font-size: 14px;
       color: #7f7f7f;
     }
+
     .btn-box {
       display: flex;
       justify-content: space-between;
     }
+
     .btn {
       padding: 15px 50px;
       border: none;
       font-size: 20px;
-      color: #333;
+      color: #191919;
       font-weight: 600;
-      background-color: #f2f2f2;
+      background-color: #fff;
       border-radius: 50px;
+      border: 1px solid #39393B;;
+
       &:hover {
-        color: #333;
+        color: #fff;
         background-color: #f7f7f7;
       }
     }
+
     .comfirm {
-      background-color: #efd306;
+      background-color: #39393B;
+
       &:hover {
-        background-color: #fae85c;
+        background-color: #7f7f7f;
+      }
+    }
+  }
+}
+
+.login-dialog {
+  /deep/ .el-dialog {
+    .el-dialog__header {
+      padding: 0;
+    }
+
+    .el-dialog__body {
+      padding: 0;
+      height: 457px;
+      width: 422px;
+      margin: 0 auto;
+    }
+  }
+
+  .top {
+    padding-top: 35px;
+    width: 350px;
+    margin: 0 auto 18px;
+
+    .title {
+      font-family: PingFang SC;
+      font-style: normal;
+      color: #191919;
+      font-weight: 600;
+      font-size: 30px;
+      line-height: 42px;
+    }
+
+    .title-desc {
+      margin-bottom: 4px;
+      font-size: 16px;
+      color: #5c6573;
+      line-height: 22px;
+      text-align: left;
+    }
+
+    .close {
+      position: absolute;
+      top: 42px;
+      right: 0;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+  }
+
+  .input-box {
+    display: flex;
+    flex-direction: column;
+
+    /deep/ .el-input {
+      padding: 0;
+      margin: 0;
+      min-height: 50px;
+      min-width: 100px;
+
+      input {
+        color: #191919;
+        font-size: 14px;
+        width: 350px;
+        height: 50px;
+        border: 1px solid #eaeaea;
+        box-sizing: border-box;
+        border-radius: 4px;
+        display: block;
+        margin: 0 auto;
+      }
+
+      &.err {
+        input {
+          border-color: #ed7656;
+        }
+      }
+    }
+
+    .phone {
+      margin-bottom: 18px;
+    }
+
+    .btn_r {
+      width: 350px;
+      height: 50px;
+      padding: 10px 20px;
+      border: none;
+      outline: unset;
+      cursor: pointer;
+      display: block;
+      margin: 24px auto;
+      font-size: 16px;
+      color: #929da5;
+      border-radius: 4px;
+      background: #39393b;
+
+      &:hover {
+        color: #fff;
+        background: #d5d5d5;
+      }
+    }
+
+    .get-verify {
+      position: absolute;
+      top: 14px;
+      right: 64px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 400;
+
+      line-height: 22px;
+      color: #929da5;
+
+      &.gary {
+        color: #191919;
+        cursor: default;
+      }
+
+      &::before {
+        position: absolute;
+        top: -4px;
+        left: -26px;
+        content: '';
+        width: 1px;
+        height: 30px;
+        background: #eaeaea;
+      }
+    }
+
+    .label {
+      margin-left: 36px;
+      padding-bottom: 10px;
+      font-family: PingFang SC;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 16px;
+      line-height: 22px;
+      color: #5c6573;
+
+      .err {
+        color: #ed7656;
       }
     }
   }

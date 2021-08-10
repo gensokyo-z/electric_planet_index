@@ -2,16 +2,22 @@
   <section class="new-card">
     <!-- 作者信息 -->
     <div class="author">
-      <div class="user-info"
+      <div class="user-info flex-1"
            v-if="content.source==='user'"
-           @click="goUrl(`/other?id=${content.user_id}`)">
+           @click="goUrl(`/author/${content.user_id}`)">
         <img class="avatar"
              :src="avatar"
              alt="头像">
-        <div class="flex-col">
-          <span class="name">{{ username }}</span>
-          <div class="flex-v"><span class="time">{{ content.created_at }}</span>&ensp;<span>来自</span><span
-            class="planet">{{ content.planet.name }}</span></div>
+        <div class="flex-c-b  flex-1">
+          <div class="flex-col">
+            <span class="name">{{ username }}</span>
+            <div class="flex-v">
+              <span class="time">{{ content.created_at }}</span>
+              &ensp;<span class="time">来自</span>
+              <img :src="planetLogo" alt="" class="p-logo">
+              <span class="planet">{{ content.planet.name }}</span></div>
+          </div>
+          <img class="more" src="@/assets/images/more.png" alt="">
         </div>
       </div>
     </div>
@@ -70,13 +76,14 @@
            @click="goUrl(`/docdetail?id=${content.id}`)"></div>
     </div>
     <!-- 标签 -->
-    <div class="tag-box">
+    <div class="tag-box" v-if="content.tags.length>0">
       <div v-for="(item, index) in content.tags"
            :key="index"
            class="tag"
            v-show="index<4"
            @click="handlerTag(item)">
-        <span>#{{ item.name }}</span>
+        <img src="@/assets/images/tag.png" alt="">
+        <span>{{ item.name }}</span>
       </div>
     </div>
     <TalkApprovalShare :content.sync="content"/>
@@ -146,7 +153,10 @@ export default {
       } else {
         return '';
       }
-    }
+    },
+    planetLogo() {
+      return this.$state.allPlanet.find(e => e.id === this.content.planet_id).avatar
+    },
   },
   watch: {
     'content.thumb_pic': {
@@ -190,7 +200,7 @@ export default {
         return this.$store.dispatch('needAuth');
       }
       if (this.joined) {
-        this.goUrl(`/planetdetail?id=${content.planet_id}`);
+        this.goUrl(`/planetdetail/${content.planet_id}`);
       } else {
         // this.$confirm('是否加入该星球', '提示')
         //   .then(() => {
@@ -264,8 +274,18 @@ export default {
         color: #929da5;
       }
 
+      .p-logo {
+        margin: 0 4px;
+        width: 16px;
+        height: 16px;
+      }
+
       .planet {
         color: #39393b;
+      }
+      .more{
+        width: 16px;
+        height: 16px;
       }
     }
   }
@@ -343,17 +363,24 @@ export default {
 
   .tag-box {
     margin: 10px 0;
-    width: 100%;
     display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    height: 20px;
+    justify-content: flex-start;
 
     .tag {
+      margin-right: 10px;
+      padding: 4px 12px;
+      border-radius: 12px;
+      background: #f5f5f5;
       cursor: pointer;
-
+      display: flex;
+      align-items: center;
+      img{
+        margin-right: 4px;
+        width: 12px;
+        height: 13px;
+      }
       span {
-        color: #02a7f0;
+        color: #5c6573;
         font-size: 14px;
       }
     }

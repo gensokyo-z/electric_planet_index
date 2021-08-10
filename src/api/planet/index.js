@@ -16,6 +16,15 @@ export function quitPlanet(id) {
   });
 }
 
+// 获取星球下最热文章（分页）
+export function getPlanetHotest(params) {
+  return request({
+    url: `/api/feed/planets/${params.id}/hotest`,
+    method: 'get',
+    params
+  });
+}
+
 // 获取星球下的文章（分页）
 export function getPlanetPosts(params) {
   return request({
@@ -50,9 +59,9 @@ export function getPlanetDetail(id) {
 }
 
 // 获取星球标签
-export function getPlanetTags(id) {
+export function getPlanetTags(params) {
   return request({
-    url: `/api/feed/planets/${id}/tags`,
+    url: `/api/feed/planets/${params.id}/tags`,
     method: 'get'
   });
 }

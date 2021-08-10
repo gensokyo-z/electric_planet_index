@@ -8,9 +8,9 @@
       <div class='
         header-tips'>
         <div>
-          <p class='title'>设置文章封面（选填）</p>
-          <p class='desc'>封面上传规格要求：</p>
-          <p class='desc'>格式为JPG , JPEG , GIF 或者png. 大小 10MB以内.</p>
+          <p class='title'>设置文章封面（可选）</p>
+          <p class='desc'>建议尺寸：</p>
+          <p class='desc'>图片要求：格式为JPG、PNG</p>
         </div>
       </div>
       <div class='upload-btn'>
@@ -19,30 +19,28 @@
     </div>
     <div class='editer-box'>
       <div class='title' ref='affixRef'>
-        <MDinput v-if="postForm.source!=='微博'"
-                 v-model='postForm.title'
-                 :maxlength='100'
-                 name='name'
-                 required>
-          请在这里输入标题
-        </MDinput>
+        <el-input class='title-input'
+                  v-if="postForm.source!=='微博'"
+                  placeholder='请输入文章标题'
+                  v-model='postForm.title'></el-input>
       </div>
-      <div id='meun' ref='wrapperRef'></div>
-      <div id='editor'></div>
-      <input id='uploadFileVideo'
-             ref='uploadFileVideo'
-             type='file'
-             accept='video/*'
-             name='file'
-             style='opacity: 0; width: 0; height: 0;cursor: pointer'
-             @change='changeVideo' />
+      <div class='editor-wrapper'>
+        <div id='meun' ref='wrapperRef'></div>
+        <div id='editor'></div>
+        <input id='uploadFileVideo'
+               ref='uploadFileVideo'
+               type='file'
+               accept='video/*'
+               name='file'
+               style='opacity: 0; width: 0; height: 0;cursor: pointer'
+               @change='changeVideo' />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import wangeditor from 'wangeditor';
-import MDinput from '@/components/MDinput';
 import SingleImage from '@/components/Upload/SingleImage2';
 
 const defaultForm = {
@@ -61,7 +59,6 @@ export default {
     };
   },
   components: {
-    MDinput,
     SingleImage
   },
   created() {
@@ -114,13 +111,38 @@ export default {
       this.editor.config.onchange = html => {
         this.postForm.content = html;
       };
+      this.editor.config.menus = [
+        'head',
+        'bold',
+        'fontSize',
+        'fontName',
+        'italic',
+        'underline',
+        'strikeThrough',
+        'indent',
+        'lineHeight',
+        'foreColor',
+        'backColor',
+        'link',
+        'list',
+        'todo',
+        'justify',
+        'quote',
+        'image',
+        'video',
+        'table',
+        'code',
+        'splitLine',
+        'undo',
+        'redo'
+      ];
       setTimeout(() => {
         this.seteditor();
       }, 100);
     },
     seteditor() {
       // 给菜单栏中的视频icon绑定相应的点击事件
-      this.editor.$toolbarElem.elems[0].childNodes[18].onclick = e => {
+      this.editor.$toolbarElem.elems[0].childNodes[17].onclick = e => {
         e.stopPropagation();
         e.preventDefault();
         // childNodes 跟随着菜单栏变化
@@ -208,14 +230,12 @@ export default {
   .upload-header {
     margin: 20px 0;
     width: 100%;
-    height: 150px;
-    padding: 10px 20px;
     border: 1px solid #e4e4e4;
     display: flex;
 
     .single-image {
-      width: 230px;
-      height: 130px;
+      width: 244px;
+      height: 126px;
 
       /deep/ .image-uploader {
         width: 100%;
@@ -228,6 +248,8 @@ export default {
           .el-upload-dragger {
             width: 100%;
             height: 100%;
+            background: #eaeaea;
+            border-radius: 0;
           }
         }
       }
@@ -249,42 +271,68 @@ export default {
     }
 
     .upload-btn {
-      margin-left: 400px;
+      margin-left: auto;
+      margin-right: 20px;
       display: flex;
       align-items: center;
 
       .el-button {
         border-radius: 30px;
-        background-color: #ffe000;
-        border-color: #ffe000;
+        background-color: #fff;
         color: #333;
 
         &:hover {
-          background: #ffec5d;
-          border-color: #ffec5d;
+          background: #eaeaea;
         }
       }
     }
   }
 
   .editer-box {
+    position: relative;
+
     .title {
       margin-bottom: 20px;
+
+      .title-input {
+        width: 100%;
+
+        /deep/ .el-input__inner {
+          border-color: #eaeaea;
+          border-radius: 0;
+
+          &:focus {
+            border-color: #eaeaea;
+          }
+
+          &:hover {
+            border-color: #eaeaea;
+          }
+        }
+
+
+      }
+
+    }
+
+    .editor-wrapper {
+      padding: 10px;
+      border: 1px solid #EAEAEA;
+      border-radius: 4px;
+      min-height: 320px;
     }
 
     #meun {
-      position: static;
-      top: 20px;
       margin: 0 auto 10px auto;
-      // margin-bottom: 10px;
-
+      background: #F5F5F5;
+      border-radius: 4px;
     }
 
     #editor {
-      height: 500px;
-      width: 750px;
+      height: 320px;
+
       margin: 0 auto;
-      border: 1px solid #ccc;
+      border: 0;
     }
 
     .w-e-toolbar {

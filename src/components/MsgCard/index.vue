@@ -2,7 +2,7 @@
   <section class="msg-card">
     <div class="left">
       <img :src="avatar"
-        @click="goUrl(`/other?id=${content.user_id}`)">
+        @click="goUrl(`/author/${content.user_id}`)">
     </div>
     <div class="right">
       <div class="time">{{content.created_at}}</div>

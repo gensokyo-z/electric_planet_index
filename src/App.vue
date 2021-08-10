@@ -29,7 +29,7 @@ export default {
   data() {
     return {
       isLogin: false,
-      backGroundWhiteList: ['/docdetail', '/message', '/post', '/profile']
+      backGroundWhiteList: ['/docdetail', '/message']
     };
   },
   computed: {

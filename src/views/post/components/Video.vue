@@ -1,49 +1,52 @@
 <template>
-  <div class="video">
-    <div class="upload-video">
-      <SingleVideo class="single-video"
-        :value.sync="postForm.media[0].media_link"
-        @input="upLoadThumbVideo"
-        ref="uploadVideo" />
-      <div class="upload-btn">
-        <el-button @click="uploadFile('video')">{{postForm.media[0].media_link?'更换':'上传'}}视频</el-button>
+  <div class='video'>
+    <div class='upload-video'>
+      <SingleVideo class='single-video'
+                   :value.sync='postForm.media[0].media_link'
+                   @input='upLoadThumbVideo'
+                   ref='uploadVideo'
+                   v-show='postForm.media[0].media_link' />
+      <img class='icon-video' src='@/assets/images/icon_v.png' alt='' v-show='!postForm.media[0].media_link'>
+      <div class='upload-btn'>
+        <el-button @click="uploadFile('video')">{{ postForm.media[0].media_link ? '更换' : '上传' }}视频</el-button>
       </div>
-      <div class="desc">支持MP4、AVI、MOV等常规格式，文件大小需要小于3GB不得上传未经授权的他人作品，以及色情、反动等违法视频</div>
+      <div class='desc'>支持MP4、AVI、MOV等常规格式，</div>
+      <div class='desc'>文件大小需要小于3GB不得上传未经授权的他人作品，以及色情、反动等违法视频</div>
     </div>
-    <div class="upload-image ">
-      <SingleImage class="single-image"
-        :value.sync="postForm.thumb_pic"
-        @input="upLoadThumbPic"
-        ref="uploadImg" />
-      <div class="header-tips">
+    <div class='upload-image'>
+      <SingleImage class='single-image'
+                   :value.sync='postForm.thumb_pic'
+                   @input='upLoadThumbPic'
+                   ref='uploadImg' />
+      <div class='header-tips'>
         <div>
-          <p class="title">设置视频封面（必填）</p>
-          <p class="desc">封面上传规格要求：</p>
-          <p class="desc">格式为JPG , JPEG , GIF 或者png. 大小 10MB以内.</p>
+          <p class='title'>设置视频封面（必填）</p>
+          <p class='desc'>建议尺寸：</p>
+          <p class='desc'> 图片要求：格式为JPG、PNG</p>
         </div>
       </div>
-      <div class="upload-btn">
-        <el-button @click="uploadFile('img')">{{postForm.thumb_pic?'更换':'上传'}}封面</el-button>
+      <div class='upload-btn'>
+        <el-button @click="uploadFile('img')">{{ postForm.thumb_pic ? '更换' : '上传' }}封面</el-button>
       </div>
     </div>
-    <el-input type="text"
-      class="video-decs"
-      show-word-limit
-      placeholder="请输入视频标题"
-      size="medium"
-      v-model='postForm.title'></el-input>
-    <el-input type="textarea"
-      class="video-text-area"
-      show-word-limit
-      placeholder="请输入视频简介"
-      size="medium"
-      :rows="3"
-      resize="none"
-      v-model='postForm.content'></el-input>
-    <el-dialog :visible.sync="dialogVisible">
-      <img width="100%"
-        :src="dialogImageUrl"
-        alt="">
+    <el-input type='text'
+              class='video-decs'
+              show-word-limit
+              placeholder='请输入视频标题'
+              size='medium'
+              v-model='postForm.title'></el-input>
+    <el-input type='textarea'
+              class='video-text-area'
+              show-word-limit
+              placeholder='请输入视频简介'
+              size='medium'
+              :rows='3'
+              resize='none'
+              v-model='postForm.content'></el-input>
+    <el-dialog :visible.sync='dialogVisible'>
+      <img width='100%'
+           :src='dialogImageUrl'
+           alt=''>
     </el-dialog>
   </div>
 </template>
@@ -51,6 +54,7 @@
 <script>
 import SingleVideo from '@/components/Upload/SingleVideo';
 import SingleImage from '@/components/Upload/SingleImage2';
+
 const videoForm = {
   title: '',
   content: '', // 视频简介
@@ -112,7 +116,7 @@ export default {
     },
     upload(content) {
       this.uploadOSS(content).then(obj => {
-        this.editor.cmd.do('insertHTML', `<img src="${obj.path}" width="100%"/>`);
+        this.editor.cmd.do('insertHTML', `<img src='${obj.path}' width='100%'/>`);
       });
     }
   },
@@ -126,27 +130,30 @@ export default {
 };
 </script>
 
-<style  lang="less" scoped>
+<style lang='less' scoped>
 .video {
   .upload-video {
     margin: 20px 0;
     width: 100%;
-    height: 300px;
-    padding: 10px 20px;
+    padding: 20px;
     border: 1px solid #e4e4e4;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+
     .single-video {
       width: 320px;
       height: 180px;
+
       /deep/ .video-uploader {
         width: 100%;
         height: 100%;
+
         .el-upload {
           width: 100%;
           height: 100%;
+
           .el-upload-dragger {
             width: 100%;
             height: 100%;
@@ -154,68 +161,96 @@ export default {
         }
       }
     }
-    .upload-btn {
-      margin-top: 20px;
+
+    .icon-video {
+      width: 56px;
+      height: 56px;
+      color: #fff;
     }
+
+    .upload-btn {
+      margin-top: 10px;
+
+      .el-button {
+        background: #39393b;
+        color: #fff;
+      }
+    }
+
     .desc {
       margin-top: 10px;
-      font-size: 16px;
-      color: #7f7f7f;
+      line-height: 17px;
+      color: #929da5;
     }
   }
+
   .upload-image {
     margin: 20px 0;
     width: 100%;
-    height: 150px;
-    padding: 10px 20px;
     border: 1px solid #e4e4e4;
     display: flex;
+
     .single-image {
-      width: 230px;
-      height: 130px;
+      width: 244px;
+      height: 126px;
+
       /deep/ .image-uploader {
         width: 100%;
         height: 100%;
+
         .el-upload {
           width: 100%;
           height: 100%;
+
           .el-upload-dragger {
             width: 100%;
             height: 100%;
+            background: #eaeaea;
+            border-radius: 0;
           }
         }
       }
     }
+
     .header-tips {
-      margin-left: 50px;
+      margin-left: 40px;
       display: flex;
       align-items: center;
+
       .title {
         margin-bottom: 10px;
+        font-weight: 600;
         font-size: 16px;
+        line-height: 22px;
       }
+
       .desc {
         color: #aaa;
       }
     }
+
     .upload-btn {
-      margin-left: 400px;
+      margin-right: 20px;
+      margin-left: auto;
     }
   }
+
   .upload-btn {
     display: flex;
     align-items: center;
+
     .el-button {
-      border-radius: 30px;
-      background-color: #ffe000;
-      border-color: #ffe000;
-      color: #333;
-      &:hover {
-        background: #ffec5d;
-        border-color: #ffec5d;
-      }
+      border-radius: 17px;
+      font-size: 13px;
+      padding: 10px 30px;
+      border-color: #39393b ;
+      //border-radius: 30px;
+      //background-color: #ffe000;
+      //border-color: #ffe000;
+      //color: #333;
     }
   }
+
   .video-decs {
     margin-bottom: 20px;
   }

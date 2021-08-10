@@ -8,7 +8,7 @@
           @click="goUrl(`/docdetail?id=${content.id}`)">
           <img class="avatar"
             :src="avatar"
-            @click="goUrl(`/other?id=${content.user_id}`)"
+            @click="goUrl(`/author/${content.user_id}`)"
             alt="头像">
           <div class="flex-col">
             <span class="name">{{username}}</span>
@@ -177,7 +177,7 @@ export default {
         return this.$store.dispatch('needAuth');
       }
       if (this.joined) {
-        this.goUrl(`/planetdetail?id=${content.planet_id}`);
+        this.goUrl(`/planetdetail/${content.planet_id}`);
       } else {
         // this.$confirm('是否加入该星球', '提示')
         //   .then(() => {

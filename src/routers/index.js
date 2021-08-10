@@ -1,16 +1,12 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+// 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
+const originalPush = Router.prototype.replace
+Router.prototype.replace = function replace(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
 Vue.use(Router);
 const routes = [
-  // {
-  //   path: '/index',
-  //   component: () => import(/* webpackChunkName: "index" */ '@/views/index/index.vue'),
-  //   name: 'home',
-  //   meta: {
-  //     title: '电动星球',
-  //     keepAlive: true
-  //   }
-  // },
   {
     path: '/index',
     name: 'index',
@@ -20,30 +16,21 @@ const routes = [
       keepAlive: true
     }
   },
+  // {
+  //   path: '/planet',
+  //   name: 'planet',
+  //   component: () => import(/* webpackChunkName: "planet" */ '@/views/planet'),
+  //   meta: {
+  //     title: '星球社区',
+  //     keepAlive: false
+  //   }
+  // },
   {
-    path: '/video',
-    name: 'video',
-    component: () => import(/* webpackChunkName: "video" */ '@/views/index/video'),
-    meta: {
-      title: '星球视频',
-      keepAlive: false
-    }
-  },
-  {
-    path: '/planet',
-    name: 'planet',
-    component: () => import(/* webpackChunkName: "planet" */ '@/views/planet'),
-    meta: {
-      title: '星球社区',
-      keepAlive: false
-    }
-  },
-  {
-    path: '/planetdetail',
+    path: '/planetdetail/:planetId?',
     name: 'planetdetail',
     component: () => import(/* webpackChunkName: "planetdetail" */ '@/views/planet/detail'),
     meta: {
-      title: '星球详情',
+      title: '星球社区',
       keepAlive: false
     }
   },
@@ -101,20 +88,29 @@ const routes = [
     }
   },
   {
-    path: '/other',
-    name: 'other',
-    component: () => import(/* webpackChunkName: "/other" */ '@/views/mine/index.vue'),
-    meta: {
-      title: '个人主页',
-      keepAlive: false
-    }
-  },
-  {
     path: '/profile',
     name: 'profile',
     component: () => import(/* webpackChunkName: "profile" */ '@/views/mine/profile.vue'),
     meta: {
       title: '编辑个人资料',
+      keepAlive: false
+    }
+  },
+  {
+    path: '/attention',
+    name: 'attention',
+    component: () => import(/* webpackChunkName: "attention" */ '@/views/attention/index.vue'),
+    meta: {
+      title: '关注',
+      keepAlive: false
+    }
+  },
+  {
+    path: '/author/:userId',
+    name: 'author',
+    component: () => import(/* webpackChunkName: "author" */ '@/views/author/index.vue'),
+    meta: {
+      title: '个人主页',
       keepAlive: false
     }
   },

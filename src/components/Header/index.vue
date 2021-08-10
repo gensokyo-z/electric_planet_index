@@ -19,12 +19,11 @@
               v-show="showSearchList.includes($route.path)"
               ref="search"/>
       <div class="header-write"
-           @mouseenter="postVisible = true"
            v-if="$state.token">发布<img src="@/assets/images/post.png" alt="">
-        <ul class="post-menu" v-show="postVisible" @mouseleave="postVisible = false">
-          <li @click="goUrl('/post')">发布动态</li>
-          <li @click="goUrl('/post')">发布文章</li>
-          <li @click="goUrl('/post')">发布视频</li>
+        <ul class="post-menu hidden">
+          <li @click="goUrl('/post?type=Dynamic')">发布动态</li>
+          <li @click="goUrl('/post?type=Article')">发布文章</li>
+          <li @click="goUrl('/post?type=Video')">发布视频</li>
         </ul>
       </div>
       <div class="flex-cc msg"
@@ -52,8 +51,8 @@
                 >粉丝/关注管理
                 </li>
               </ul>
-              <div class="logout-btn" >
-                <button  @click="logout">退出登录</button>
+              <div class="logout-btn">
+                <button @click="logout">退出登录</button>
               </div>
             </div>
           </div>
@@ -79,7 +78,6 @@ export default {
   data() {
     return {
       showSearchList: ['/index'],
-      postVisible: false,
       navList: [
         {
           name: '首页',
@@ -88,7 +86,7 @@ export default {
         },
         {
           name: '关注',
-          path: '/planet',
+          path: '/attention',
           checked: false
         }
         // {
@@ -102,7 +100,7 @@ export default {
         //   checked: false
         // }
       ],
-      msgCount: 23
+      msgCount: 0
     };
   },
   computed: {
@@ -127,7 +125,6 @@ export default {
       } else if (url === 'homePage') {
         return (window.location.href = '//ddxq.tech');
       }
-      this.postVisible = false;
       this.$router.push(url);
     },
     handlerNav(item) {
@@ -253,16 +250,23 @@ export default {
       height: 8px;
     }
 
-    .post-menu {
-      position: absolute;
-      top: 56px;
-      left: 6px;
-      background: #fff;
+    &:hover {
+      .post-menu {
+        display: block;
+      }
+    }
 
+    .post-menu {
+      padding-top: 50px;
+      position: absolute;
+      top: -6px;
+      left: 6px;
+      filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.25));
       > li {
         width: 120px;
         padding: 7px 32px;
         color: #5c6573;
+        background: #fff;
 
         &:hover {
           background: #f5f5f5;
@@ -274,7 +278,7 @@ export default {
       &::before {
         content: '';
         position: absolute;
-        top: -10px;
+        top: 40px;
         right: 50px;
         width: 0;
         height: 0;
@@ -382,13 +386,14 @@ export default {
         .logout-btn {
           margin: 0 20px;
           text-align: center;
-          border-top: 1px solid #EAEAEA;
-          button{
+          border-top: 1px solid #eaeaea;
+
+          button {
             margin: 18px 0 28px 0;
             background: #fff;
             padding: 8px 90px;
             font-size: 13px;
-            border: 1px solid #39393B;
+            border: 1px solid #39393b;
             box-sizing: border-box;
             border-radius: 17px;
             cursor: pointer;

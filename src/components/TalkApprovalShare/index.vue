@@ -2,26 +2,26 @@
   <div class="tool">
     <div class="tool-bar">
       <div class="talk"
-        @click="bindTalk">
+           @click="bindApproval">
         <!-- <i class="iconfont iconpinglun"></i> -->
-        <span class="iconfont">评论</span>
-        <span>{{content.comments_count}}</span>
+        <span class="iconfont"><img class="icon" src="@/assets/images/Thumb.png" alt=""></span>
+        <span>{{ userLikedCount }}</span>
       </div>
       <div class="talk"
-        @click="bindApproval">
+           @click="bindTalk">
         <!-- <i class="iconfont iconzan"
           :class="{active:hasLiked}"></i> -->
         <!-- <img v-else
              class="icon"
              src="@/assets/images/zan.png"> -->
-        <span class="iconfont">点赞</span>
-        <span>{{userLikedCount}}</span>
+        <span class="iconfont"><img class="icon" src="@/assets/images/comment.png" alt=""></span>
+        <span>{{ content.comments_count }}</span>
       </div>
-      <div class="talk">
-        <!-- <i class="iconfont iconpinglun"></i> -->
-        <span class="iconfont">阅读数</span>
-        <span>{{content.reads}}</span>
-      </div>
+      <!--      <div class="talk">-->
+      <!--        &lt;!&ndash; <i class="iconfont iconpinglun"></i> &ndash;&gt;-->
+      <!--        <span class="iconfont">阅读数</span>-->
+      <!--        <span>{{content.reads}}</span>-->
+      <!--      </div>-->
       <!-- <div class="share"
         v-if="showShare"
         @click="$refs.shareImg.showShare = true">
@@ -41,6 +41,7 @@
 import { postLike, postUnlike, commentsLikes, commentsUnlikes } from '@/api/post';
 // import ShareImg from '@/components/ShareImg';
 import util from '@/utils/util';
+
 export default {
   props: {
     content: {
@@ -131,7 +132,7 @@ export default {
 .tool-bar {
   display: flex;
   justify-content: flex-start;
-  margin-bottom: 10px;
+
   .talk,
   .approval {
     display: flex;
@@ -139,13 +140,22 @@ export default {
     font-size: 14px;
     cursor: pointer;
   }
+
   .talk {
-    margin-right: 10px;
+    margin-right: 20px;
   }
-  .iconfont {
-    color: #c9cacf;
-    margin-right: 8px;
+
+  .icon {
+    margin-right: 4px;
+    width: 16px;
+    height: 16px;
   }
+
+  //.iconfont {
+  //  color: #c9cacf;
+  //  margin-right: 8px;
+  //}
+
   .active {
     color: #ffdd27;
   }

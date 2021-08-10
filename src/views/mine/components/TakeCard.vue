@@ -21,7 +21,7 @@
       <div class="planet-box"
         v-if="$router.path === 'index'">
         <div class="left"
-          @click="$router.push(`/planetdetail?id=${content.planet.id}`);"
+          @click="$router.push(`/planetdetail/${content.planet.id}`);"
           v-if="$route.path !=='/planetdetail'">
           <span>来自</span><span class="planet">{{content.planet.name}}</span>
         </div>
@@ -130,7 +130,7 @@ export default {
         return this.$store.dispatch('needAuth');
       }
       if (this.joined) {
-        this.goUrl(`/planetdetail?id=${content.planet_id}`);
+        this.goUrl(`/planetdetail/${content.planet_id}`);
       } else {
         // this.$confirm('是否加入该星球', '提示')
         //   .then(() => {

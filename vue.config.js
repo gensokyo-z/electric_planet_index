@@ -18,14 +18,14 @@ const cdn = {
   // css: ['//at.alicdn.com/t/font_1983148_odm3rw4ju0p.css'],
   // cdn的js链接
   js: [
-    '//res2.wx.qq.com/open/js/jweixin-1.6.0.js',
-    '//ddxq.tech/h5/qrcode/qrcode.js',
+    // '//res2.wx.qq.com/open/js/jweixin-1.6.0.js',
+    // '//ddxq.tech/h5/qrcode/qrcode.js',
   ]
 };
 console.log(`NODE_ENV:${process.env.NODE_ENV},npm_config_report: ${process.env.npm_config_report}`);
 module.exports = {
   // publicPath: !isProduction ? './' : '//e.kuaidi100.com/h5/', // 打包后引用的资源路径
-  publicPath: !isProduction ? './' : '//ddxq.tech/community', // 打包后引用的资源路径
+  publicPath: !isProduction ? '/' : '//ddxq.tech/community', // 打包后引用的资源路径
   outputDir: 'community', // 打包目录
   productionSourceMap: !isProduction || process.env.VUE_APP_CONFIG === 'test', // 生产打包的map文件是否生成
   devServer: {

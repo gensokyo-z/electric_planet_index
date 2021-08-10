@@ -7,3 +7,21 @@ export function getTags() {
     method: 'get'
   });
 }
+
+// 获取用户自定义标签
+
+export function getCustomTags() {
+  return request({
+    url: `/api/feed/user/customTags`,
+    method: 'get'
+  });
+}
+
+// 设置用户自定义标签
+export function setCustomTags(data) {
+  return request({
+    url: `/api/feed/user/customTags`,
+    method: 'post',
+    data
+  });
+}

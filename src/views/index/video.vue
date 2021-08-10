@@ -147,5 +147,5 @@ export default {
 };
 </script>
 
-<style scoped src='./index.less' lang="less" rel="stylesheet/less">
+<style scoped lang="less" >
 </style>

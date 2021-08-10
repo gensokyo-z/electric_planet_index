@@ -1,39 +1,36 @@
 <template>
-  <div class="singleImageUpload2 upload-container">
-    <el-upload :multiple="false"
-      :show-file-list="false"
-      :on-success="handleImageSuccess"
-      class="image-uploader"
-      drag
-      action=""
-      accept="image/*"
-      :http-request="upload">
-      <div class="iconfont"
-        v-loading="imgFlag"
-        v-show="!imageUrl">
-        <i class="el-icon-plus" />
-        <div class="el-upload__text">
-          拖拽<em>点击上传</em>题图
-        </div>
+  <div class='singleImageUpload2 upload-container'>
+    <el-upload :multiple='false'
+               :show-file-list='false'
+               :on-success='handleImageSuccess'
+               class='image-uploader'
+               drag
+               action=''
+               accept='image/*'
+               :http-request='upload'>
+      <div class='iconfont'
+           v-loading='imgFlag'
+           v-show='!imageUrl'>
+        <i class='el-icon-plus' />
       </div>
     </el-upload>
-    <div v-show="imageUrl.length>0"
-      class="image-preview">
-      <div v-show="imageUrl.length>1"
-        class="image-preview-wrapper">
-        <img :src="imageUrl">
-        <div class="image-preview-action">
-          <i class="el-icon-zoom-in"
-            @click="previewImg" />
-          <i class="el-icon-delete"
-            @click="rmImage" />
+    <div v-show='imageUrl.length>0'
+         class='image-preview'>
+      <div v-show='imageUrl.length>1'
+           class='image-preview-wrapper'>
+        <img :src='imageUrl'>
+        <div class='image-preview-action'>
+          <i class='el-icon-zoom-in'
+             @click='previewImg' />
+          <i class='el-icon-delete'
+             @click='rmImage' />
         </div>
       </div>
     </div>
-    <el-dialog :visible.sync="dialogVisible"
-      top="10vh">
-      <img width="100%"
-        :src="dialogImageUrl">
+    <el-dialog :visible.sync='dialogVisible'
+               top='10vh'>
+      <img width='100%'
+           :src='dialogImageUrl'>
     </el-dialog>
   </div>
 </template>
@@ -119,15 +116,17 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang='less' scoped>
 .upload-container {
   width: 100%;
   height: 100%;
   position: relative;
-  border-radius: 8px;
+  border-radius: 0;
+
   .image-uploader {
     height: 100%;
   }
+
   .image-preview {
     width: 100%;
     height: 100%;
@@ -135,19 +134,21 @@ export default {
     left: 0px;
     top: 0px;
     border: 1px dashed #d9d9d9;
-    border-radius: 8px;
+    border-radius: 0;
 
     .image-preview-wrapper {
       position: relative;
       width: 100%;
       height: 100%;
+
       img {
-        border-radius: 8px;
+        border-radius: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
       }
     }
+
     .image-preview-action {
       position: absolute;
       width: 100%;
@@ -164,14 +165,17 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
+
       .el-icon-delete,
       .el-icon-zoom-in {
         font-size: 36px;
       }
+
       i {
         margin-right: 10px;
       }
     }
+
     &:hover {
       .image-preview-action {
         opacity: 1;
@@ -179,8 +183,10 @@ export default {
     }
   }
 }
+
 .el-upload-dragger {
   border-color: #000;
+
   .iconfont {
     height: 100%;
     display: flex;
@@ -188,6 +194,7 @@ export default {
     align-items: center;
     flex-direction: column;
   }
+
   .el-icon-plus {
     font-size: 28px;
     color: #8c939d;

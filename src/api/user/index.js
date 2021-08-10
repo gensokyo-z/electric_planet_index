@@ -106,3 +106,19 @@ export function getOtherFollowers(params = {}) {
     method: 'get'
   });
 }
+
+//  获取达人推荐
+export function getRecommend(params = {}) {
+  return request({
+    url: `/api/feed/recommend/users`,
+    method: 'get'
+  });
+}
+
+// 回复我的
+export function getReplys() {
+  return request({
+    url: `/api/feed/user/replys`,
+    method: 'get'
+  });
+}
