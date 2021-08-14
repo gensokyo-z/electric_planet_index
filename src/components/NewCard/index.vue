@@ -1,92 +1,92 @@
 <template>
-  <section class="new-card">
+  <section class='new-card'>
     <!-- 作者信息 -->
-    <div class="author">
-      <div class="user-info flex-1"
-           v-if="content.source==='user'"
-           @click="goUrl(`/author/${content.user_id}`)">
-        <img class="avatar"
-             :src="avatar"
-             alt="头像">
-        <div class="flex-c-b  flex-1">
-          <div class="flex-col">
-            <span class="name">{{ username }}</span>
-            <div class="flex-v">
-              <span class="time">{{ content.created_at }}</span>
-              &ensp;<span class="time">来自</span>
-              <img :src="planetLogo" alt="" class="p-logo">
-              <span class="planet">{{ content.planet.name }}</span></div>
+    <div class='author'>
+      <div class='user-info flex-1'
+           v-if="content.source==='user'">
+        <img class='avatar'
+             :src='avatar'
+             alt='头像'
+             @click='goUrl(`/author/${content.user_id}`)'>
+        <div class='flex-c-b  flex-1'>
+          <div class='flex-col' @click='goUrl(`/author/${content.user_id}`)'>
+            <span class='name'>{{ username }}</span>
+            <div class='flex-v'>
+              <span class='time'>{{ content.created_at }}</span>
+              &ensp;<span class='time'>来自</span>
+              <img :src='planetLogo' alt='' class='p-logo'>
+              <span class='planet'>{{ content.planet.name }}</span></div>
           </div>
-          <img class="more" src="@/assets/images/more.png" alt="">
+          <img class='more' src='@/assets/images/more.png' alt=''>
         </div>
       </div>
     </div>
     <!-- 文章图片 -->
     <template v-if="content.mediaType === 'pic'">
-      <div class="photo-box"
-           v-if="content.thumb_pic"
-           @click="goUrl(`/docdetail?id=${content.id}`)">
-        <div class="photo">
-          <img :src="content.thumb_pic">
+      <div class='photo-box'
+           v-if='content.thumb_pic'
+           @click='goUrl(`/docdetail?id=${content.id}`)'>
+        <div class='photo'>
+          <img :src='content.thumb_pic'>
         </div>
       </div>
     </template>
     <!-- 视频 -->
     <template v-else>
-      <div class="video-box"
+      <div class='video-box'
            v-if="content.media.length>0&&content.media[0].media_type==='video'">
         <video :class="{'hidden':showPreview}"
-               :src="content.media[0].media_link"
-               controls="controls"
+               :src='content.media[0].media_link'
+               controls='controls'
                preload='metadata'
-               controlslist="nodownload"
-               ref="video"
-               x5-playsinline=""
+               controlslist='nodownload'
+               ref='video'
+               x5-playsinline=''
                disablePictureInPicture
-               playsinline="true"
-               webkit-playsinline="true"
-               x-webkit-airplay="true"
-               x5-video-player-type="h5"
-               x5-video-player-fullscreen=""
-               x5-video-orientation="portraint">
+               playsinline='true'
+               webkit-playsinline='true'
+               x-webkit-airplay='true'
+               x5-video-player-type='h5'
+               x5-video-player-fullscreen=''
+               x5-video-orientation='portraint'>
         </video>
-        <div class="previwe-img"
-             v-show="showPreview"
-             ref="previewImg"
-             @click.stop="playVideo">
-          <img :src="videoPreviwe">
-          <div v-if="videoPlayed"
-               class="video-replay"></div>
+        <div class='previwe-img'
+             v-show='showPreview'
+             ref='previewImg'
+             @click.stop='playVideo'>
+          <img :src='videoPreviwe'>
+          <div v-if='videoPlayed'
+               class='video-replay'></div>
           <div v-else
-               class="video-ready"></div>
+               class='video-ready'></div>
         </div>
       </div>
     </template>
     <!-- 标题 -->
-    <div class="title"
-         @click="goUrl(`/docdetail?id=${content.id}`)">
+    <div class='title'
+         @click='goUrl(`/docdetail?id=${content.id}`)'>
       <h2 v-if="content.source !== '微博'"> {{ content.title }}</h2>
     </div>
 
     <!-- 文章预览 -->
-    <div class="desc">
-      <div class="info"
-           v-if="content.desc_content"
-           v-html="content.desc_content"
-           @click="goUrl(`/docdetail?id=${content.id}`)"></div>
+    <div class='desc'>
+      <div class='info'
+           v-if='content.desc_content'
+           v-html='content.desc_content'
+           @click='goUrl(`/docdetail?id=${content.id}`)'></div>
     </div>
     <!-- 标签 -->
-    <div class="tag-box" v-if="content.tags.length>0">
-      <div v-for="(item, index) in content.tags"
-           :key="index"
-           class="tag"
-           v-show="index<4"
-           @click="handlerTag(item)">
-        <img src="@/assets/images/tag.png" alt="">
+    <div class='tag-box' v-if='content.tags.length>0'>
+      <div v-for='(item, index) in content.tags'
+           :key='index'
+           class='tag'
+           v-show='index<4'
+           @click='handlerTag(item)'>
+        <img src='@/assets/images/tag.png' alt=''>
         <span>{{ item.name }}</span>
       </div>
     </div>
-    <TalkApprovalShare :content.sync="content"/>
+    <TalkApprovalShare :content.sync='content' />
     <!--    <div class="planet-box"-->
     <!--         v-if="($route.path === '/index'||$route.path === '/planet')&&content.planet.name">-->
     <!--      <div class="left"-->
@@ -239,7 +239,7 @@ export default {
   }
 };
 </script>
-<style lang="less" scoped>
+<style lang='less' scoped>
 .new-card {
   padding: 28px 32px;
   box-sizing: border-box;
@@ -283,7 +283,8 @@ export default {
       .planet {
         color: #39393b;
       }
-      .more{
+
+      .more {
         width: 16px;
         height: 16px;
       }
@@ -374,11 +375,13 @@ export default {
       cursor: pointer;
       display: flex;
       align-items: center;
-      img{
+
+      img {
         margin-right: 4px;
         width: 12px;
         height: 13px;
       }
+
       span {
         color: #5c6573;
         font-size: 14px;

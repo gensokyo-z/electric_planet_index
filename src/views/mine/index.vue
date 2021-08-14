@@ -32,26 +32,27 @@
 </template>
 <script>
 import UserBanner from '@/components/UserBanner';
-import PostCard from './components/PostCard'
-import DraftCard from './components/DraftCard'
-import MsgCard from './components/MsgCard'
+import PostCard from './components/PostCard';
+import DraftCard from './components/DraftCard';
+import MsgCard from './components/MsgCard';
 
 // import NewCard from '@/components/NewCard';
-// import { getFollowers, getLiked, getComments, getAts } from '@/api/message';
-import { getUserDynamic, getOtheruser ,getReplys} from '@/api/user';
+import { getFollowers, getLiked, getComments, getAts } from '@/api/message';
+import { getUserDynamic, getOtheruser, getReplys } from '@/api/user';
+
 // import util from '@/utils/util';
 const sendList = [
   { name: '动态', value: 'DT', active: true, count: 0 },
   { name: '文章', value: 'WZ', active: false, count: 0 },
-  { name: '视频', value: 'SP', active: false, count: 0 },
+  { name: '视频', value: 'SP', active: false, count: 0 }
   // { name: '草稿箱', value: 'CGX', active: false, count: 0 },
-]
+];
 const msgList = [
   { name: '回复我的', value: 'HFWD', active: true, count: 0 },
   { name: '@ 我的', value: 'ATWD', active: false, count: 0 },
   { name: '收到的赞', value: 'SDDZ', active: false, count: 0 },
-  { name: '系统消息', value: 'XTXX', active: false, count: 0 },
-]
+  { name: '系统消息', value: 'XTXX', active: false, count: 0 }
+];
 export default {
   name: 'mine',
   data() {
@@ -76,17 +77,18 @@ export default {
   methods: {
     chnageTab(item) {
       this.tabList.forEach(e => {
-        e.active = e.value === item.value
-      })
-      this.tagList = item.value === 'send' ? sendList : msgList
-      this.tab = item.value
+        e.active = e.value === item.value;
+      });
+      this.tagList = item.value === 'send' ? sendList : msgList;
+      this.tab = item.value;
+      this.tag = this.tagList[0].value;
       this.getClear();
     },
     changeTag(item) {
       this.tagList.forEach(e => {
-        e.active = e.value === item.value
-      })
-      this.tag = item.value
+        e.active = e.value === item.value;
+      });
+      this.tag = item.value;
       this.getClear();
     },
     getOtheruser() {
@@ -116,86 +118,85 @@ export default {
     getPosts() {
       this.loading = true;
       let arr = [];
-      switch (this.componentName) {
-        case 'PostCard':
-          const path = getUserDynamic;
-          const obj = {
-            page: this.page,
-            per_page: this.per_page,
-          };
-          switch (this.tag) {
-            case 'DT':
-              obj.type = ['0']
-              break;
-            case 'WZ':
-              obj.type = ['1']
-              break;
-            case 'SP':
-              obj.type = ['2']
-              break;
-            default:
-              break;
-          }
-          path(obj).then(({ code, data, last_page, current_page }) => {
-            if (code === 200 && data.length > 0) {
-              data.forEach(e => {
-                if (e.type === 0 && !e.thumb_pic) {
-                  if (e.media && e.media.length > 0 && e.media[0].media_link) e.thumb_pic = e.media[0].media_link;
-                }
-                e.planet = this.$state.allPlanet.filter(v => v.id === e.planet_id)[0]
-                if (e.type === 0 && !e.desc_content) {
-                  e.desc_content = e.content;
-                }
-                if (e.type === 0 || e.type === 1) {
-                  e.mediaType = 'pic';
-                } else {
-                  e.mediaType = 'video';
-                }
-                e.created_at = e.created_at.slice(0, 10)
-                arr.push(e);
-              });
-              this.cardList = this.cardList.concat(arr);
-              if (last_page === current_page) {
-                this.finished = true;
+      let path = getUserDynamic;
+      const obj = {
+        page: this.page,
+        per_page: this.per_page
+      };
+      if (this.componentName === 'PostCard') {
+        switch (this.tag) {
+          case 'DT':
+            obj.type = ['0'];
+            break;
+          case 'WZ':
+            obj.type = ['1'];
+            break;
+          case 'SP':
+            obj.type = ['2'];
+            break;
+          default:
+            break;
+        }
+        path(obj).then(({ code, data, last_page, current_page }) => {
+          if (code === 200 && data.length > 0) {
+            data.forEach(e => {
+              if (e.type === 0 && !e.thumb_pic) {
+                if (e.media && e.media.length > 0 && e.media[0].media_link) e.thumb_pic = e.media[0].media_link;
               }
-            } else {
+              e.planet = this.$state.allPlanet.filter(v => v.id === e.planet_id)[0];
+              if (e.type === 0 && !e.desc_content) {
+                e.desc_content = e.content;
+              }
+              if (e.type === 0 || e.type === 1) {
+                e.mediaType = 'pic';
+              } else {
+                e.mediaType = 'video';
+              }
+              e.created_at = e.created_at.slice(0, 10);
+              arr.push(e);
+            });
+            this.cardList = this.cardList.concat(arr);
+            if (last_page === current_page) {
               this.finished = true;
             }
-            this.loading = false;
-          }).catch(err => {
-            console.log(err);
-          });
-          break;
-        case 'MsgCard':
-
-          // getUserComments({ page: this.page, per_page: this.per_page }).then(res => {
-          //   if (res.code === 200 && res.data.length > 0) {
-          //     res.data.forEach(e => {
-          //       let year = new Date().getFullYear();
-          //       if (e.created_at.includes(year)) {
-          //         e.created_at = e.created_at.substr(5, e.created_at.length - 1);
-          //       }
-          //       if (e.post) {
-          //         e.title = e.post.title;
-          //       } else {
-          //         e.title = e.parentcomments.content;
-          //       }
-          //       arr.push(e);
-          //     });
-          //     this.cardList = this.cardList.concat(arr);
-          //     if (res.last_page === res.current_page) {
-          //       this.finished = true;
-          //     }
-          //   } else {
-          //     this.finished = true;
-          //   }
-          //   this.loading = false;
-          // });
-          break;
-        default:
-          break;
+          } else {
+            this.finished = true;
+          }
+          this.loading = false;
+        }).catch(err => {
+          console.log(err);
+        });
+      } else {
+        path = getReplys;
+        switch (this.tag) {
+          case 'ATWD':
+            path = getAts;
+            break;
+          case 'SDDZ':
+            path = getLiked;
+            break;
+          case 'XTXX':
+            path = getLiked;
+            break;
+          default:
+            break;
+        }
+        path(obj).then(res => {
+          if (res.code === 200 && res.data.length > 0) {
+            res.data.forEach(e => {
+              arr.push(e);
+            });
+            this.cardList = this.cardList.concat(arr);
+            if (res.last_page === res.current_page) {
+              this.finished = true;
+            }
+          } else {
+            this.finished = true;
+          }
+          this.loading = false;
+        });
       }
-    },
+    }
   },
   computed: {
     componentName() {
@@ -205,12 +206,12 @@ export default {
         case 'SP':
           return 'PostCard';
         case 'CGX':
-          return 'DraftCard'
+          return 'DraftCard';
         case 'HFWD':
         case 'ATWD':
         case 'SDDZ':
         case 'XTXX':
-          return 'MsgCard'
+          return 'MsgCard';
         default:
           return '';
       }
@@ -222,7 +223,8 @@ export default {
     DraftCard,
     MsgCard
   }
-};
+}
+;
 </script>
 <style scoped src='./index.less' lang='less' rel='stylesheet/less'>
 </style>

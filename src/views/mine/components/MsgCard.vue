@@ -8,7 +8,6 @@
 </template>
 
 <script>
-import { getReplys } from '@/api/user';
 import PostCard from './PostCard';
 
 export default {
@@ -28,23 +27,7 @@ export default {
   methods: {
     goUrl(url) {
       this.$router.push(url);
-    },
-    getData() {
-      let path = null;
-      switch (this.tag) {
-        case 'HFWD':
-          path = getReplys;
-          break;
-        default:
-          break;
-      }
-      path().then(
-        res => {
-
-        }
-      );
     }
-
   },
   components: {
     PostCard

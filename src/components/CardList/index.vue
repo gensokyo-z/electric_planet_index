@@ -9,7 +9,7 @@
       <div class='por' v-if="path!=='author'">
         <img src='@/assets/images/Category.png' alt='' class='more' @click='toggleTagsMenu'>
         <div class='tag-menu flex-col' v-show='visibleTagMenu'>
-          <div class='title'>设置标签（{{ selectedTags }}/3）</div>
+          <div class='title'>设置标签（{{ selectedTags.length }}/3）</div>
           <ul class='clearfixed'>
             <li v-for='(item,index) in tagList' :key='index' @click='checkTagsMenu(item)'
                 :class='{checked:item.checked}'>
@@ -19,7 +19,7 @@
             </li>
           </ul>
           <div class='submit'>
-            <button>确认</button>
+            <button @click='setCustomTags'>确认</button>
           </div>
         </div>
       </div>
@@ -117,11 +117,17 @@ export default {
         }
       });
     },
-    setCustomTags(item) {
-      const ids = [];
-      setCustomTags({ ids }).then(res => {
+    setCustomTags() {
+      if (this.selectedTags > 0) {
+        const ids = this.selectedTags;
+        setCustomTags({ ids }).then(res => {
+          this.tagList.forEach(e => {
+            e.checked = false;
+          });
+          this.toggleTagsMenu();
+        });
+      }
 
-      });
     },
     loadMore() {
       if (this.finished) {
@@ -136,11 +142,11 @@ export default {
     },
     toggleTagsMenu() {
       this.visibleTagMenu = !this.visibleTagMenu;
-      if (this.visibleTagMenu) {
-
-      } else {
-
-      }
+      // if (this.visibleTagMenu) {
+      //
+      // } else {
+      //
+      // }
     },
     checkTagsMenu(item) {
       const checkedCount = this.tagList.filter(e => e.checked).length;
@@ -272,7 +278,9 @@ export default {
   },
   computed: {
     selectedTags() {
-      return this.tagList.filter(e => e.checked).length;
+      return this.tagList.filter(e => e.checked).map(v => {
+        return v.id;
+      });
     }
   },
   watch: {
