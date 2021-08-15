@@ -19,12 +19,17 @@
       </div>
       <div class='mine-right' v-loading='loading'>
         <div class='flex-col'>
+          <div class='empty'>
+            <img src='' alt=''>
+            <button></button>
+          </div>
           <component class='card'
                      :is='componentName'
                      v-for='(item,index) in cardList'
                      :tag='tag'
                      :key='index'
                      :content='item' />
+
         </div>
       </div>
     </div>
@@ -68,7 +73,8 @@ export default {
       finished: false,
       cardList: [],
       page: 1,
-      per_page: 12
+      per_page: 12,
+      isEmpty: false
     };
   },
   mounted() {

@@ -9,15 +9,22 @@
              alt='头像'
              @click='goUrl(`/author/${content.user_id}`)'>
         <div class='flex-c-b  flex-1'>
-          <div class='flex-col' @click='goUrl(`/author/${content.user_id}`)'>
-            <span class='name'>{{ username }}</span>
+          <div class='flex-col'>
+            <span class='name' @click='goUrl(`/author/${content.user_id}`)'>{{ username }}</span>
             <div class='flex-v'>
               <span class='time'>{{ content.created_at }}</span>
               &ensp;<span class='time'>来自</span>
-              <img :src='planetLogo' alt='' class='p-logo'>
-              <span class='planet'>{{ content.planet.name }}</span></div>
+              <img :src='planetLogo' alt='' class='p-logo' @click='goUrl(`/planetDetail/${content.planet_id}`)'>
+              <span class='planet' @click='goUrl(`/planetDetail/${content.planet_id}`)'>{{ content.planet.name }}</span>
+            </div>
           </div>
-          <img class='more' src='@/assets/images/more.png' alt=''>
+          <div class='por'>
+            <img class='more' src='@/assets/images/more.png' alt='' @click='toggleMore(content)'>
+            <ul class='more-menu flex-col' v-show='content.visibleMore'>
+              <li @click='folloed'>关注</li>
+              <li @click='toggleMore(content)'>举报</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -111,6 +118,7 @@
 <script>
 // import Vue from 'vue';
 import { joinPlanet } from '@/api/planet';
+import { followUser } from '@/api/user'
 import util from '@/utils/util';
 import TalkApprovalShare from '@/components/TalkApprovalShare';
 
@@ -136,7 +144,7 @@ export default {
       showPreview: true,
       videoPlayed: false,
       videoPreviwe: '',
-      srcList: []
+      srcList: [],
     };
   },
   computed: {
@@ -216,6 +224,16 @@ export default {
         // .catch(() => {});
       }
     },
+    toggleMore(item) {
+      this.$emit('toggleMore', item)
+    },
+    folloed() {
+      followUser(this.content.user_id).then(res => {
+        this.$message.success('关注成功')
+        this.$store.dispatch('getInfo');
+        this.toggleMore(this.content)
+      });
+    },
     getVideoposter() {
       let video = this.$refs.video;
       video.setAttribute('crossOrigin', 'Anonymous');
@@ -287,6 +305,38 @@ export default {
       .more {
         width: 16px;
         height: 16px;
+      }
+
+      .more-menu {
+        position: absolute;
+        top: 30px;
+        right: -8px;
+        filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.25));
+
+        > li {
+          width: 120px;
+          padding: 7px 32px;
+          color: #5c6573;
+          background: #fff;
+
+          &:hover {
+            background: #f5f5f5;
+            color: #191919;
+            font-weight: 600;
+          }
+        }
+
+        &::before {
+          content: '';
+          position: absolute;
+          top: -10px;
+          right: 5px;
+          width: 0;
+          height: 0;
+          border-left: 10px solid transparent;
+          border-right: 10px solid transparent;
+          border-bottom: 10px solid #fff;
+        }
       }
     }
   }

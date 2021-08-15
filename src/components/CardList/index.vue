@@ -30,7 +30,8 @@
            :key='index'>
         <NewCard :content='item'
                  @handlerTag='handlerTag'
-                 @getData='getData' />
+                 @getData='getData'
+                 @toggleMore='toggleMore' />
       </div>
     </div>
     <div class='footer-btn'
@@ -42,7 +43,7 @@
 <script>
 import NewCard from '@/components/NewCard';
 import { getNewest, getHotest } from '@/api/index';
-import { getTags, getCustomTags, setCustomTags } from '@/api/tag';
+import { getAllTags, getCustomTags, setCustomTags } from '@/api/tag';
 import { getOthusernews } from '@/api/user';
 import { getPlanetPosts, getPlanetHotest, getPlanetTags } from '@/api/planet';
 
@@ -76,15 +77,16 @@ export default {
   created() {
     this.path = this.$route.name;
   },
-  mounted() {
-    this.getTags();
+  async mounted() {
+    await this.getTagMenu();
+    this.getUserTags();
     this.getData();
     this.$bus.$on('indexSearch', kw => {
       this.getSearch(kw);
     });
   },
   methods: {
-    getTags() {
+    getUserTags() {
       let path = null;
       const obj = {};
       switch (this.path) {
@@ -117,17 +119,33 @@ export default {
         }
       });
     },
+    getTagMenu() {
+      getAllTags().then(res => {
+        if (res.data) {
+          res.data.forEach(e => {
+            e.checked = false;
+          });
+          this.tagList = [
+            { id: -1, name: '最新', value: 'new' },
+            { id: -2, name: '最热', value: 'hot' }
+          ].concat(res.data);
+        }
+      });
+    },
     setCustomTags() {
-      if (this.selectedTags > 0) {
-        const ids = this.selectedTags;
+      if (this.selectedTags.length > 0) {
+        const ids = this.selectedTags.join(',');
         setCustomTags({ ids }).then(res => {
+          this.$message.success('设置标签成功');
+          this.getUserTags();
           this.tagList.forEach(e => {
             e.checked = false;
           });
           this.toggleTagsMenu();
+        }).catch(() => {
+          this.toggleTagsMenu();
         });
       }
-
     },
     loadMore() {
       if (this.finished) {
@@ -141,6 +159,15 @@ export default {
       this.getSearch('');
     },
     toggleTagsMenu() {
+      if (!this.visibleTagMenu) {
+        this.showTagsList.forEach(e => {
+          this.tagList.forEach(v => {
+            if (v.id === e.id) {
+              v.checked = true;
+            }
+          });
+        });
+      }
       this.visibleTagMenu = !this.visibleTagMenu;
       // if (this.visibleTagMenu) {
       //
@@ -215,6 +242,7 @@ export default {
                 e.thumb_pic = e.media[0].media_link;
               }
             }
+            e.visibleMore = false;
             // e.content = util.changeHtml2Crad(e.content);
             let planet = this.$state.allPlanet.find(v => v.id === e.planet_id);
             if (planet) {
@@ -256,6 +284,15 @@ export default {
     },
     gotoDetail(item) {
       this.$router.push(`/docdetail?id=${item.id}`);
+    },
+    toggleMore(item) {
+      this.cardList.forEach(e => {
+        if (e.id === item.id) {
+          item.visibleMore = !item.visibleMore;
+        } else {
+          e.visibleMore = false;
+        }
+      });
     },
     handlerTag(tag) {
       let tagName = '#' + tag.name;
@@ -332,6 +369,7 @@ export default {
     right: 10px;
     filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.25));
     background: #fff;
+    z-index: 2;
 
     .title {
       padding: 16px 20px;

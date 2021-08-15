@@ -8,8 +8,15 @@ export function getTags() {
   });
 }
 
-// 获取用户自定义标签
+// 标签列表
+export function getAllTags() {
+  return request({
+    url: `/api/admin/tags`,
+    method: 'get'
+  });
+}
 
+// 获取用户自定义标签
 export function getCustomTags() {
   return request({
     url: `/api/feed/user/customTags`,

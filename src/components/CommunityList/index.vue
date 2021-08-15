@@ -21,7 +21,7 @@ export default {
 
 <style scoped lang='less'>
 .community-list {
-  padding: 10px 20px;
+  padding: 9px 20px;
 
   .item {
     cursor: pointer;
